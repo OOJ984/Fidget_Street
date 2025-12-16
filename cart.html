@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidget Street | Shopping Cart</title>
+    <meta name="description" content="Review your shopping cart and complete your purchase at Fidget Street.">
+    <link rel="canonical" href="https://fidgetstreet.netlify.app/cart.html">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#71c7e1">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Fidget Street | Shopping Cart">
+    <meta property="og:description" content="Complete your purchase of fidget toys from Fidget Street.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fidgetstreet.netlify.app/cart.html">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@fidgetstreet">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- DNS Prefetch for payment providers -->
+    <link rel="dns-prefetch" href="https://js.stripe.com">
+    <link rel="dns-prefetch" href="https://www.paypal.com">
+    <link rel="preconnect" href="https://js.stripe.com">
+
+    <!-- Styles -->
+    <link rel="preload" href="styles/output.css" as="style">
+    <link href="styles/output.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icon-192.png">
+</head>
+<body class="bg-white text-navy font-sans antialiased">
+                <!-- Announcement Bar -->
+    <div class="bg-white text-navy text-center py-2.5 text-sm font-medium border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            <span>Free Delivery Over £30</span>
+            <span class="hidden sm:inline">|</span>
+            <a href="products.html" class="hidden sm:inline underline hover:no-underline">Shop Now</a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 border-b border-soft-blue/20" style="background-color: #71c7e1;" role="navigation" aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2" aria-label="Fidget Street Home">
+                    <span class="text-2xl lg:text-3xl font-bold text-white" style="font-family: 'Fredoka', sans-serif;">Fidget Street</span>
+                </a>
+
+                <!-- Desktop Navigation (Centered) -->
+                <div class="hidden lg:flex items-center justify-center flex-1">
+                    <div class="flex items-center space-x-12 lg:space-x-20">
+                        <a href="index.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Home</a>
+                        <div class="relative group">
+                            <a href="products.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2 flex items-center gap-1">
+                                Shop
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </a>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <div class="bg-white border border-gray-200 rounded-lg py-2 min-w-48 shadow-xl">
+                                    <a href="products.html" class="block px-4 py-2 text-gray-800 hover:bg-soft-blue-50 transition-colors font-medium">All Products</a>
+                                    <a href="products.html?category=articulated-toys" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Articulated Toys</a>
+                                    <a href="products.html?category=fidget-cubes" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Fidget Cubes</a>
+                                    <a href="products.html?category=clickers" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Clicker Toys</a>
+                                    <a href="products.html?category=stress-balls" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Stress Balls</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="about.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">About</a>
+                        <a href="events.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Events</a>
+                        <a href="contact.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Contact</a>
+                    </div>
+                </div>
+
+                <!-- Right Icons -->
+                <div class="flex items-center space-x-6">
+                    <!-- Search -->
+                    <button id="search-toggle" class="p-2 text-white hover:text-gray-300 transition-colors" aria-label="Search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                    <!-- Cart -->
+                    <button id="cart-toggle" class="relative p-2 text-white hover:text-gray-300 transition-colors" aria-label="Cart">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-gold text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <!-- Mobile Menu -->
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 text-white" aria-label="Menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden border-t border-white/20" style="background-color: #71c7e1;">
+            <div class="px-4 py-6 space-y-4">
+                <a href="index.html" class="block text-white hover:text-gray-100 py-2 font-medium">Home</a>
+                <div class="space-y-2">
+                    <span class="block text-white py-2 font-medium">Shop</span>
+                    <a href="products.html" class="block text-white/80 hover:text-white py-1 pl-4">All Products</a>
+                    <a href="products.html?category=articulated-toys" class="block text-white/80 hover:text-white py-1 pl-4">Articulated Toys</a>
+                    <a href="products.html?category=fidget-cubes" class="block text-white/80 hover:text-white py-1 pl-4">Fidget Cubes</a>
+                    <a href="products.html?category=clickers" class="block text-white/80 hover:text-white py-1 pl-4">Clicker Toys</a>
+                    <a href="products.html?category=stress-balls" class="block text-white/80 hover:text-white py-1 pl-4">Stress Balls</a>
+                </div>
+                <a href="about.html" class="block text-white hover:text-gray-100 py-2 font-medium">About</a>
+                <a href="events.html" class="block text-white hover:text-gray-100 py-2 font-medium">Events</a>
+                <a href="contact.html" class="block text-white hover:text-gray-100 py-2 font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="pt-4 min-h-screen">
+        <!-- Page Header -->
+        <section class="relative py-12 bg-gradient-to-b from-navy-100 to-black overflow-hidden">
+            <!-- Rose Gold Sparkles -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                <div class="absolute rounded-full animate-sparkle" style="width: 6px; height: 6px; background: #D4878F; top: 15%; left: 10%; box-shadow: 0 0 10px #D4878F, 0 0 20px #D4878F;"></div>
+                <div class="absolute rounded-full animate-sparkle" style="width: 4px; height: 4px; background: #D4878F; top: 25%; left: 85%; animation-delay: 0.3s; box-shadow: 0 0 8px #D4878F;"></div>
+                <div class="absolute rounded-full animate-sparkle-slow" style="width: 8px; height: 8px; background: #D4878F; top: 40%; left: 5%; box-shadow: 0 0 15px #D4878F, 0 0 30px #D4878F;"></div>
+                <div class="absolute rounded-full animate-sparkle-fast" style="width: 4px; height: 4px; background: #D4878F; top: 20%; left: 45%; box-shadow: 0 0 8px #D4878F;"></div>
+                <div class="absolute rounded-full animate-sparkle" style="width: 6px; height: 6px; background: #D4878F; top: 60%; left: 92%; animation-delay: 0.5s; box-shadow: 0 0 10px #D4878F;"></div>
+                <div class="absolute rounded-full animate-sparkle-fast" style="width: 4px; height: 4px; background: #D4878F; top: 75%; left: 15%; box-shadow: 0 0 8px #D4878F;"></div>
+                <div class="absolute rounded-full animate-sparkle-slow" style="width: 8px; height: 8px; background: #D4878F; top: 35%; left: 75%; box-shadow: 0 0 15px #D4878F, 0 0 25px #D4878F;"></div>
+                <div class="absolute rounded-full animate-sparkle" style="width: 4px; height: 4px; background: #D4878F; top: 80%; left: 60%; animation-delay: 0.2s; box-shadow: 0 0 8px #D4878F;"></div>
+                <div class="absolute rounded-full animate-sparkle" style="width: 3px; height: 3px; background: #fff; top: 30%; left: 20%; animation-delay: 0.4s; box-shadow: 0 0 6px #fff;"></div>
+                <div class="absolute rounded-full animate-sparkle-slow" style="width: 3px; height: 3px; background: #fff; top: 70%; left: 80%; box-shadow: 0 0 6px #fff;"></div>
+            </div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <nav class="mb-4" aria-label="Breadcrumb">
+                        <ol class="flex items-center justify-center space-x-2 text-sm">
+                            <li><a href="index.html" class="text-navy-600 hover:text-navy transition-colors">Home</a></li>
+                            <li><span class="text-navy-400">/</span></li>
+                            <li><span class="text-rose-gold">Cart</span></li>
+                        </ol>
+                    </nav>
+                    <h1 class="font-serif text-4xl sm:text-5xl font-semibold">Shopping Cart</h1>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cart Content -->
+        <section class="py-12 lg:py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Empty Cart -->
+                <div id="empty-cart" class="hidden text-center py-16">
+                    <svg class="w-24 h-24 mx-auto text-gray-700 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    <h2 class="font-serif text-2xl font-semibold mb-4">Your cart is empty</h2>
+                    <p class="text-navy-600 mb-8">Looks like you haven't added any items yet.</p>
+                    <a href="products.html" class="btn-primary">Start Shopping</a>
+                </div>
+
+                <!-- Cart with Items -->
+                <div id="cart-content" class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    <!-- Cart Items -->
+                    <div class="lg:col-span-2">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="font-serif text-xl font-semibold">Cart Items (<span id="cart-item-count">0</span>)</h2>
+                            <button id="clear-cart" class="text-sm text-navy-600 hover:text-rose-gold transition-colors">Clear All</button>
+                        </div>
+
+                        <div id="cart-items-list" class="space-y-6">
+                            <!-- Cart items will be loaded via JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Order Summary & Checkout -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-navy-50 rounded-lg p-6 sticky top-28">
+                            <h2 class="font-serif text-xl font-semibold mb-6">Order Summary</h2>
+
+                            <div class="space-y-4 mb-6">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-navy-600">Subtotal</span>
+                                    <span id="order-subtotal">£0.00</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-navy-600">Shipping</span>
+                                    <span id="order-shipping">Calculated at checkout</span>
+                                </div>
+                                <div class="border-t border-navy/20 pt-4 flex items-center justify-between">
+                                    <span class="font-semibold">Total</span>
+                                    <span id="order-total" class="text-xl font-semibold text-rose-gold">£0.00</span>
+                                </div>
+                            </div>
+
+                            <p class="text-sm text-navy-600 mb-6">Free UK delivery on orders over £30</p>
+
+                            <!-- Terms Agreement -->
+                            <div class="mb-6">
+                                <label class="flex items-start space-x-3 cursor-pointer">
+                                    <input type="checkbox" id="checkout-terms" name="terms" class="mt-1 w-4 h-4 rounded border-navy/30 text-rose-gold focus:ring-rose-gold bg-white">
+                                    <span class="text-sm text-navy-600">I agree to the <a href="terms.html" class="text-rose-gold hover:underline">Terms & Conditions</a> and <a href="privacy.html" class="text-rose-gold hover:underline">Privacy Policy</a></span>
+                                </label>
+                                <p id="terms-error" class="text-red-500 text-xs mt-2 hidden">Please agree to the terms to continue</p>
+                            </div>
+
+                            <!-- Payment Buttons -->
+                            <div class="space-y-3">
+                                <!-- Stripe Button -->
+                                <button type="button" id="pay-stripe-btn" class="w-full py-3 px-4 bg-[#635BFF] hover:bg-[#5851DB] text-navy font-medium rounded-lg flex items-center justify-center space-x-2 transition-colors">
+                                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
+                                    </svg>
+                                    <span>Pay with Card</span>
+                                </button>
+
+                                <div class="relative">
+                                    <div class="absolute inset-0 flex items-center">
+                                        <div class="w-full border-t border-navy/20"></div>
+                                    </div>
+                                    <div class="relative flex justify-center text-xs">
+                                        <span class="px-2 bg-navy-50 text-navy-500">or</span>
+                                    </div>
+                                </div>
+
+                                <!-- PayPal Container -->
+                                <div id="paypal-button-container" class="min-h-[45px]"></div>
+                            </div>
+
+                            <p class="text-xs text-navy-500 text-center mt-4">
+                                Secure payments powered by Stripe & PayPal
+                            </p>
+
+                            <p class="text-xs text-navy-500 text-center mt-2">
+                                Shipping address collected at checkout
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Badges -->
+        <section class="py-12 bg-navy-50/50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <svg class="w-10 h-10 mx-auto text-rose-gold mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                        <p class="text-sm font-medium">Secure Checkout</p>
+                        <p class="text-xs text-navy-600">SSL Encrypted</p>
+                    </div>
+                    <div>
+                        <svg class="w-10 h-10 mx-auto text-rose-gold mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        </svg>
+                        <p class="text-sm font-medium">Free Delivery</p>
+                        <p class="text-xs text-navy-600">Orders over £30</p>
+                    </div>
+                    <div>
+                        <svg class="w-10 h-10 mx-auto text-rose-gold mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <p class="text-sm font-medium">Easy Returns</p>
+                        <p class="text-xs text-navy-600">14-day policy</p>
+                    </div>
+                    <div>
+                        <svg class="w-10 h-10 mx-auto text-rose-gold mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <p class="text-sm font-medium">Support</p>
+                        <p class="text-xs text-navy-600">We're here to help</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Order Confirmation Modal -->
+    <div id="order-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-label="Order confirmation">
+        <div class="absolute inset-0 bg-white/90 backdrop-blur-sm" id="order-modal-overlay"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-navy-50 rounded-lg max-w-md w-full p-8 text-center relative">
+                <div class="w-16 h-16 bg-rose-gold/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h2 class="font-serif text-2xl font-semibold mb-4">Order Placed!</h2>
+                <p class="text-navy-600 mb-6">Thank you for your order. We've sent a confirmation email with your order details.</p>
+                <p class="text-sm text-navy-500 mb-6">Order #<span id="order-number">PP-000000</span></p>
+                <a href="index.html" class="btn-primary inline-block">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-2 md:col-span-1">
+                    <a href="index.html" class="inline-block mb-4">
+                        <span class="text-2xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #71c7e1;">Fidget Street</span>
+                    </a>
+                    <p class="text-gray-500 text-sm">Everyday Satisfaction for kids and adults.</p>
+                </div>
+
+                <!-- Shop -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Shop</h3>
+                    <ul class="space-y-2">
+                        <li><a href="products.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">All Products</a></li>
+                        <li><a href="products.html?category=articulated-toys" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Articulated Toys</a></li>
+                        <li><a href="products.html?category=fidget-cubes" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Fidget Cubes</a></li>
+                        <li><a href="products.html?category=clickers" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Clicker Toys</a></li>
+                        <li><a href="products.html?category=stress-balls" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Stress Balls</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">About Us</a></li>
+                        <li><a href="contact.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Contact</a></li>
+                        <li><a href="events.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Events</a></li>
+                        <li><a href="faq.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Help -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Help</h3>
+                    <ul class="space-y-2">
+                        <li><a href="returns.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Returns</a></li>
+                        <li><a href="privacy.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Privacy</a></li>
+                        <li><a href="terms.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-8 border-t border-gray-200">
+                <p class="text-gray-400 text-sm text-center">&copy; 2025 Fidget Street. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Payment SDKs -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=GBP&intent=capture&disable-funding=card" data-sdk-integration-source="button-factory"></script>
+
+    <!-- Scripts -->
+    <script defer src="scripts/api.js"></script>
+    <script defer src="scripts/settings.js"></script>
+    <script defer src="scripts/main.js"></script>
+    <script defer src="scripts/cart.js"></script>
+    <script defer src="scripts/newsletter.js"></script>
+    <script defer src="scripts/cart-page.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

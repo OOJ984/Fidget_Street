@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidget Street | Product Details</title>
+    <meta name="description" content="View product details from Fidget Street's fidget toys collection.">
+    <link rel="canonical" href="https://fidgetstreet.netlify.app/product.html">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#71c7e1">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Fidget Street | Product Details">
+    <meta property="og:description" content="Fidget toys from Fidget Street. Quality toys, affordable prices.">
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="https://fidgetstreet.netlify.app/product.html">
+    <meta property="og:image" content="https://fidgetstreet.netlify.app/assets/og-image.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@fidgetstreet">
+    <meta name="twitter:title" content="Fidget Street | Product Details">
+    <meta name:description" content="Fidget toys from Fidget Street. Quality toys, affordable prices.">
+    <meta name="twitter:image" content="https://fidgetstreet.netlify.app/assets/og-image.jpg">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="preload" href="styles/output.css" as="style">
+    <link href="styles/output.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icon-192.png">
+</head>
+<body class="bg-white text-navy font-sans antialiased">
+                <!-- Announcement Bar -->
+    <div class="bg-white text-navy text-center py-2.5 text-sm font-medium border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            <span>Free Delivery Over £30</span>
+            <span class="hidden sm:inline">|</span>
+            <a href="products.html" class="hidden sm:inline underline hover:no-underline">Shop Now</a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 border-b border-soft-blue/20" style="background-color: #71c7e1;" role="navigation" aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2" aria-label="Fidget Street Home">
+                    <span class="text-2xl lg:text-3xl font-bold text-white" style="font-family: 'Fredoka', sans-serif;">Fidget Street</span>
+                </a>
+
+                <!-- Desktop Navigation (Centered) -->
+                <div class="hidden lg:flex items-center justify-center flex-1">
+                    <div class="flex items-center space-x-12 lg:space-x-20">
+                        <a href="index.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Home</a>
+                        <div class="relative group">
+                            <a href="products.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2 flex items-center gap-1">
+                                Shop
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </a>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <div class="bg-white border border-gray-200 rounded-lg py-2 min-w-48 shadow-xl">
+                                    <a href="products.html" class="block px-4 py-2 text-gray-800 hover:bg-soft-blue-50 transition-colors font-medium">All Products</a>
+                                    <a href="products.html?category=articulated-toys" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Articulated Toys</a>
+                                    <a href="products.html?category=fidget-cubes" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Fidget Cubes</a>
+                                    <a href="products.html?category=clickers" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Clicker Toys</a>
+                                    <a href="products.html?category=stress-balls" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Stress Balls</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="about.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">About</a>
+                        <a href="events.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Events</a>
+                        <a href="contact.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Contact</a>
+                    </div>
+                </div>
+
+                <!-- Right Icons -->
+                <div class="flex items-center space-x-6">
+                    <!-- Search -->
+                    <button id="search-toggle" class="p-2 text-white hover:text-gray-300 transition-colors" aria-label="Search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                    <!-- Cart -->
+                    <button id="cart-toggle" class="relative p-2 text-white hover:text-gray-300 transition-colors" aria-label="Cart">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-gold text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <!-- Mobile Menu -->
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 text-white" aria-label="Menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden border-t border-white/20" style="background-color: #71c7e1;">
+            <div class="px-4 py-6 space-y-4">
+                <a href="index.html" class="block text-white hover:text-gray-100 py-2 font-medium">Home</a>
+                <div class="space-y-2">
+                    <span class="block text-white py-2 font-medium">Shop</span>
+                    <a href="products.html" class="block text-white/80 hover:text-white py-1 pl-4">All Products</a>
+                    <a href="products.html?category=articulated-toys" class="block text-white/80 hover:text-white py-1 pl-4">Articulated Toys</a>
+                    <a href="products.html?category=fidget-cubes" class="block text-white/80 hover:text-white py-1 pl-4">Fidget Cubes</a>
+                    <a href="products.html?category=clickers" class="block text-white/80 hover:text-white py-1 pl-4">Clicker Toys</a>
+                    <a href="products.html?category=stress-balls" class="block text-white/80 hover:text-white py-1 pl-4">Stress Balls</a>
+                </div>
+                <a href="about.html" class="block text-white hover:text-gray-100 py-2 font-medium">About</a>
+                <a href="events.html" class="block text-white hover:text-gray-100 py-2 font-medium">Events</a>
+                <a href="contact.html" class="block text-white hover:text-gray-100 py-2 font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="pt-4">
+        <!-- Breadcrumb -->
+        <div class="bg-navy-50/50 py-4">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <nav aria-label="Breadcrumb">
+                    <ol class="flex items-center space-x-2 text-sm">
+                        <li><a href="index.html" class="text-navy-600 hover:text-navy transition-colors">Home</a></li>
+                        <li><span class="text-navy-400">/</span></li>
+                        <li><a href="products.html" class="text-navy-600 hover:text-navy transition-colors">Shop</a></li>
+                        <li><span class="text-navy-400">/</span></li>
+                        <li><span id="breadcrumb-product" class="text-rose-gold">Product</span></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <section class="py-12 lg:py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div id="product-content" class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+                    <!-- Product Gallery -->
+                    <div class="space-y-4">
+                        <div id="main-image-container" class="aspect-square bg-navy-50 rounded-lg overflow-hidden relative">
+                            <!-- IMAGE_PLACEHOLDER: Main product image -->
+                            <div id="main-image" class="w-full h-full bg-gradient-to-br from-gray-800 to-navy-50 flex items-center justify-center">
+                                <svg class="w-24 h-24 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <!-- Stock Badge -->
+                            <div id="stock-badge" class="absolute top-4 left-4"></div>
+                            <!-- Tags -->
+                            <div id="product-tags" class="absolute top-4 right-4 flex flex-col gap-2"></div>
+                        </div>
+
+                        <!-- Thumbnail Gallery -->
+                        <div id="thumbnail-gallery" class="grid grid-cols-4 gap-4">
+                            <!-- Thumbnails will be loaded via JavaScript -->
+                            <button class="aspect-square bg-navy-50 rounded-lg overflow-hidden border-2 border-rose-gold">
+                                <!-- IMAGE_PLACEHOLDER: Thumbnail 1 -->
+                                <div class="w-full h-full bg-gradient-to-br from-gray-800 to-navy-50"></div>
+                            </a>
+                            <button class="aspect-square bg-navy-50 rounded-lg overflow-hidden border-2 border-transparent hover:border-white/30 transition-colors">
+                                <!-- IMAGE_PLACEHOLDER: Thumbnail 2 -->
+                                <div class="w-full h-full bg-gradient-to-br from-gray-800 to-navy-50"></div>
+                            </a>
+                            <button class="aspect-square bg-navy-50 rounded-lg overflow-hidden border-2 border-transparent hover:border-white/30 transition-colors">
+                                <!-- IMAGE_PLACEHOLDER: Thumbnail 3 -->
+                                <div class="w-full h-full bg-gradient-to-br from-gray-800 to-navy-50"></div>
+                            </a>
+                            <button class="aspect-square bg-navy-50 rounded-lg overflow-hidden border-2 border-transparent hover:border-white/30 transition-colors">
+                                <!-- IMAGE_PLACEHOLDER: Thumbnail 4 -->
+                                <div class="w-full h-full bg-gradient-to-br from-gray-800 to-navy-50"></div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="lg:py-8">
+                        <h1 id="product-title" class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold mb-4">Loading...</h1>
+
+                        <div class="flex items-center gap-4 mb-6">
+                            <span id="product-price" class="text-2xl font-semibold text-rose-gold">£0.00</span>
+                            <span id="product-category" class="text-sm text-navy-600 capitalize"></span>
+                        </div>
+
+                        <p id="product-description" class="text-navy-700 mb-8 leading-relaxed"></p>
+
+                        <!-- Product Details -->
+                        <div class="space-y-4 mb-8">
+                            <!-- Dimensions Dropdown -->
+                            <details class="border border-navy/20 rounded-lg">
+                                <summary class="flex items-center justify-between py-3 px-4 cursor-pointer">
+                                    <span class="text-navy font-medium">Dimensions</span>
+                                    <svg class="w-5 h-5 text-navy transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                    </svg>
+                                </summary>
+                                <div class="px-4 pb-4 text-navy-600 text-sm">
+                                    <p id="product-dimensions">Dimensions coming soon</p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Variations -->
+                        <div id="variations-container" class="mb-8 hidden">
+                            <label class="block text-sm font-medium mb-3">Select Option</label>
+                            <div id="variations" class="flex flex-wrap gap-3">
+                                <!-- Variations will be loaded via JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="mb-8">
+                            <label for="quantity" class="block text-sm font-medium mb-3">Quantity</label>
+                            <div class="flex items-center space-x-4">
+                                <button id="qty-decrease" class="w-10 h-10 rounded-lg bg-navy-50 border border-navy/30 hover:border-rose-gold transition-colors flex items-center justify-center" aria-label="Decrease quantity">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                                    </svg>
+                                </button>
+                                <input type="number" id="quantity" value="1" min="1" max="10" class="w-16 h-10 text-center bg-navy-50 border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors">
+                                <button id="qty-increase" class="w-10 h-10 rounded-lg bg-navy-50 border border-navy/30 hover:border-rose-gold transition-colors flex items-center justify-center" aria-label="Increase quantity">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Add to Cart -->
+                        <div class="space-y-4">
+                            <button id="add-to-cart-btn" class="w-full py-4 text-white font-medium rounded-full transition-all hover:opacity-90 flex items-center justify-center space-x-2" style="background-color: #051745;">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                                </svg>
+                                <span>Add to Cart</span>
+                            </button>
+                        </div>
+
+                        <!-- Product Features -->
+                        <div class="mt-12 grid grid-cols-2 gap-6">
+                            <div class="flex items-start space-x-3">
+                                <svg class="w-5 h-5 text-rose-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-sm">Handcrafted</p>
+                                    <p class="text-xs text-navy-600">Made with care</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <svg class="w-5 h-5 text-rose-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-sm">Eco-Friendly</p>
+                                    <p class="text-xs text-navy-600">Biodegradable PLA</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <svg class="w-5 h-5 text-rose-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-sm">Gift Ready</p>
+                                    <p class="text-xs text-navy-600">Beautiful packaging</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <svg class="w-5 h-5 text-rose-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-sm">Easy Returns</p>
+                                    <p class="text-xs text-navy-600">14-day policy</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Related Products -->
+        <section class="py-16 lg:py-24 bg-navy-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <span class="text-rose-gold text-sm uppercase tracking-widest font-medium">You May Also Like</span>
+                    <h2 class="mt-4 font-serif text-3xl sm:text-4xl font-semibold">Related Products</h2>
+                </div>
+
+                <div id="related-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <!-- Related products will be loaded via JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-2 md:col-span-1">
+                    <a href="index.html" class="inline-block mb-4">
+                        <span class="text-2xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #71c7e1;">Fidget Street</span>
+                    </a>
+                    <p class="text-gray-500 text-sm">Everyday Satisfaction for kids and adults.</p>
+                </div>
+
+                <!-- Shop -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Shop</h3>
+                    <ul class="space-y-2">
+                        <li><a href="products.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">All Products</a></li>
+                        <li><a href="products.html?category=articulated-toys" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Articulated Toys</a></li>
+                        <li><a href="products.html?category=fidget-cubes" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Fidget Cubes</a></li>
+                        <li><a href="products.html?category=clickers" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Clicker Toys</a></li>
+                        <li><a href="products.html?category=stress-balls" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Stress Balls</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">About Us</a></li>
+                        <li><a href="contact.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Contact</a></li>
+                        <li><a href="events.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Events</a></li>
+                        <li><a href="faq.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Help -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Help</h3>
+                    <ul class="space-y-2">
+                        <li><a href="returns.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Returns</a></li>
+                        <li><a href="privacy.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Privacy</a></li>
+                        <li><a href="terms.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-8 border-t border-gray-200">
+                <p class="text-gray-400 text-sm text-center">&copy; 2025 Fidget Street. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Added to Cart Notification -->
+    <div id="cart-notification" class="fixed bottom-4 right-4 bg-navy-50 border border-rose-gold rounded-lg p-4 shadow-xl transform translate-y-full opacity-0 transition-all duration-300 z-50">
+        <div class="flex items-center space-x-3">
+            <svg class="w-6 h-6 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <div>
+                <p class="font-medium">Added to cart!</p>
+                <a href="cart.html" class="text-sm text-rose-gold hover:underline">View cart</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script defer src="scripts/api.js"></script>
+    <script defer src="scripts/settings.js"></script>
+    <script defer src="scripts/main.js"></script>
+    <script defer src="scripts/cart.js"></script>
+    <script defer src="scripts/newsletter.js"></script>
+    <script defer src="scripts/product-page.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

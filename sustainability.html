@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainability | Fidget Street</title>
+    <meta name="description" content="Learn about our commitment to sustainability. Our fidget toys are made from eco-friendly PLA, a biodegradable plant-based material that's better for the planet.">
+    <link rel="canonical" href="https://fidgetstreet.netlify.app/sustainability.html">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#71c7e1">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Sustainability | Fidget Street">
+    <meta property="og:description" content="Eco-friendly fidget toys made from biodegradable PLA. Better for you, better for the planet.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fidgetstreet.netlify.app/sustainability.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="preload" href="styles/output.css" as="style">
+    <link href="styles/output.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icon-192.png">
+</head>
+<body class="bg-white text-navy font-sans antialiased">
+    <!-- Announcement Bar -->
+    <div class="bg-white text-navy text-center py-2.5 text-sm font-medium border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            <span>Free Delivery Over £25</span>
+            <span class="hidden sm:inline">|</span>
+            <a href="products.html" class="hidden sm:inline underline hover:no-underline">Shop Now</a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 border-b border-soft-blue/20" style="background-color: #71c7e1;" role="navigation" aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2" aria-label="Fidget Street Home">
+                    <span class="text-2xl lg:text-3xl font-bold text-white" style="font-family: 'Fredoka', sans-serif;">Fidget Street</span>
+                </a>
+
+                <!-- Desktop Navigation (Centered) -->
+                <div class="hidden lg:flex items-center justify-center flex-1">
+                    <div class="flex items-center space-x-12 lg:space-x-20">
+                        <a href="index.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Home</a>
+                        <div class="relative group">
+                            <a href="products.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2 flex items-center gap-1">
+                                Shop
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </a>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <div class="bg-white border border-gray-200 rounded-lg py-2 min-w-48 shadow-xl">
+                                    <a href="products.html" class="block px-4 py-2 text-gray-800 hover:bg-soft-blue-50 transition-colors font-medium">All Products</a>
+                                    <a href="products.html?category=articulated-toys" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Articulated Toys</a>
+                                    <a href="products.html?category=fidget-cubes" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Fidget Cubes</a>
+                                    <a href="products.html?category=clickers" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Clicker Toys</a>
+                                    <a href="products.html?category=stress-balls" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Stress Balls</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="about.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">About</a>
+                        <a href="events.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Events</a>
+                        <a href="contact.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Contact</a>
+                    </div>
+                </div>
+
+                <!-- Right Icons -->
+                <div class="flex items-center space-x-6">
+                    <!-- Search -->
+                    <button id="search-toggle" class="p-2 text-white hover:text-gray-300 transition-colors" aria-label="Search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                    <!-- Cart -->
+                    <button id="cart-toggle" class="relative p-2 text-white hover:text-gray-300 transition-colors" aria-label="Cart">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-gold text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <!-- Mobile Menu -->
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 text-white" aria-label="Menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden border-t border-white/20" style="background-color: #71c7e1;">
+            <div class="px-4 py-6 space-y-4">
+                <a href="index.html" class="block text-white hover:text-gray-100 py-2 font-medium">Home</a>
+                <div class="space-y-2">
+                    <span class="block text-white py-2 font-medium">Shop</span>
+                    <a href="products.html" class="block text-white/80 hover:text-white py-1 pl-4">All Products</a>
+                    <a href="products.html?category=articulated-toys" class="block text-white/80 hover:text-white py-1 pl-4">Articulated Toys</a>
+                    <a href="products.html?category=fidget-cubes" class="block text-white/80 hover:text-white py-1 pl-4">Fidget Cubes</a>
+                    <a href="products.html?category=clickers" class="block text-white/80 hover:text-white py-1 pl-4">Clicker Toys</a>
+                    <a href="products.html?category=stress-balls" class="block text-white/80 hover:text-white py-1 pl-4">Stress Balls</a>
+                </div>
+                <a href="about.html" class="block text-white hover:text-gray-100 py-2 font-medium">About</a>
+                <a href="events.html" class="block text-white hover:text-gray-100 py-2 font-medium">Events</a>
+                <a href="contact.html" class="block text-white hover:text-gray-100 py-2 font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="pt-4">
+        <!-- Hero Section with Background Banner -->
+        <section class="relative py-20 lg:py-32 overflow-hidden" style="background: linear-gradient(135deg, #71c7e1 0%, #FFD93D 50%, #6BCB77 100%);">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl">
+                    <nav class="mb-6" aria-label="Breadcrumb">
+                        <ol class="flex items-center space-x-2 text-sm">
+                            <li><a href="index.html" class="text-white hover:text-white/80 transition-colors">Home</a></li>
+                            <li><span class="text-white">/</span></li>
+                            <li><span class="text-white font-medium">Sustainability</span></li>
+                        </ol>
+                    </nav>
+                    <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold mb-6 text-white" style="font-family: 'Cinzel', serif;">Our Eco-Friendly Promise</h1>
+                    <p class="text-xl text-white leading-relaxed">Made from renewable resources. Biodegradable by nature. Better for our planet.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- What is PLA Section -->
+        <section class="py-20 lg:py-32 bg-navy-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                    <div>
+                        <span class="text-rose-gold text-sm uppercase tracking-widest font-medium">The Material</span>
+                        <h2 class="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold mb-6" style="font-family: 'Cinzel', serif;">What is PLA?</h2>
+                        <div class="space-y-4 text-navy-700 leading-relaxed">
+                            <p>PLA (Polylactic Acid) is a revolutionary bio-plastic made from renewable resources like corn starch, sugarcane, and other plant-based materials. Unlike traditional petroleum-based plastics, PLA comes from nature and returns to nature.</p>
+                            <p>It's one of the most popular sustainable materials used in 3D printing today, and it's what we use to create all of our organisers and storage solutions.</p>
+                            <p>When properly composted in industrial facilities, PLA breaks down into natural elements — water, carbon dioxide, and biomass — leaving no toxic residue behind.</p>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="aspect-square bg-gradient-to-br from-green-100 to-green-50 rounded-lg flex items-center justify-center">
+                            <svg class="w-32 h-32 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-rose-gold/20 rounded-lg -z-10"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLA vs Traditional Plastics -->
+        <section class="py-20 lg:py-32 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <span class="text-rose-gold text-sm uppercase tracking-widest font-medium">The Difference</span>
+                    <h2 class="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold" style="font-family: 'Cinzel', serif;">PLA vs Traditional Plastics</h2>
+                    <p class="mt-4 text-navy-600 max-w-2xl mx-auto">Unlike petroleum-based plastics that take hundreds of years to decompose, PLA offers a sustainable alternative that's better for our environment.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                    <!-- Traditional Plastics -->
+                    <div class="p-8 lg:p-12 border border-red-200 rounded-lg bg-red-50/30">
+                        <div class="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-6">
+                            <svg class="w-7 h-7 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-serif text-2xl font-semibold mb-4 text-red-700">Traditional Plastics</h3>
+                        <ul class="space-y-3 text-navy-700">
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                                <span>Made from petroleum (fossil fuels)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                                <span>Takes 500-1000 years to decompose</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                                <span>Releases harmful chemicals</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                                <span>Non-renewable resource</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+                                <span>Contributes to ocean pollution</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- PLA -->
+                    <div class="p-8 lg:p-12 border border-green-200 rounded-lg bg-green-50/30">
+                        <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mb-6">
+                            <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-serif text-2xl font-semibold mb-4 text-green-700">PLA (What We Use)</h3>
+                        <ul class="space-y-3 text-navy-700">
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                <span>Made from corn starch & sugarcane</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                <span>Biodegradable in composting facilities</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                <span>No toxic chemicals released</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                <span>100% renewable resource</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                <span>Lower carbon footprint</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Renewable Resources Section -->
+        <section class="py-20 lg:py-32 bg-navy-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <span class="text-rose-gold text-sm uppercase tracking-widest font-medium">From Nature</span>
+                    <h2 class="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold" style="font-family: 'Cinzel', serif;">Made from Renewable Resources</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+                    <!-- Corn Starch -->
+                    <div class="text-center p-8 bg-white rounded-lg border border-navy/10">
+                        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-yellow-100 flex items-center justify-center">
+                            <span class="text-4xl">&#127805;</span>
+                        </div>
+                        <h3 class="font-serif text-xl font-semibold mb-3">Corn Starch</h3>
+                        <p class="text-navy-600">The primary ingredient in PLA comes from the starches found in corn, a renewable crop that can be regrown each season.</p>
+                    </div>
+
+                    <!-- Sugarcane -->
+                    <div class="text-center p-8 bg-white rounded-lg border border-navy/10">
+                        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
+                            <span class="text-4xl">&#127807;</span>
+                        </div>
+                        <h3 class="font-serif text-xl font-semibold mb-3">Sugarcane</h3>
+                        <p class="text-navy-600">Sugarcane is another plant-based source used to create the lactic acid that forms the building blocks of PLA plastic.</p>
+                    </div>
+
+                    <!-- Tapioca Roots -->
+                    <div class="text-center p-8 bg-white rounded-lg border border-navy/10">
+                        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-100 flex items-center justify-center">
+                            <span class="text-4xl">&#127793;</span>
+                        </div>
+                        <h3 class="font-serif text-xl font-semibold mb-3">Tapioca Roots</h3>
+                        <p class="text-navy-600">Cassava or tapioca roots provide starch that can also be converted into PLA, offering another sustainable source.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Environmental Impact -->
+        <section class="py-20 lg:py-32 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <span class="text-rose-gold text-sm uppercase tracking-widest font-medium">Our Impact</span>
+                    <h2 class="mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold" style="font-family: 'Cinzel', serif;">Why It Matters</h2>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="flex items-start gap-6 p-6 bg-navy-50 rounded-lg">
+                        <div class="w-12 h-12 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">68% Less Carbon Emissions</h3>
+                            <p class="text-navy-600">PLA production generates significantly fewer greenhouse gases compared to traditional plastic manufacturing.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-6 p-6 bg-navy-50 rounded-lg">
+                        <div class="w-12 h-12 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">Fully Renewable</h3>
+                            <p class="text-navy-600">Unlike oil which takes millions of years to form, corn and sugarcane can be grown year after year, making PLA truly sustainable.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-6 p-6 bg-navy-50 rounded-lg">
+                        <div class="w-12 h-12 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">Non-Toxic & Safe</h3>
+                            <p class="text-navy-600">PLA doesn't release harmful chemicals during production or decomposition, making it safer for both people and the environment.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-6 p-6 bg-navy-50 rounded-lg">
+                        <div class="w-12 h-12 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-lg mb-2">Biodegradable</h3>
+                            <p class="text-navy-600">In industrial composting conditions, PLA breaks down into natural elements within months, not centuries like traditional plastics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Commitment -->
+        <section class="py-20 lg:py-32 bg-gradient-to-b from-navy-100 to-navy-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-2xl p-8 lg:p-16 border border-navy/10 shadow-lg">
+                    <div class="text-center">
+                        <span class="text-rose-gold text-sm uppercase tracking-widest font-medium">Our Commitment</span>
+                        <h2 class="mt-4 font-serif text-3xl sm:text-4xl font-semibold mb-8" style="font-family: 'Cinzel', serif;">Sustainability is Our Priority</h2>
+                        <p class="text-xl text-navy-700 leading-relaxed mb-8">At Fidget Street, we believe that fun products shouldn't come at the cost of our planet. That's why we've chosen to use PLA for all our 3D-printed fidget toys.</p>
+                        <p class="text-navy-600 leading-relaxed mb-8">By choosing our products, you're not just getting a fun, satisfying fidget toy — you're supporting a more sustainable future for our planet.</p>
+                        <div class="flex flex-wrap justify-center gap-4 text-sm text-navy-600">
+                            <span class="px-4 py-2 border border-navy/20 rounded-full bg-navy-50">Plant-Based</span>
+                            <span class="px-4 py-2 border border-navy/20 rounded-full bg-navy-50">Biodegradable</span>
+                            <span class="px-4 py-2 border border-navy/20 rounded-full bg-navy-50">Renewable</span>
+                            <span class="px-4 py-2 border border-navy/20 rounded-full bg-navy-50">Low Carbon</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 lg:py-32 bg-navy-50">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold mb-6 text-navy" style="font-family: 'Cinzel', serif;">Shop Sustainable</h2>
+                <p class="text-navy-700 mb-10">Explore our collection of eco-friendly fidget toys.</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="products.html" class="inline-flex items-center justify-center px-6 py-2.5 text-white text-sm font-medium rounded-full transition-all hover:opacity-90" style="background-color: #71c7e1;">Shop Collection</a>
+                    <a href="about.html" class="inline-flex items-center justify-center px-6 py-2.5 border-2 border-navy text-navy text-sm font-medium rounded-full hover:bg-navy hover:text-white transition-all">Learn More About Us</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-2 md:col-span-1">
+                    <a href="index.html" class="inline-block mb-4">
+                        <span class="text-2xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #71c7e1;">Fidget Street</span>
+                    </a>
+                    <p class="text-gray-500 text-sm">Everyday Satisfaction for kids and adults.</p>
+                </div>
+
+                <!-- Shop -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Shop</h3>
+                    <ul class="space-y-2">
+                        <li><a href="products.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">All Products</a></li>
+                        <li><a href="products.html?category=articulated-toys" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Articulated Toys</a></li>
+                        <li><a href="products.html?category=fidget-cubes" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Fidget Cubes</a></li>
+                        <li><a href="products.html?category=clickers" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Clicker Toys</a></li>
+                        <li><a href="products.html?category=stress-balls" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Stress Balls</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">About Us</a></li>
+                        <li><a href="contact.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Contact</a></li>
+                        <li><a href="events.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Events</a></li>
+                        <li><a href="faq.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Help -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Help</h3>
+                    <ul class="space-y-2">
+                        <li><a href="returns.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Returns</a></li>
+                        <li><a href="privacy.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Privacy</a></li>
+                        <li><a href="terms.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-8 border-t border-gray-200">
+                <p class="text-gray-400 text-sm text-center">&copy; 2025 Fidget Street. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script defer src="scripts/api.js"></script>
+    <script defer src="scripts/settings.js"></script>
+    <script defer src="scripts/main.js"></script>
+    <script defer src="scripts/cart.js"></script>
+    <script defer src="scripts/newsletter.js"></script>
+</body>
+</html>

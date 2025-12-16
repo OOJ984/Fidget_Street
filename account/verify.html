@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying... | Wicka</title>
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#C4707A">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="../styles/output.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-navy-900 backdrop-blur-sm border-b border-navy/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <img src="" alt="Wicka Logo" class="h-10 w-auto">
+                    <span class="font-serif text-2xl font-semibold tracking-wide">Wicka</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-16 min-h-screen flex items-center justify-center">
+        <div class="max-w-md mx-auto px-4 text-center">
+            <!-- Loading State -->
+            <div id="loading-state">
+                <div class="animate-spin w-12 h-12 border-4 border-rose-gold border-t-transparent rounded-full mx-auto mb-6"></div>
+                <h1 class="font-serif text-2xl font-semibold mb-2">Verifying your link...</h1>
+                <p class="text-navy-600">Please wait a moment.</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="hidden">
+                <div class="w-16 h-16 bg-red-900/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </div>
+                <h1 class="font-serif text-2xl font-semibold mb-2">Link Invalid or Expired</h1>
+                <p class="text-navy-600 mb-6" id="error-text">This link has expired or is no longer valid. Please request a new one.</p>
+                <a href="login.html" class="btn-primary inline-block">Request New Link</a>
+            </div>
+
+            <!-- Success State (brief, redirects) -->
+            <div id="success-state" class="hidden">
+                <div class="w-16 h-16 bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h1 class="font-serif text-2xl font-semibold mb-2">Verified!</h1>
+                <p class="text-navy-600">Redirecting to your orders...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const loadingState = document.getElementById('loading-state');
+        const errorState = document.getElementById('error-state');
+        const successState = document.getElementById('success-state');
+        const errorText = document.getElementById('error-text');
+
+        async function verifyToken() {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+
+            if (!token) {
+                showError('No verification token provided.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/customer-auth?token=${encodeURIComponent(token)}`);
+                const data = await response.json();
+
+                if (response.ok && data.token) {
+                    // Store session token
+                    localStorage.setItem('customerToken', data.token);
+                    localStorage.setItem('customerEmail', data.email);
+
+                    // Show success and redirect
+                    loadingState.classList.add('hidden');
+                    successState.classList.remove('hidden');
+
+                    setTimeout(() => {
+                        window.location.href = 'orders.html';
+                    }, 1000);
+                } else {
+                    showError(data.error || 'Invalid or expired link.');
+                }
+            } catch (err) {
+                showError('Network error. Please try again.');
+            }
+        }
+
+        function showError(message) {
+            loadingState.classList.add('hidden');
+            errorText.textContent = message;
+            errorState.classList.remove('hidden');
+        }
+
+        // Start verification
+        verifyToken();
+    </script>
+</body>
+</html>

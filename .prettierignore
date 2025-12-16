@@ -1,0 +1,7 @@
+# Ignore build outputs
+node_modules/
+styles/output.css
+package-lock.json
+
+# Ignore data files (to preserve formatting)
+data/*.json

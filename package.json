@@ -1,0 +1,53 @@
+{
+  "name": "wicka",
+  "version": "2.0.0",
+  "description": "Wicka - Style Meets Purpose E-commerce Website",
+  "author": "Wicka Team",
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./styles/tailwind.css -o ./styles/output.css --watch",
+    "build": "npx tailwindcss -i ./styles/tailwind.css -o ./styles/output.css --minify",
+    "preview": "npx serve .",
+    "lint": "eslint scripts/**/*.js",
+    "lint:fix": "eslint scripts/**/*.js --fix",
+    "format": "prettier --write \"**/*.{js,html,css,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,html,css,json,md}\"",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "eslint": "^8.56.0",
+    "jsdom": "^27.2.0",
+    "netlify-cli": "^17.38.1",
+    "prettier": "^3.2.0",
+    "prettier-plugin-tailwindcss": "^0.5.0",
+    "tailwindcss": "^3.4.0",
+    "vitest": "^4.0.15"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.2",
+    "qrcode": "^1.5.4",
+    "speakeasy": "^2.0.0",
+    "stripe": "^14.10.0"
+  },
+  "optionalDependencies": {
+    "serve": "^14.2.0"
+  },
+  "keywords": [
+    "organisers",
+    "e-commerce",
+    "young-enterprise",
+    "handmade",
+    "organisers",
+    "3d-printing"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "https://wicka.co.uk"
+}

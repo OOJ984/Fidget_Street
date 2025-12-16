@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wicka Admin | Set Up Two-Factor Authentication</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#C4707A">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="../styles/output.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen py-12">
+    <div class="w-full max-w-lg mx-auto px-4">
+        <div class="text-center mb-8">
+            <a href="../index.html" class="inline-flex items-center space-x-2 mb-6">
+                <img src="" alt="Wicka Logo" class="h-16 lg:h-20 w-auto">
+                <span class="font-serif text-2xl font-semibold tracking-wide">Wicka</span>
+            </a>
+            <h1 class="font-serif text-3xl font-semibold mb-2">Set Up Two-Factor Authentication</h1>
+            <p class="text-navy-600">MFA is required to access the admin panel</p>
+        </div>
+
+        <!-- Step 1: Scan QR Code -->
+        <div id="step-1" class="bg-navy-50 rounded-lg p-8">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-rose-gold text-black font-bold mb-4">1</div>
+                <h2 class="text-xl font-semibold mb-2">Scan QR Code</h2>
+                <p class="text-navy-600 text-sm">Scan this code with your authenticator app (Google Authenticator, Authy, etc.)</p>
+            </div>
+
+            <!-- QR Code Display -->
+            <div id="qr-container" class="flex justify-center mb-6">
+                <div id="qr-loading" class="w-48 h-48 bg-navy-100 rounded-lg flex items-center justify-center">
+                    <div class="animate-spin w-8 h-8 border-4 border-rose-gold border-t-transparent rounded-full"></div>
+                </div>
+                <img id="qr-code" class="hidden w-48 h-48 rounded-lg bg-white p-2" alt="MFA QR Code">
+            </div>
+
+            <!-- Manual Entry -->
+            <div class="text-center mb-6">
+                <button type="button" id="show-manual" class="text-sm text-navy-600 hover:text-navy transition-colors">
+                    Can't scan? Enter code manually
+                </button>
+                <div id="manual-code" class="hidden mt-4 p-4 bg-navy-100 rounded-lg">
+                    <p class="text-xs text-navy-500 mb-2">Enter this key in your app:</p>
+                    <code id="secret-code" class="text-lg font-mono text-rose-gold break-all"></code>
+                </div>
+            </div>
+
+            <div id="step1-error" class="hidden text-red-400 text-sm text-center mb-4"></div>
+
+            <button type="button" id="next-step" class="btn-primary w-full py-3">
+                I've Scanned the Code
+            </button>
+        </div>
+
+        <!-- Step 2: Verify Code -->
+        <div id="step-2" class="hidden bg-navy-50 rounded-lg p-8">
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-rose-gold text-black font-bold mb-4">2</div>
+                <h2 class="text-xl font-semibold mb-2">Verify Setup</h2>
+                <p class="text-navy-600 text-sm">Enter the 6-digit code from your authenticator app</p>
+            </div>
+
+            <form id="verify-form" class="space-y-6">
+                <div>
+                    <input type="text" id="verify-code" name="verify-code" required autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
+                        class="w-full px-4 py-4 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors text-center text-2xl tracking-widest font-mono"
+                        placeholder="000000">
+                </div>
+
+                <div id="verify-error" class="hidden text-red-400 text-sm text-center"></div>
+
+                <button type="submit" id="verify-btn" class="btn-primary w-full py-3">
+                    Enable Two-Factor Authentication
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <button type="button" id="back-step" class="text-sm text-navy-500 hover:text-navy transition-colors">
+                    &larr; Back
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Backup Codes -->
+        <div id="step-3" class="hidden bg-navy-50 rounded-lg p-8">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-green-900/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold mb-2">Two-Factor Authentication Enabled!</h2>
+                <p class="text-navy-600 text-sm">Save these backup codes in a safe place</p>
+            </div>
+
+            <div class="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 mb-6">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-yellow-400 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <div>
+                        <p class="text-yellow-300 font-medium text-sm">Save these codes now!</p>
+                        <p class="text-yellow-400/80 text-xs mt-1">You won't see them again. Use these if you lose access to your authenticator app.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="backup-codes" class="bg-navy-100 rounded-lg p-4 mb-6">
+                <div class="grid grid-cols-2 gap-2 font-mono text-lg"></div>
+            </div>
+
+            <div class="flex gap-4 mb-6">
+                <button type="button" id="copy-codes" class="flex-1 btn-secondary py-3 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                    </svg>
+                    Copy
+                </button>
+                <button type="button" id="download-codes" class="flex-1 btn-secondary py-3 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Download
+                </button>
+            </div>
+
+            <div class="flex items-center mb-6">
+                <input type="checkbox" id="confirm-saved" class="w-4 h-4 rounded border-gray-600 text-rose-gold focus:ring-rose-gold bg-navy-100">
+                <label for="confirm-saved" class="ml-2 text-sm text-navy-600">I have saved my backup codes</label>
+            </div>
+
+            <button type="button" id="continue-btn" disabled class="btn-primary w-full py-3 disabled:opacity-50 disabled:cursor-not-allowed">
+                Continue to Admin
+            </button>
+        </div>
+
+        <p class="text-center text-sm text-navy-500 mt-6">
+            <a href="../index.html" class="hover:text-navy transition-colors">&larr; Back to Store</a>
+        </p>
+    </div>
+
+    <script defer src="../scripts/admin-mfa-setup.js"></script>
+</body>
+</html>
+

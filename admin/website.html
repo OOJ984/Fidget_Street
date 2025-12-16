@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wicka Admin | Website Settings</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#C4707A">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link href="../styles/output.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen">
+    <!-- Admin Navigation -->
+    <nav class="bg-navy-50 border-b border-navy/20 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <img src="" alt="Wicka Logo" class="h-16 lg:h-20 w-auto">
+                    <span class="font-serif text-2xl font-semibold">Admin</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
+                    <a href="products.html" class="text-navy-700 hover:text-navy transition-colors">Products</a>
+                    <a href="media.html" class="text-navy-700 hover:text-navy transition-colors">Media</a>
+                    <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
+                    <a href="website.html" class="text-rose-gold font-medium">Website</a>
+                    <a href="users.html" class="text-navy-700 hover:text-navy transition-colors admin-only-link">Users</a>
+                    <a href="audit.html" class="text-navy-700 hover:text-navy transition-colors">Audit</a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="user-name" class="text-sm text-navy-600"></span>
+                <button id="logout-btn" class="text-sm text-navy-600 hover:text-navy transition-colors">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2 overflow-x-auto">
+        <div class="flex items-center space-x-4 whitespace-nowrap">
+            <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="products.html" class="text-navy-700 text-sm hover:text-navy">Products</a>
+            <a href="media.html" class="text-navy-700 text-sm hover:text-navy">Media</a>
+            <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
+            <a href="website.html" class="text-rose-gold text-sm font-medium">Website</a>
+            <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
+            <a href="audit.html" class="text-navy-700 text-sm hover:text-navy">Audit</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="font-serif text-3xl font-semibold">Website Settings</h1>
+            <div class="flex items-center space-x-3">
+                <button id="reset-defaults" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-navy rounded-lg transition-colors text-sm flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <span>Reset to Defaults</span>
+                </button>
+                <button id="save-settings" class="btn-primary flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>Save Changes</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div id="message" class="hidden mb-6 p-4 rounded-lg"></div>
+
+        <!-- Settings Form -->
+        <form id="settings-form" class="space-y-8">
+
+            <!-- Branding Section -->
+            <section class="bg-navy-50 rounded-lg p-6">
+                <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                    </svg>
+                    Branding
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="company-name" class="block text-sm font-medium mb-2">Company Name</label>
+                        <input type="text" id="company-name" name="companyName"
+                            class="form-input" placeholder="Wicka">
+                    </div>
+
+                    <div>
+                        <label for="tagline" class="block text-sm font-medium mb-2">Tagline</label>
+                        <input type="text" id="tagline" name="tagline"
+                            class="form-input" placeholder="Style Meets Purpose">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label class="block text-sm font-medium mb-2">Logo</label>
+                    <div class="flex items-start space-x-4">
+                        <div id="logo-preview" class="w-24 h-24 bg-navy-100 rounded-lg flex items-center justify-center overflow-hidden">
+                            <img id="current-logo" src="" alt="Current logo" class="max-w-full max-h-full object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <input type="file" id="logo-upload" accept="image/*,.svg" class="hidden">
+                            <button type="button" id="logo-upload-btn" class="btn-secondary text-sm">
+                                Upload New Logo
+                            </button>
+                            <p class="text-xs text-navy-500 mt-2">SVG, PNG, or JPG. Recommended: 200x200px</p>
+                            <input type="hidden" id="logo-url" name="logoUrl" value="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label class="block text-sm font-medium mb-2">Favicon</label>
+                    <div class="flex items-start space-x-4">
+                        <div id="favicon-preview" class="w-12 h-12 bg-navy-100 rounded-lg flex items-center justify-center overflow-hidden">
+                            <img id="current-favicon" src="" alt="Current favicon" class="max-w-full max-h-full object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <input type="file" id="favicon-upload" accept="image/*,.svg,.ico" class="hidden">
+                            <button type="button" id="favicon-upload-btn" class="btn-secondary text-sm">
+                                Upload Favicon
+                            </button>
+                            <p class="text-xs text-navy-500 mt-2">SVG, PNG, or ICO. Recommended: 32x32px</p>
+                            <input type="hidden" id="favicon-url" name="faviconUrl" value="">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Colors Section -->
+            <section class="bg-navy-50 rounded-lg p-6">
+                <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                    </svg>
+                    Colors
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="primary-color" class="block text-sm font-medium mb-2">Primary Accent Color</label>
+                        <div class="flex items-center space-x-3">
+                            <input type="color" id="primary-color" name="primaryColor" value="#C4707A"
+                                class="w-12 h-12 rounded-lg cursor-pointer border-2 border-navy/30">
+                            <input type="text" id="primary-color-hex"
+                                class="form-input flex-1 font-mono text-sm" placeholder="#C4707A">
+                        </div>
+                        <p class="text-xs text-navy-500 mt-2">Used for buttons, links, and accents</p>
+                    </div>
+
+                    <div>
+                        <label for="secondary-color" class="block text-sm font-medium mb-2">Secondary Color</label>
+                        <div class="flex items-center space-x-3">
+                            <input type="color" id="secondary-color" name="secondaryColor" value="#F5D0D5"
+                                class="w-12 h-12 rounded-lg cursor-pointer border-2 border-navy/30">
+                            <input type="text" id="secondary-color-hex"
+                                class="form-input flex-1 font-mono text-sm" placeholder="#F5D0D5">
+                        </div>
+                        <p class="text-xs text-navy-500 mt-2">Used for badges and highlights</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-navy-100 rounded-lg">
+                    <p class="text-sm font-medium mb-3">Preview</p>
+                    <div class="flex items-center space-x-4">
+                        <button type="button" id="preview-btn-primary" class="px-4 py-2 rounded-lg font-medium" style="background-color: #C4707A; color: black;">
+                            Primary Button
+                        </button>
+                        <span id="preview-link" class="hover:underline cursor-pointer" style="color: #C4707A;">
+                            Accent Link
+                        </span>
+                        <span id="preview-badge" class="px-3 py-1 rounded-full text-xs font-medium" style="background-color: #F5D0D5; color: black;">
+                            Badge
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Information Section -->
+            <section class="bg-navy-50 rounded-lg p-6">
+                <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Contact Information
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="contact-email" class="block text-sm font-medium mb-2">Contact Email</label>
+                        <input type="email" id="contact-email" name="contactEmail"
+                            class="form-input" placeholder="wicka@protonmail.com">
+                    </div>
+
+                    <div>
+                        <label for="contact-phone" class="block text-sm font-medium mb-2">Phone Number (optional)</label>
+                        <input type="tel" id="contact-phone" name="contactPhone"
+                            class="form-input" placeholder="+44 123 456 7890">
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label for="business-address" class="block text-sm font-medium mb-2">Business Address (optional)</label>
+                    <textarea id="business-address" name="businessAddress" rows="2"
+                        class="form-input" placeholder="123 High Street, London, UK"></textarea>
+                </div>
+            </section>
+
+            <!-- Social Media Section -->
+            <section class="bg-navy-50 rounded-lg p-6">
+                <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                    </svg>
+                    Social Media
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="instagram-url" class="block text-sm font-medium mb-2">Instagram</label>
+                        <input type="url" id="instagram-url" name="instagramUrl"
+                            class="form-input" placeholder="https://instagram.com/wicka">
+                    </div>
+
+                    <div>
+                    </div>
+
+                    <div>
+                        <label for="facebook-url" class="block text-sm font-medium mb-2">Facebook (optional)</label>
+                        <input type="url" id="facebook-url" name="facebookUrl"
+                            class="form-input" placeholder="https://facebook.com/wicka">
+                    </div>
+
+                    <div>
+                        <label for="twitter-url" class="block text-sm font-medium mb-2">Twitter/X (optional)</label>
+                        <input type="url" id="twitter-url" name="twitterUrl"
+                            class="form-input" placeholder="https://twitter.com/wicka">
+                    </div>
+                </div>
+            </section>
+
+            <!-- SEO Section -->
+            <section class="bg-navy-50 rounded-lg p-6">
+                <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    SEO Defaults
+                </h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label for="default-title-suffix" class="block text-sm font-medium mb-2">Title Suffix</label>
+                        <input type="text" id="default-title-suffix" name="defaultTitleSuffix"
+                            class="form-input" placeholder="Wicka">
+                        <p class="text-xs text-navy-500 mt-2">Appears after page titles, e.g., "Products | Wicka"</p>
+                    </div>
+
+                    <div>
+                        <label for="default-description" class="block text-sm font-medium mb-2">Default Meta Description</label>
+                        <textarea id="default-description" name="defaultDescription" rows="2"
+                            class="form-input" placeholder="Style Meets Purpose by Wicka. Modern, aesthetic organisers and 3D-printed holders made by young designers."></textarea>
+                        <p class="text-xs text-navy-500 mt-2">Used when no page-specific description is set (max 160 characters)</p>
+                    </div>
+
+                    <div>
+                        <label for="og-image-url" class="block text-sm font-medium mb-2">Default Social Share Image</label>
+                        <div class="flex items-start space-x-4">
+                            <div id="og-image-preview" class="w-32 h-20 bg-navy-100 rounded-lg flex items-center justify-center overflow-hidden">
+                                <span class="text-navy-500 text-xs">1200x630</span>
+                            </div>
+                            <div class="flex-1">
+                                <input type="file" id="og-image-upload" accept="image/*" class="hidden">
+                                <button type="button" id="og-image-upload-btn" class="btn-secondary text-sm">
+                                    Upload Image
+                                </button>
+                                <p class="text-xs text-navy-500 mt-2">Recommended: 1200x630px for social sharing</p>
+                                <input type="hidden" id="og-image-url" name="ogImageUrl" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Shipping & Checkout Section -->
+            <section class="bg-navy-50 rounded-lg p-6">
+                <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                    </svg>
+                    Shipping & Checkout
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="free-shipping-threshold" class="block text-sm font-medium mb-2">Free Shipping Threshold (£)</label>
+                        <input type="number" id="free-shipping-threshold" name="freeShippingThreshold"
+                            class="form-input" placeholder="20" min="0" step="0.01">
+                        <p class="text-xs text-navy-500 mt-2">Orders over this amount get free shipping</p>
+                    </div>
+
+                    <div>
+                        <label for="shipping-cost" class="block text-sm font-medium mb-2">Standard Shipping Cost (£)</label>
+                        <input type="number" id="shipping-cost" name="shippingCost"
+                            class="form-input" placeholder="2.99" min="0" step="0.01">
+                    </div>
+
+                    <div>
+                        <label for="currency" class="block text-sm font-medium mb-2">Currency</label>
+                        <select id="currency" name="currency" class="form-input">
+                            <option value="GBP">GBP (£)</option>
+                            <option value="USD">USD ($)</option>
+                            <option value="EUR">EUR (€)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="max-quantity" class="block text-sm font-medium mb-2">Max Quantity per Item</label>
+                        <input type="number" id="max-quantity" name="maxQuantity"
+                            class="form-input" placeholder="10" min="1" max="100">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer Section -->
+            <section class="bg-navy-50 rounded-lg p-6">
+                <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                    </svg>
+                    Footer
+                </h2>
+
+                <div class="space-y-6">
+                    <div>
+                        <label for="footer-tagline" class="block text-sm font-medium mb-2">Footer Tagline</label>
+                        <input type="text" id="footer-tagline" name="footerTagline"
+                            class="form-input" placeholder="Style Meets Purpose made by young designers.">
+                    </div>
+
+                    <div>
+                        <label for="copyright-text" class="block text-sm font-medium mb-2">Copyright Text</label>
+                        <input type="text" id="copyright-text" name="copyrightText"
+                            class="form-input" placeholder="Wicka. All rights reserved.">
+                        <p class="text-xs text-navy-500 mt-2">Year is added automatically</p>
+                    </div>
+
+                    <div>
+                        <label for="footer-note" class="block text-sm font-medium mb-2">Additional Footer Note</label>
+                        <input type="text" id="footer-note" name="footerNote"
+                            class="form-input" placeholder="A Young Enterprise company">
+                    </div>
+                </div>
+            </section>
+
+        </form>
+
+        <!-- Sticky Save Bar for Mobile -->
+        <div class="fixed bottom-0 left-0 right-0 bg-navy-50 border-t border-navy/20 p-4 md:hidden">
+            <button id="save-settings-mobile" class="btn-primary w-full">
+                Save Changes
+            </button>
+        </div>
+        <div class="h-20 md:hidden"></div>
+    </main>
+
+    <script defer src="../scripts/admin-website.js"></script>
+</body>
+</html>
+

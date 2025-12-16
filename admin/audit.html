@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wicka Admin | Audit Logs</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#C4707A">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="../styles/output.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen">
+    <!-- Admin Navigation -->
+    <nav class="bg-navy-50 border-b border-navy/20 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <img src="" alt="Wicka Logo" class="h-16 lg:h-20 w-auto">
+                    <span class="font-serif text-2xl font-semibold">Admin</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
+                    <a href="products.html" class="text-navy-700 hover:text-navy transition-colors">Products</a>
+                    <a href="media.html" class="text-navy-700 hover:text-navy transition-colors">Media</a>
+                    <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
+                    <a href="website.html" class="text-navy-700 hover:text-navy transition-colors">Website</a>
+                    <a href="users.html" class="text-navy-700 hover:text-navy transition-colors admin-only-link">Users</a>
+                    <a href="audit.html" class="text-rose-gold font-medium">Audit</a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="user-name" class="text-sm text-navy-600"></span>
+                <button id="logout-btn" class="text-sm text-navy-600 hover:text-navy transition-colors">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2 overflow-x-auto">
+        <div class="flex items-center space-x-4">
+            <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="products.html" class="text-navy-700 text-sm hover:text-navy">Products</a>
+            <a href="media.html" class="text-navy-700 text-sm hover:text-navy">Media</a>
+            <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
+            <a href="website.html" class="text-navy-700 text-sm hover:text-navy">Website</a>
+            <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
+            <a href="audit.html" class="text-rose-gold text-sm font-medium">Audit</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="font-serif text-3xl font-semibold">Audit Logs</h1>
+            <button id="export-btn" class="btn-secondary py-2 px-4 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Export CSV
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-navy-50 rounded-lg p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm text-navy-600 mb-2">Action</label>
+                    <select id="filter-action" class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                        <option value="">All Actions</option>
+                        <option value="login_success">Login Success</option>
+                        <option value="login_failed">Login Failed</option>
+                        <option value="mfa_setup">MFA Setup</option>
+                        <option value="mfa_verified">MFA Verified</option>
+                        <option value="password_changed">Password Changed</option>
+                        <option value="product_created">Product Created</option>
+                        <option value="product_updated">Product Updated</option>
+                        <option value="product_deleted">Product Deleted</option>
+                        <option value="order_status_updated">Order Status Updated</option>
+                        <option value="media_uploaded">Media Uploaded</option>
+                        <option value="media_deleted">Media Deleted</option>
+                        <option value="media_renamed">Media Renamed</option>
+                        <option value="settings_updated">Settings Updated</option>
+                        <option value="settings_reset">Settings Reset</option>
+                        <option value="user_created">User Created</option>
+                        <option value="user_updated">User Updated</option>
+                        <option value="user_deactivated">User Deactivated</option>
+                        <option value="user_role_changed">User Role Changed</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-navy-600 mb-2">User Email</label>
+                    <input type="text" id="filter-email" placeholder="Search by email..."
+                        class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                </div>
+                <div>
+                    <label class="block text-sm text-navy-600 mb-2">From Date</label>
+                    <input type="date" id="filter-from"
+                        class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                </div>
+                <div>
+                    <label class="block text-sm text-navy-600 mb-2">To Date</label>
+                    <input type="date" id="filter-to"
+                        class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                </div>
+            </div>
+            <div class="flex justify-end mt-4 gap-2">
+                <button id="clear-filters" class="px-4 py-2 text-sm text-navy-600 hover:text-navy transition-colors">Clear</button>
+                <button id="apply-filters" class="btn-primary py-2 px-4">Apply Filters</button>
+            </div>
+        </div>
+
+        <!-- Logs Table -->
+        <div class="bg-navy-50 rounded-lg overflow-hidden">
+            <div id="logs-container" class="overflow-x-auto">
+                <div class="flex justify-center py-12">
+                    <div class="animate-spin w-8 h-8 border-4 border-rose-gold border-t-transparent rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="hidden border-t border-navy/20 px-6 py-4 flex items-center justify-between">
+                <div class="text-sm text-navy-600">
+                    Showing <span id="page-info">-</span>
+                </div>
+                <div class="flex gap-2">
+                    <button id="prev-page" disabled class="px-3 py-1 text-sm bg-navy-100 rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+                    <button id="next-page" disabled class="px-3 py-1 text-sm bg-navy-100 rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="hidden fixed inset-0 bg-navy-900/90 flex items-center justify-center z-50 p-4">
+        <div class="bg-navy-50 rounded-lg max-w-lg w-full max-h-[80vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold">Log Details</h3>
+                    <button id="close-modal" class="text-navy-600 hover:text-navy">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="modal-content" class="space-y-4 text-sm"></div>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="../scripts/admin-audit.js"></script>
+</body>
+</html>
+

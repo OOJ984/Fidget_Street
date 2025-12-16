@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidget Street | Instagram Feed</title>
+    <meta name="description" content="Follow Fidget Street on Instagram for behind-the-scenes content and the latest updates from our fidget toys collection.">
+    <link rel="canonical" href="https://fidgetstreet.netlify.app/instagram.html">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#71c7e1">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Fidget Street | Instagram">
+    <meta property="og:description" content="Follow us on Instagram for behind-the-scenes content and fidget toy updates.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fidgetstreet.netlify.app/instagram.html">
+    <meta property="og:image" content="https://fidgetstreet.netlify.app/assets/og-image.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@fidgetstreet">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="preload" href="styles/output.css" as="style">
+    <link href="styles/output.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icon-192.png">
+</head>
+<body class="bg-white text-navy font-sans antialiased">
+                <!-- Announcement Bar -->
+    <div class="bg-white text-navy text-center py-2.5 text-sm font-medium border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            <span>Free Delivery Over £30</span>
+            <span class="hidden sm:inline">|</span>
+            <a href="products.html" class="hidden sm:inline underline hover:no-underline">Shop Now</a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 border-b border-soft-blue/20" style="background-color: #71c7e1;" role="navigation" aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2" aria-label="Fidget Street Home">
+                    <span class="text-2xl lg:text-3xl font-bold text-white" style="font-family: 'Fredoka', sans-serif;">Fidget Street</span>
+                </a>
+
+                <!-- Desktop Navigation (Centered) -->
+                <div class="hidden lg:flex items-center justify-center flex-1">
+                    <div class="flex items-center space-x-12 lg:space-x-20">
+                        <a href="index.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Home</a>
+                        <div class="relative group">
+                            <a href="products.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2 flex items-center gap-1">
+                                Shop
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </a>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <div class="bg-white border border-gray-200 rounded-lg py-2 min-w-48 shadow-xl">
+                                    <a href="products.html" class="block px-4 py-2 text-gray-800 hover:bg-soft-blue-50 transition-colors font-medium">All Products</a>
+                                    <a href="products.html?category=articulated-toys" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Articulated Toys</a>
+                                    <a href="products.html?category=fidget-cubes" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Fidget Cubes</a>
+                                    <a href="products.html?category=clickers" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Clicker Toys</a>
+                                    <a href="products.html?category=stress-balls" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Stress Balls</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="about.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">About</a>
+                        <a href="events.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Events</a>
+                        <a href="contact.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Contact</a>
+                    </div>
+                </div>
+
+                <!-- Right Icons -->
+                <div class="flex items-center space-x-6">
+                    <!-- Search -->
+                    <button id="search-toggle" class="p-2 text-white hover:text-gray-300 transition-colors" aria-label="Search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                    <!-- Cart -->
+                    <button id="cart-toggle" class="relative p-2 text-white hover:text-gray-300 transition-colors" aria-label="Cart">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-gold text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <!-- Mobile Menu -->
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 text-white" aria-label="Menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden border-t border-white/20" style="background-color: #71c7e1;">
+            <div class="px-4 py-6 space-y-4">
+                <a href="index.html" class="block text-white hover:text-gray-100 py-2 font-medium">Home</a>
+                <div class="space-y-2">
+                    <span class="block text-white py-2 font-medium">Shop</span>
+                    <a href="products.html" class="block text-white/80 hover:text-white py-1 pl-4">All Products</a>
+                    <a href="products.html?category=articulated-toys" class="block text-white/80 hover:text-white py-1 pl-4">Articulated Toys</a>
+                    <a href="products.html?category=fidget-cubes" class="block text-white/80 hover:text-white py-1 pl-4">Fidget Cubes</a>
+                    <a href="products.html?category=clickers" class="block text-white/80 hover:text-white py-1 pl-4">Clicker Toys</a>
+                    <a href="products.html?category=stress-balls" class="block text-white/80 hover:text-white py-1 pl-4">Stress Balls</a>
+                </div>
+                <a href="about.html" class="block text-white hover:text-gray-100 py-2 font-medium">About</a>
+                <a href="events.html" class="block text-white hover:text-gray-100 py-2 font-medium">Events</a>
+                <a href="contact.html" class="block text-white hover:text-gray-100 py-2 font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="pt-4">
+        <!-- Page Header with Background Banner -->
+        <section class="relative py-16 lg:py-24" style="background: linear-gradient(135deg, #71c7e1 0%, #FFD93D 50%, #6BCB77 100%);">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <nav class="mb-4" aria-label="Breadcrumb">
+                        <ol class="flex items-center justify-center space-x-2 text-sm">
+                            <li><a href="index.html" class="text-white/80 hover:text-white transition-colors">Home</a></li>
+                            <li><span class="text-white/60">/</span></li>
+                            <li><span class="text-rose-gold">Instagram</span></li>
+                        </ol>
+                    </nav>
+                    <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold mb-4 text-white">@wicka</h1>
+                    <p class="text-white/90 max-w-2xl mx-auto mb-8">Follow along for behind-the-scenes content, styling inspiration, new product reveals, and more from the Wicka team.</p>
+
+                    <a href="https://instagram.com/wicka" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-2.5 bg-white text-navy text-sm font-medium rounded-full hover:bg-gray-100 transition-all">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                        Follow on Instagram
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Instagram Embed Section -->
+        <section class="py-12 lg:py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!--
+                ===============================================
+                INSTAGRAM EMBED INSTRUCTIONS
+                ===============================================
+
+                Option 1: Instagram Embed (Official)
+                1. Go to your Instagram profile
+                2. Click on a post, then click the three dots
+                3. Select "Embed"
+                4. Copy the embed code
+                5. Replace the fallback grid below with the embed code
+
+                Option 2: Third-Party Widgets (Recommended for feeds)
+                - Elfsight: https://elfsight.com/instagram-feed-widget/
+                - SnapWidget: https://snapwidget.com/
+                - LightWidget: https://lightwidget.com/
+
+                Most third-party widgets require:
+                1. Creating an account
+                2. Connecting your Instagram
+                3. Customizing the feed appearance
+                4. Getting an embed code to paste here
+
+                Option 3: Instagram Basic Display API
+                - Requires Facebook Developer account
+                - More complex setup but fully customizable
+                - See: https://developers.facebook.com/docs/instagram-basic-display-api
+
+                The current fallback grid loads from data/instagram_sample.json
+                and displays placeholder images. Replace with live data
+                once you have your Instagram integration set up.
+                ===============================================
+                -->
+
+                <!-- Instagram Feed Embed Area -->
+                <div id="instagram-embed" class="mb-16">
+                    <!-- Replace this div with your Instagram embed code or widget -->
+                    <div class="text-center text-navy-500 py-12 bg-navy-50 rounded-lg">
+                        <svg class="w-12 h-12 mx-auto mb-4 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+                        </svg>
+                        <p>Instagram embed will appear here</p>
+                        <p class="text-sm mt-2">Add your embed code or widget in the source</p>
+                    </div>
+                </div>
+
+                <!-- Fallback Grid (From JSON data) -->
+                <div class="mb-8">
+                    <h2 class="font-serif text-2xl font-semibold mb-8 text-center">Latest Posts</h2>
+                </div>
+
+                <div id="instagram-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <!-- Posts will be loaded via JavaScript -->
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="https://instagram.com/wicka" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                        View More on Instagram
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Connect Section -->
+        <section class="py-16 lg:py-24 bg-navy-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <span class="text-rose-gold text-sm uppercase tracking-widest font-medium">Connect With Us</span>
+                    <h2 class="mt-4 font-serif text-3xl sm:text-4xl font-semibold">Follow Our Journey</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+                    <!-- Instagram -->
+                    <a href="https://instagram.com/wicka" target="_blank" rel="noopener noreferrer" class="group p-8 bg-white rounded-lg text-center hover:bg-gradient-to-br hover:from-purple-900/30 hover:to-pink-900/30 transition-all duration-500">
+                        <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-navy" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-serif text-xl font-semibold mb-2">Instagram</h3>
+                        <p class="text-navy-600 text-sm mb-4">@wicka</p>
+                        <p class="text-navy-500 text-sm">Daily inspiration, new products & behind-the-scenes</p>
+                    </a>
+
+                    <!-- Email -->
+                    <a href="mailto:wicka@protonmail.com" class="group p-8 bg-white rounded-lg text-center hover:bg-gradient-to-br hover:from-rose-gold/20 hover:to-rose-gold/10 transition-all duration-500">
+                        <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-rose-gold/20 flex items-center justify-center">
+                            <svg class="w-8 h-8 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-serif text-xl font-semibold mb-2">Email</h3>
+                        <p class="text-navy-600 text-sm mb-4">wicka@protonmail.com</p>
+                        <p class="text-navy-500 text-sm">Get in touch with us</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hashtag Section -->
+        <section class="py-16 lg:py-24 bg-white">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="font-serif text-3xl sm:text-4xl font-semibold mb-6">Tag Us in Your Photos!</h2>
+                <p class="text-navy-600 mb-8">Share your Wicka looks using <span class="text-rose-gold font-medium">#wicka</span> for a chance to be featured on our page.</p>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <span class="px-4 py-2 bg-navy-50 rounded-full text-sm text-rose-gold">#wicka</span>
+                    <span class="px-4 py-2 bg-navy-50 rounded-full text-sm text-navy-600">#Handmadeorganisers</span>
+                    <span class="px-4 py-2 bg-navy-50 rounded-full text-sm text-navy-600">#YoungEnterprise</span>
+                    <span class="px-4 py-2 bg-navy-50 rounded-full text-sm text-navy-600">#AffordableLuxury</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-2 md:col-span-1">
+                    <a href="index.html" class="inline-block mb-4">
+                        <span class="text-2xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #71c7e1;">Fidget Street</span>
+                    </a>
+                    <p class="text-gray-500 text-sm">Everyday Satisfaction for kids and adults.</p>
+                </div>
+
+                <!-- Shop -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Shop</h3>
+                    <ul class="space-y-2">
+                        <li><a href="products.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">All Products</a></li>
+                        <li><a href="products.html?category=articulated-toys" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Articulated Toys</a></li>
+                        <li><a href="products.html?category=fidget-cubes" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Fidget Cubes</a></li>
+                        <li><a href="products.html?category=clickers" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Clicker Toys</a></li>
+                        <li><a href="products.html?category=stress-balls" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Stress Balls</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">About Us</a></li>
+                        <li><a href="contact.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Contact</a></li>
+                        <li><a href="events.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Events</a></li>
+                        <li><a href="faq.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Help -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Help</h3>
+                    <ul class="space-y-2">
+                        <li><a href="returns.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Returns</a></li>
+                        <li><a href="privacy.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Privacy</a></li>
+                        <li><a href="terms.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-8 border-t border-gray-200">
+                <p class="text-gray-400 text-sm text-center">&copy; 2025 Fidget Street. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script defer src="scripts/api.js"></script>
+    <script defer src="scripts/settings.js"></script>
+    <script defer src="scripts/main.js"></script>
+    <script defer src="scripts/cart.js"></script>
+    <script defer src="scripts/newsletter.js"></script>
+    <script defer src="scripts/instagram-page.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

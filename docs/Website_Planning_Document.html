@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wicka Website Planning Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #333;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20mm;
+            background: white;
+        }
+        h1 {
+            font-size: 24pt;
+            color: #B76E79;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #B76E79;
+            padding-bottom: 10px;
+        }
+        h2 {
+            font-size: 16pt;
+            color: #333;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        h3 {
+            font-size: 13pt;
+            color: #555;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        h4 {
+            font-size: 12pt;
+            color: #666;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 10px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 10pt;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #B76E79;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        strong {
+            color: #333;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+        .header-info {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .header-info p {
+            margin: 5px 0;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 10pt;
+        }
+        @media print {
+            body {
+                padding: 15mm;
+            }
+            h2 {
+                page-break-after: avoid;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+            tr {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Dangle &amp; Display Website Planning Document</h1>
+
+    <div class="header-info">
+        <p><strong>Project:</strong> Dangle &amp; Display E-Commerce Website</p>
+        <p><strong>Date:</strong> 22nd November 2024</p>
+        <p><strong>Author:</strong> Jessica Cox</p>
+        <p><strong>Course:</strong> GCSE Business / Computer Science</p>
+        <p><strong>Organisation:</strong> Young Enterprise company</p>
+    </div>
+
+    <h2>1. Executive Summary</h2>
+    <p>This document outlines the planning and technical decisions for creating an e-commerce website for Dangle &amp; Display, a Young Enterprise company selling hand-designed organisers including 3D-printed organisers, pearl accessories, and storage solutions.</p>
+    <p>The website needs to:</p>
+    <ul>
+        <li>Showcase products professionally</li>
+        <li>Allow customers to browse and purchase items</li>
+        <li>Work on all devices (mobile, tablet, desktop)</li>
+        <li>Be accessible to users with disabilities</li>
+        <li>Cost nothing or very little to run</li>
+        <li>Be secure and trustworthy (HTTPS)</li>
+    </ul>
+
+    <h2>2. Business Requirements</h2>
+
+    <h3>2.1 About Dangle &amp; Display</h3>
+    <p>Dangle &amp; Display is a student-run Young Enterprise company specialising in hand-designed organisers. Our unique selling point is combining modern 3D-printing technology with classic pearl aesthetics to create affordable, elegant accessories.</p>
+    <p><strong>Target Audience:</strong></p>
+    <ul>
+        <li>Primary: Young women aged 16-30</li>
+        <li>Secondary: Gift buyers (parents, partners)</li>
+        <li>Tertiary: organisers enthusiasts who appreciate handmade items</li>
+    </ul>
+
+    <h3>2.2 Website Requirements</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Requirement</th>
+                <th>Priority</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Product catalogue</td><td>Essential</td><td>Display all products with images, descriptions, prices</td></tr>
+            <tr><td>Shopping cart</td><td>Essential</td><td>Allow customers to add items and checkout</td></tr>
+            <tr><td>Mobile responsive</td><td>Essential</td><td>Must work perfectly on phones (70%+ of traffic expected)</td></tr>
+            <tr><td>Contact form</td><td>Essential</td><td>Allow customer enquiries</td></tr>
+            <tr><td>Payment processing</td><td>Essential</td><td>Accept card payments securely</td></tr>
+            <tr><td>Search function</td><td>Important</td><td>Help customers find specific products</td></tr>
+            <tr><td>Product filtering</td><td>Important</td><td>Filter by category, price, etc.</td></tr>
+            <tr><td>About page</td><td>Important</td><td>Tell our brand story</td></tr>
+            <tr><td>HTTPS security</td><td>Essential</td><td>Secure connection (required for payments)</td></tr>
+            <tr><td>Fast loading</td><td>Important</td><td>Under 3 seconds load time</td></tr>
+            <tr><td>Accessibility</td><td>Essential</td><td>WCAG 2.1 AA compliance</td></tr>
+        </tbody>
+    </table>
+
+    <h3>2.3 Success Criteria</h3>
+    <ol>
+        <li>Website loads in under 3 seconds on mobile</li>
+        <li>All products visible and purchasable</li>
+        <li>Works on Chrome, Firefox, Safari, Edge</li>
+        <li>Passes WAVE accessibility checker with no errors</li>
+        <li>Secure HTTPS connection active</li>
+        <li>Contact form delivers messages successfully</li>
+        <li>Payment processing works without errors</li>
+        <li>Monthly hosting cost: £0</li>
+    </ol>
+
+    <h2>3. Technology Options Analysis</h2>
+
+    <h3>3.1 Website Builder vs Custom Code</h3>
+
+    <h4>Option A: Google Sites</h4>
+    <p><strong>Pros:</strong></p>
+    <ul>
+        <li>Completely free</li>
+        <li>Very easy to use (drag and drop)</li>
+        <li>No coding knowledge required</li>
+        <li>Automatic HTTPS</li>
+        <li>Reliable Google hosting</li>
+        <li>Easy collaboration for team members</li>
+    </ul>
+    <p><strong>Cons:</strong></p>
+    <ul>
+        <li>Very limited customisation</li>
+        <li>No e-commerce functionality (cannot sell products)</li>
+        <li>Cannot add custom JavaScript</li>
+        <li>Limited to Google's templates</li>
+        <li>Looks generic/unprofessional</li>
+        <li>No payment integration possible</li>
+        <li>Cannot connect to databases</li>
+        <li>Limited SEO control</li>
+    </ul>
+    <p><strong>Verdict:</strong> Not suitable. Google Sites cannot handle e-commerce, payments, or shopping carts. It's designed for simple informational sites only.</p>
+
+    <h4>Option B: Wix/Squarespace</h4>
+    <p><strong>Pros:</strong></p>
+    <ul>
+        <li>Drag and drop builder</li>
+        <li>E-commerce features available</li>
+        <li>Professional templates</li>
+        <li>Built-in payment processing</li>
+    </ul>
+    <p><strong>Cons:</strong></p>
+    <ul>
+        <li>Free tier shows ads and Wix branding</li>
+        <li>E-commerce requires paid plan (£13-27/month)</li>
+        <li>Monthly ongoing cost not sustainable for school project</li>
+        <li>Limited customisation on free tier</li>
+    </ul>
+    <p><strong>Verdict:</strong> Too expensive for Young Enterprise budget.</p>
+
+    <h4>Option C: WordPress.com</h4>
+    <p><strong>Pros:</strong></p>
+    <ul>
+        <li>Very popular platform</li>
+        <li>Many themes available</li>
+        <li>E-commerce plugins exist (WooCommerce)</li>
+    </ul>
+    <p><strong>Cons:</strong></p>
+    <ul>
+        <li>Free tier very limited</li>
+        <li>E-commerce requires Business plan (£20/month)</li>
+        <li>Can be slow and bloated</li>
+        <li>Security vulnerabilities if not maintained</li>
+    </ul>
+    <p><strong>Verdict:</strong> Too expensive for e-commerce features.</p>
+
+    <h4>Option D: Custom HTML/CSS/JavaScript with Free Hosting</h4>
+    <p><strong>Pros:</strong></p>
+    <ul>
+        <li>Complete control over design</li>
+        <li>No monthly costs with free hosting</li>
+        <li>Professional, unique appearance</li>
+        <li>Can add any functionality needed</li>
+        <li>Fast performance</li>
+        <li>Great learning experience</li>
+        <li>Full SEO control</li>
+    </ul>
+    <p><strong>Cons:</strong></p>
+    <ul>
+        <li>Requires coding knowledge</li>
+        <li>More initial development time</li>
+        <li>Must handle our own security</li>
+    </ul>
+    <p><strong>Verdict:</strong> Best option if coding skills are available.</p>
+
+    <h3>3.2 Hosting Options Comparison</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Platform</th>
+                <th>Free Tier</th>
+                <th>Custom Domain</th>
+                <th>HTTPS</th>
+                <th>E-commerce</th>
+                <th>Verdict</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Google Sites</td><td>Yes</td><td>Yes (paid)</td><td>Yes</td><td>No</td><td>Not suitable</td></tr>
+            <tr><td>GitHub Pages</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Limited</td><td>Good for static</td></tr>
+            <tr><td>Netlify</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes (with functions)</td><td><strong>Best choice</strong></td></tr>
+            <tr><td>Vercel</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Good alternative</td></tr>
+            <tr><td>Render</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Good alternative</td></tr>
+        </tbody>
+    </table>
+
+    <h3>3.3 Recommended Technology Stack</h3>
+    <p>After evaluating all options, the recommended stack is:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Component</th>
+                <th>Technology</th>
+                <th>Cost</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Frontend</td><td>HTML, CSS, JavaScript</td><td>Free</td><td>Full control, fast, accessible</td></tr>
+            <tr><td>CSS Framework</td><td>Tailwind CSS</td><td>Free</td><td>Modern, responsive, customisable</td></tr>
+            <tr><td>Hosting</td><td>Netlify</td><td>Free</td><td>Generous free tier, automatic HTTPS, serverless functions</td></tr>
+            <tr><td>Database</td><td>Supabase</td><td>Free</td><td>500MB free, PostgreSQL, easy to use</td></tr>
+            <tr><td>Payments</td><td>Stripe + PayPal</td><td>Transaction fees only</td><td>Industry standard, no monthly fees</td></tr>
+            <tr><td>Domain</td><td>TBC</td><td>~£5-10/year</td><td>See section 4</td></tr>
+            <tr><td>SSL/HTTPS</td><td>Let's Encrypt (via Netlify)</td><td>Free</td><td>Automatic, trusted certificate</td></tr>
+        </tbody>
+    </table>
+    <p><strong>Total Monthly Cost: £0</strong><br>
+    <strong>Total Annual Cost: ~£5-10</strong> (domain only)</p>
+
+    <h2>4. Domain Name Options</h2>
+    <p>A custom domain (e.g., wicka.co.uk) is important for:</p>
+    <ul>
+        <li>Professionalism and trust</li>
+        <li>Brand recognition</li>
+        <li>SEO benefits</li>
+        <li>Customer memory</li>
+    </ul>
+
+    <h3>4.1 Domain Registrar Comparison</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Registrar</th>
+                <th>.co.uk Price</th>
+                <th>.com Price</th>
+                <th>Free WHOIS Privacy</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Namecheap</td><td>£5.48/year</td><td>£8.16/year</td><td>Yes</td><td>Best value</td></tr>
+            <tr><td>Porkbun</td><td>£4.74/year</td><td>£8.56/year</td><td>Yes</td><td>Cheapest .co.uk</td></tr>
+            <tr><td>Google Domains</td><td>£10/year</td><td>£10/year</td><td>Yes</td><td>Simple but pricier</td></tr>
+            <tr><td>GoDaddy</td><td>£0.99 first year</td><td>£0.99 first year</td><td>No (£8 extra)</td><td>Hidden costs after year 1</td></tr>
+            <tr><td>Cloudflare</td><td>£4.95/year</td><td>£8.57/year</td><td>Yes</td><td>At-cost pricing</td></tr>
+        </tbody>
+    </table>
+
+    <h3>4.2 Recommendation</h3>
+    <p><strong>Porkbun</strong> or <strong>Namecheap</strong> for best value:</p>
+    <ul>
+        <li>wicka.co.uk (~£5/year)</li>
+        <li>Free WHOIS privacy (hides personal details)</li>
+        <li>Easy DNS management</li>
+        <li>No hidden renewal price increases</li>
+    </ul>
+
+    <h3>4.3 Free Subdomain Alternative</h3>
+    <p>If budget is absolutely zero, use Netlify's free subdomain:</p>
+    <ul>
+        <li>wicka.netlify.app (completely free)</li>
+        <li>Still gets HTTPS</li>
+        <li>Can upgrade to custom domain later</li>
+    </ul>
+
+    <h2>5. Security Requirements</h2>
+
+    <h3>5.1 HTTPS (SSL/TLS)</h3>
+    <p>HTTPS is essential because:</p>
+    <ol>
+        <li><strong>Required for payments</strong> - Card processors require secure connections</li>
+        <li><strong>Browser warnings</strong> - Chrome shows "Not Secure" for HTTP sites</li>
+        <li><strong>SEO ranking</strong> - Google ranks HTTPS sites higher</li>
+        <li><strong>Trust</strong> - Customers expect the padlock icon</li>
+        <li><strong>Data protection</strong> - Encrypts customer information</li>
+    </ol>
+    <p><strong>Implementation:</strong> Netlify provides free SSL certificates via Let's Encrypt, automatically renewed.</p>
+
+    <h3>5.2 Security Headers</h3>
+    <p>The website will implement security headers:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Header</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Content-Security-Policy</td><td>Prevents XSS attacks</td></tr>
+            <tr><td>X-Frame-Options</td><td>Prevents clickjacking</td></tr>
+            <tr><td>X-Content-Type-Options</td><td>Prevents MIME sniffing</td></tr>
+            <tr><td>Referrer-Policy</td><td>Controls referrer information</td></tr>
+            <tr><td>Permissions-Policy</td><td>Restricts browser features</td></tr>
+        </tbody>
+    </table>
+
+    <h3>5.3 Payment Security</h3>
+    <ul>
+        <li><strong>No card data stored</strong> - Stripe/PayPal handle all payment data</li>
+        <li><strong>PCI Compliance</strong> - Using Stripe Checkout means we don't need PCI certification</li>
+        <li><strong>Tokenisation</strong> - Card details never touch our server</li>
+    </ul>
+
+    <h3>5.4 Data Protection</h3>
+    <ul>
+        <li>GDPR compliant privacy policy</li>
+        <li>Cookie consent banner</li>
+        <li>Secure database with row-level security</li>
+        <li>No unnecessary data collection</li>
+    </ul>
+
+    <h2>6. Accessibility Requirements</h2>
+    <p>The website must be accessible to users with disabilities, following WCAG 2.1 Level AA guidelines.</p>
+
+    <h3>6.1 Key Requirements</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Requirement</th>
+                <th>Implementation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Colour contrast</td><td>Minimum 4.5:1 ratio for text</td></tr>
+            <tr><td>Keyboard navigation</td><td>All functions accessible without mouse</td></tr>
+            <tr><td>Screen reader support</td><td>Proper ARIA labels and semantic HTML</td></tr>
+            <tr><td>Alt text</td><td>All images have descriptive alternatives</td></tr>
+            <tr><td>Focus indicators</td><td>Visible focus states for interactive elements</td></tr>
+            <tr><td>Text sizing</td><td>Works at 200% zoom</td></tr>
+            <tr><td>Motion</td><td>Respect prefers-reduced-motion</td></tr>
+        </tbody>
+    </table>
+
+    <h3>6.2 Testing Tools</h3>
+    <ul>
+        <li>WAVE browser extension</li>
+        <li>Lighthouse (Chrome DevTools)</li>
+        <li>axe DevTools</li>
+        <li>Manual keyboard testing</li>
+    </ul>
+
+    <h2>7. Performance Requirements</h2>
+
+    <h3>7.1 Targets</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Target</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>First Contentful Paint</td><td>&lt; 1.5s</td><td>User perceives page loading</td></tr>
+            <tr><td>Largest Contentful Paint</td><td>&lt; 2.5s</td><td>Main content visible</td></tr>
+            <tr><td>Time to Interactive</td><td>&lt; 3.0s</td><td>Page becomes usable</td></tr>
+            <tr><td>Cumulative Layout Shift</td><td>&lt; 0.1</td><td>Prevents annoying jumps</td></tr>
+        </tbody>
+    </table>
+
+    <h3>7.2 Optimisation Strategies</h3>
+    <ol>
+        <li><strong>Image optimisation</strong> - WebP format, lazy loading, responsive sizes</li>
+        <li><strong>Minimal JavaScript</strong> - No heavy frameworks</li>
+        <li><strong>CSS optimisation</strong> - Purge unused styles</li>
+        <li><strong>Caching</strong> - Long cache times for static assets</li>
+        <li><strong>CDN</strong> - Netlify's global CDN included free</li>
+    </ol>
+
+    <h2>8. Development Approach</h2>
+
+    <h3>8.1 Tools Required</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Tool</th>
+                <th>Purpose</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>VS Code</td><td>Code editor</td><td>Free</td></tr>
+            <tr><td>Git</td><td>Version control</td><td>Free</td></tr>
+            <tr><td>GitHub</td><td>Code repository</td><td>Free</td></tr>
+            <tr><td>Chrome DevTools</td><td>Testing/debugging</td><td>Free</td></tr>
+            <tr><td>Figma</td><td>Design mockups</td><td>Free</td></tr>
+        </tbody>
+    </table>
+
+    <h3>8.2 Development Phases</h3>
+    <p><strong>Phase 1: Foundation</strong></p>
+    <ul>
+        <li>Set up project structure</li>
+        <li>Create basic HTML pages</li>
+        <li>Implement CSS styling</li>
+        <li>Mobile responsive layout</li>
+    </ul>
+    <p><strong>Phase 2: Functionality</strong></p>
+    <ul>
+        <li>Product catalogue</li>
+        <li>Shopping cart</li>
+        <li>Search and filtering</li>
+        <li>Contact form</li>
+    </ul>
+    <p><strong>Phase 3: Backend</strong></p>
+    <ul>
+        <li>Database setup</li>
+        <li>Product management</li>
+        <li>Order processing</li>
+        <li>Admin panel</li>
+    </ul>
+    <p><strong>Phase 4: Payments</strong></p>
+    <ul>
+        <li>Stripe integration</li>
+        <li>PayPal integration</li>
+        <li>Order confirmation</li>
+        <li>Email notifications</li>
+    </ul>
+    <p><strong>Phase 5: Polish</strong></p>
+    <ul>
+        <li>Testing</li>
+        <li>Bug fixes</li>
+        <li>Performance optimisation</li>
+        <li>Accessibility audit</li>
+    </ul>
+
+    <h3>8.3 Testing Strategy</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Test Type</th>
+                <th>Tools</th>
+                <th>When</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Cross-browser</td><td>BrowserStack / Manual</td><td>After each phase</td></tr>
+            <tr><td>Mobile responsive</td><td>Chrome DevTools</td><td>Continuous</td></tr>
+            <tr><td>Accessibility</td><td>WAVE, Lighthouse</td><td>Phase 5</td></tr>
+            <tr><td>Performance</td><td>Lighthouse, WebPageTest</td><td>Phase 5</td></tr>
+            <tr><td>Payment testing</td><td>Stripe/PayPal test mode</td><td>Phase 4</td></tr>
+        </tbody>
+    </table>
+
+    <h2>9. Conclusion and Recommendation</h2>
+
+    <h3>9.1 Final Technology Decision</h3>
+    <p>After careful analysis, <strong>Google Sites is not suitable</strong> for Dangle &amp; Display because:</p>
+    <ul>
+        <li>It cannot process payments</li>
+        <li>It cannot have a shopping cart</li>
+        <li>It looks unprofessional for e-commerce</li>
+        <li>It lacks necessary customisation</li>
+    </ul>
+    <p><strong>The recommended solution is:</strong></p>
+    <table>
+        <thead>
+            <tr>
+                <th>Component</th>
+                <th>Choice</th>
+                <th>Justification</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Development</td><td>Custom HTML/CSS/JS</td><td>Full control, professional result, learning value</td></tr>
+            <tr><td>Hosting</td><td>Netlify</td><td>Free, fast, includes HTTPS and serverless functions</td></tr>
+            <tr><td>Database</td><td>Supabase</td><td>Free tier sufficient, modern, easy API</td></tr>
+            <tr><td>Payments</td><td>Stripe + PayPal</td><td>Give customers choice, no monthly fees</td></tr>
+            <tr><td>Domain</td><td>Porkbun/Namecheap</td><td>~£5/year for .co.uk</td></tr>
+        </tbody>
+    </table>
+
+    <h3>9.2 Cost Summary</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>One-time Cost</th>
+                <th>Annual Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Hosting (Netlify)</td><td>£0</td><td>£0</td></tr>
+            <tr><td>Database (Supabase)</td><td>£0</td><td>£0</td></tr>
+            <tr><td>SSL Certificate</td><td>£0</td><td>£0</td></tr>
+            <tr><td>Domain name</td><td>-</td><td>£5-10</td></tr>
+            <tr><td>Payment processing</td><td>-</td><td>Transaction fees only (1.4% + 20p)</td></tr>
+            <tr style="font-weight: bold; background: #f0f0f0;"><td>Total</td><td>£0</td><td>~£5-10</td></tr>
+        </tbody>
+    </table>
+
+    <h3>9.3 Risk Assessment</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Risk</th>
+                <th>Likelihood</th>
+                <th>Impact</th>
+                <th>Mitigation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Exceeding free tier limits</td><td>Low</td><td>Medium</td><td>Monitor usage, paid tiers affordable if needed</td></tr>
+            <tr><td>Technical difficulties</td><td>Medium</td><td>Medium</td><td>Allow buffer time, seek help if stuck</td></tr>
+            <tr><td>Payment issues</td><td>Low</td><td>High</td><td>Use test mode extensively before launch</td></tr>
+            <tr><td>Security vulnerabilities</td><td>Low</td><td>High</td><td>Follow security best practices, use established providers</td></tr>
+        </tbody>
+    </table>
+
+    <h2>10. Approval</h2>
+    <p>This planning document requires approval before development begins.</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th>Name</th>
+                <th>Signature</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Student Developer</td><td></td><td></td><td></td></tr>
+            <tr><td>Teacher/Supervisor</td><td></td><td></td><td></td></tr>
+            <tr><td>Young Enterprise Advisor</td><td></td><td></td><td></td></tr>
+        </tbody>
+    </table>
+
+    <hr>
+    <p style="text-align: center; color: #666; font-size: 10pt; margin-top: 30px;">
+        <em>Document Version: 1.0 | Last Updated: 22nd November 2024</em>
+    </p>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidget Street | Contact Us</title>
+    <meta name="description" content="Get in touch with Fidget Street. We'd love to hear from you about orders, questions, or just to say hello.">
+    <link rel="canonical" href="https://fidgetstreet.netlify.app/contact.html">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#71c7e1">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Fidget Street | Contact Us">
+    <meta property="og:description" content="Get in touch with Fidget Street. Questions about orders or just want to say hello?">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fidgetstreet.netlify.app/contact.html">
+    <meta property="og:image" content="https://fidgetstreet.netlify.app/assets/og-image.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@fidgetstreet">
+    <meta name="twitter:title" content="Fidget Street | Contact Us">
+    <meta name="twitter:description" content="Get in touch with Fidget Street.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="preload" href="styles/output.css" as="style">
+    <link href="styles/output.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icon-192.png">
+</head>
+<body class="bg-white text-navy font-sans antialiased">
+                <!-- Announcement Bar -->
+    <div class="bg-white text-navy text-center py-2.5 text-sm font-medium border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+            </svg>
+            <span>Free Delivery Over £30</span>
+            <span class="hidden sm:inline">|</span>
+            <a href="products.html" class="hidden sm:inline underline hover:no-underline">Shop Now</a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 border-b border-soft-blue/20" style="background-color: #71c7e1;" role="navigation" aria-label="Main navigation">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2" aria-label="Fidget Street Home">
+                    <span class="text-2xl lg:text-3xl font-bold text-white" style="font-family: 'Fredoka', sans-serif;">Fidget Street</span>
+                </a>
+
+                <!-- Desktop Navigation (Centered) -->
+                <div class="hidden lg:flex items-center justify-center flex-1">
+                    <div class="flex items-center space-x-12 lg:space-x-20">
+                        <a href="index.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Home</a>
+                        <div class="relative group">
+                            <a href="products.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2 flex items-center gap-1">
+                                Shop
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </a>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <div class="bg-white border border-gray-200 rounded-lg py-2 min-w-48 shadow-xl">
+                                    <a href="products.html" class="block px-4 py-2 text-gray-800 hover:bg-soft-blue-50 transition-colors font-medium">All Products</a>
+                                    <a href="products.html?category=articulated-toys" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Articulated Toys</a>
+                                    <a href="products.html?category=fidget-cubes" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Fidget Cubes</a>
+                                    <a href="products.html?category=clickers" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Clicker Toys</a>
+                                    <a href="products.html?category=stress-balls" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Stress Balls</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="about.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">About</a>
+                        <a href="events.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Events</a>
+                        <a href="contact.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2 border-b-2 border-white pb-1">Contact</a>
+                    </div>
+                </div>
+
+                <!-- Right Icons -->
+                <div class="flex items-center space-x-6">
+                    <!-- Search -->
+                    <button id="search-toggle" class="p-2 text-white hover:text-gray-300 transition-colors" aria-label="Search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                    <!-- Cart -->
+                    <button id="cart-toggle" class="relative p-2 text-white hover:text-gray-300 transition-colors" aria-label="Cart">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-gold text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <!-- Mobile Menu -->
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 text-white" aria-label="Menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden border-t border-white/20" style="background-color: #71c7e1;">
+            <div class="px-4 py-6 space-y-4">
+                <a href="index.html" class="block text-white hover:text-gray-100 py-2 font-medium">Home</a>
+                <div class="space-y-2">
+                    <span class="block text-white py-2 font-medium">Shop</span>
+                    <a href="products.html" class="block text-white/80 hover:text-white py-1 pl-4">All Products</a>
+                    <a href="products.html?category=articulated-toys" class="block text-white/80 hover:text-white py-1 pl-4">Articulated Toys</a>
+                    <a href="products.html?category=fidget-cubes" class="block text-white/80 hover:text-white py-1 pl-4">Fidget Cubes</a>
+                    <a href="products.html?category=clickers" class="block text-white/80 hover:text-white py-1 pl-4">Clicker Toys</a>
+                    <a href="products.html?category=stress-balls" class="block text-white/80 hover:text-white py-1 pl-4">Stress Balls</a>
+                </div>
+                <a href="about.html" class="block text-white hover:text-gray-100 py-2 font-medium">About</a>
+                <a href="events.html" class="block text-white hover:text-gray-100 py-2 font-medium">Events</a>
+                <a href="contact.html" class="block text-white hover:text-gray-100 py-2 font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="pt-4">
+        <!-- Page Header with Background Banner -->
+        <section class="relative py-16 lg:py-24" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 50%, #FFB5B5 100%);">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <nav class="mb-4" aria-label="Breadcrumb">
+                        <ol class="flex items-center justify-center space-x-2 text-sm">
+                            <li><a href="index.html" class="text-white hover:text-white/80 transition-colors">Home</a></li>
+                            <li><span class="text-white">/</span></li>
+                            <li><span class="text-white font-medium">Contact</span></li>
+                        </ol>
+                    </nav>
+                    <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold mb-4 text-white">Get in Touch</h1>
+                    <p class="text-white max-w-2xl mx-auto">We'd love to hear from you. Whether you have a question about our products, need help with an order, or just want to say hello.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="py-12 lg:py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+                    <!-- Contact Form -->
+                    <div>
+                        <h2 class="font-serif text-2xl font-semibold mb-6">Send Us a Message</h2>
+
+                        <!--
+                        ===============================================
+                        FORM ENDPOINT INSTRUCTIONS
+                        ===============================================
+
+                        Option 1: Formspree (Recommended for simple setups)
+                        1. Go to https://formspree.io
+                        2. Create a free account
+                        3. Create a new form and get your endpoint
+                        4. Replace the action URL below with: https://formspree.io/f/YOUR_FORM_ID
+
+                        Option 2: Netlify Forms (If hosting on Netlify)
+                        1. Add netlify attribute to form: <form name="contact" netlify>
+                        2. Add hidden input: <input type="hidden" name="form-name" value="contact">
+                        3. Netlify automatically handles submissions
+
+                        Option 3: Custom Backend
+                        1. Replace action URL with your API endpoint
+                        2. Handle CORS if needed
+                        3. Process FormData on server
+
+                        Current implementation shows success message without actual submission.
+                        ===============================================
+                        -->
+
+                        <form id="contact-form" class="space-y-6" action="#" method="POST">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="contact-name" class="block text-sm font-medium mb-2">Name *</label>
+                                    <input type="text" id="contact-name" name="name" required class="w-full px-4 py-3 bg-navy-50 border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors">
+                                </div>
+                                <div>
+                                    <label for="contact-email" class="block text-sm font-medium mb-2">Email *</label>
+                                    <input type="email" id="contact-email" name="email" required class="w-full px-4 py-3 bg-navy-50 border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="contact-subject" class="block text-sm font-medium mb-2">Subject *</label>
+                                <select id="contact-subject" name="subject" required class="w-full px-4 py-3 bg-navy-50 border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors">
+                                    <option value="">Select a topic...</option>
+                                    <option value="order">Order Enquiry</option>
+                                    <option value="product">Product Question</option>
+                                    <option value="wholesale">Wholesale Enquiry</option>
+                                    <option value="event">Event Booking</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="contact-order" class="block text-sm font-medium mb-2">Order Number (if applicable)</label>
+                                <input type="text" id="contact-order" name="order_number" placeholder="PP-XXXXXX" class="w-full px-4 py-3 bg-navy-50 border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors">
+                            </div>
+
+                            <div>
+                                <label for="contact-message" class="block text-sm font-medium mb-2">Message *</label>
+                                <textarea id="contact-message" name="message" rows="5" required class="w-full px-4 py-3 bg-navy-50 border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors resize-none" placeholder="How can we help you?"></textarea>
+                            </div>
+
+                            <button type="submit" id="contact-submit" class="btn-primary w-full sm:w-auto">
+                                Send Message
+                            </button>
+                        </form>
+
+                        <!-- Success Message -->
+                        <div id="contact-success" class="hidden bg-rose-gold/10 border border-rose-gold/30 rounded-lg p-6 mt-6">
+                            <div class="flex items-start space-x-3">
+                                <svg class="w-6 h-6 text-rose-gold flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <div>
+                                    <h3 class="font-semibold">Message Sent!</h3>
+                                    <p class="text-navy-600 text-sm mt-1">Thanks for reaching out. We'll get back to you within 24-48 hours.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="lg:pl-12">
+                        <h2 class="font-serif text-2xl font-semibold mb-6">Contact Information</h2>
+
+                        <div class="space-y-8">
+                            <!-- Email -->
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium">Email</h3>
+                                    <a href="mailto:fidgetstreet@protonmail.com" class="text-navy-600 hover:text-rose-gold transition-colors">fidgetstreet@protonmail.com</a>
+                                    <p class="text-sm text-navy-500 mt-1">We respond within 24-48 hours</p>
+                                </div>
+                            </div>
+
+                            <!-- Social -->
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-rose-gold" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+                                        <path d="M12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium">Instagram</h3>
+                                    <a href="https://instagram.com/fidgetstreet" target="_blank" rel="noopener noreferrer" class="text-navy-600 hover:text-rose-gold transition-colors">@fidgetstreet</a>
+                                    <p class="text-sm text-navy-500 mt-1">DM us for quick questions!</p>
+                                </div>
+                            </div>
+
+                            <!-- Response Time -->
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 rounded-full bg-rose-gold/10 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-6 h-6 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium">Response Time</h3>
+                                    <p class="text-navy-600">24-48 hours</p>
+                                    <p class="text-sm text-navy-500 mt-1">We try to respond as quickly as possible!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Link -->
+                        <div class="mt-12 p-6 bg-navy-50 rounded-lg">
+                            <h3 class="font-medium mb-2">Looking for quick answers?</h3>
+                            <p class="text-navy-600 text-sm mb-4">Check out our FAQ page for answers to common questions about orders, shipping, and returns.</p>
+                            <a href="faq.html" class="inline-flex items-center text-rose-gold hover:text-pastel-pink transition-colors text-sm">
+                                View FAQ
+                                <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-2 md:col-span-1">
+                    <a href="index.html" class="inline-block mb-4">
+                        <span class="text-2xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #71c7e1;">Fidget Street</span>
+                    </a>
+                    <p class="text-gray-500 text-sm">Everyday Satisfaction for kids and adults.</p>
+                </div>
+
+                <!-- Shop -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Shop</h3>
+                    <ul class="space-y-2">
+                        <li><a href="products.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">All Products</a></li>
+                        <li><a href="products.html?category=articulated-toys" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Articulated Toys</a></li>
+                        <li><a href="products.html?category=fidget-cubes" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Fidget Cubes</a></li>
+                        <li><a href="products.html?category=clickers" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Clicker Toys</a></li>
+                        <li><a href="products.html?category=stress-balls" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Stress Balls</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">About Us</a></li>
+                        <li><a href="contact.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Contact</a></li>
+                        <li><a href="events.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Events</a></li>
+                        <li><a href="faq.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Help -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Help</h3>
+                    <ul class="space-y-2">
+                        <li><a href="returns.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Returns</a></li>
+                        <li><a href="privacy.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Privacy</a></li>
+                        <li><a href="terms.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-8 border-t border-gray-200">
+                <p class="text-gray-400 text-sm text-center">&copy; 2025 Fidget Street. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script defer src="scripts/api.js"></script>
+    <script defer src="scripts/settings.js"></script>
+    <script defer src="scripts/main.js"></script>
+    <script defer src="scripts/cart.js"></script>
+    <script defer src="scripts/newsletter.js"></script>
+    <script defer src="scripts/contact-page.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

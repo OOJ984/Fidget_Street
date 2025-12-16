@@ -1,0 +1,20 @@
+# Fidget Street Robots.txt
+# https://fidgetstreet.netlify.app
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://fidgetstreet.netlify.app/sitemap.xml
+
+# Disallow admin/private areas
+Disallow: /admin/
+Disallow: /api/
+
+# Allow all crawlers to access CSS and JS
+Allow: /styles/
+Allow: /scripts/
+Allow: /assets/
+
+# Crawl-delay (optional, be careful with this)
+# Crawl-delay: 10

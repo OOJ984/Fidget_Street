@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wicka Admin | Products</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#C4707A">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="../styles/output.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen">
+    <!-- Admin Navigation -->
+    <nav class="bg-navy-50 border-b border-navy/20 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <img src="" alt="Wicka Logo" class="h-16 lg:h-20 w-auto">
+                    <span class="font-serif text-2xl font-semibold">Admin</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
+                    <a href="products.html" class="text-rose-gold font-medium">Products</a>
+                    <a href="media.html" class="text-navy-700 hover:text-navy transition-colors">Media</a>
+                    <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
+                    <a href="website.html" class="text-navy-700 hover:text-navy transition-colors">Website</a>
+                    <a href="users.html" class="text-navy-700 hover:text-navy transition-colors admin-only-link">Users</a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="user-name" class="text-sm text-navy-600"></span>
+                <button id="logout-btn" class="text-sm text-navy-600 hover:text-navy transition-colors">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2">
+        <div class="flex items-center space-x-4">
+            <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="products.html" class="text-rose-gold text-sm font-medium">Products</a>
+            <a href="media.html" class="text-navy-700 text-sm hover:text-navy">Media</a>
+            <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
+            <a href="website.html" class="text-navy-700 text-sm hover:text-navy">Website</a>
+            <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="font-serif text-3xl font-semibold">Products</h1>
+            <button id="add-product-btn" class="btn-primary">Add Product</button>
+        </div>
+
+        <!-- Products Table -->
+        <div class="bg-navy-50 rounded-lg p-6">
+            <div id="products-list" class="overflow-x-auto">
+                <p class="text-navy-600 text-center py-8">Loading...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Product Modal -->
+    <div id="product-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-white/90 backdrop-blur-sm" id="modal-overlay"></div>
+        <div class="absolute inset-0 flex items-start justify-center p-4 overflow-y-auto">
+            <div class="bg-navy-50 rounded-lg max-w-2xl w-full my-8 relative">
+                <div class="p-6 border-b border-navy/20 flex items-center justify-between">
+                    <h2 id="modal-title" class="font-serif text-2xl font-semibold">Add Product</h2>
+                    <button id="close-modal" class="text-navy-600 hover:text-navy">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <form id="product-form" class="p-6 space-y-6">
+                    <input type="hidden" id="product-id" name="id">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-navy-700 mb-2">Title *</label>
+                            <input type="text" id="product-title" name="title" required class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-navy-700 mb-2">Slug</label>
+                            <input type="text" id="product-slug" name="slug" placeholder="auto-generated" class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-navy-700 mb-2">Description</label>
+                        <textarea id="product-description" name="description" rows="3" class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-navy-700 mb-2">Price (£) *</label>
+                            <input type="number" id="product-price" name="price_gbp" step="0.01" min="0" required class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-navy-700 mb-2">Stock</label>
+                            <input type="number" id="product-stock" name="stock" min="0" value="0" class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-navy-700 mb-2">Category</label>
+                            <select id="product-category" name="category" class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                                <option value="desk-organiser">Desk Organiser</option>
+                                <option value="makeup-organiser">Makeup Organiser</option>
+                                <option value="earring-organiser">Earring Organiser</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-navy-700 mb-2">Tags (comma-separated)</label>
+                        <input type="text" id="product-tags" name="tags" placeholder="new, bestseller, featured" class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-navy-700 mb-2">Variations (comma-separated)</label>
+                        <input type="text" id="product-variations" name="variations" placeholder="Gold, Silver, Rose Gold" class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-navy-700 mb-2">YE Trading Station URL</label>
+                        <input type="url" id="product-trading-url" name="trading_station_url" placeholder="https://tradingstation.youngenterprise.org.uk/..." class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                        <p class="text-xs text-navy-500 mt-1">Link to the product listing on Young Enterprise Trading Station</p>
+                    </div>
+
+                    <!-- General Image Upload Section -->
+                    <div>
+                        <label class="block text-sm font-medium text-navy-700 mb-2">Default Product Images</label>
+                        <p class="text-xs text-navy-500 mb-2">These images show when no variation is selected</p>
+                        <div id="image-preview" class="grid grid-cols-4 gap-3 mb-3"></div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <label class="cursor-pointer px-4 py-2 bg-navy-100 hover:bg-gray-700 rounded-lg text-sm transition-colors">
+                                <input type="file" id="image-upload" accept="image/*" multiple class="hidden">
+                                Upload New
+                            </label>
+                            <button type="button" id="select-from-library-btn" class="px-4 py-2 bg-navy-100 hover:bg-gray-700 rounded-lg text-sm transition-colors">
+                                Select from Library
+                            </button>
+                            <span id="upload-status" class="text-sm text-navy-600"></span>
+                        </div>
+                    </div>
+
+                    <!-- Variation Images Section -->
+                    <div id="variation-images-section" class="hidden">
+                        <label class="block text-sm font-medium text-navy-700 mb-2">Variation Images</label>
+                        <p class="text-xs text-navy-500 mb-3">Upload images for each variation (optional). Click a variation to show when customer selects it.</p>
+                        <div id="variation-images-container" class="space-y-4"></div>
+                    </div>
+
+                    <div class="flex items-center space-x-3">
+                        <input type="checkbox" id="product-active" name="is_active" checked class="w-4 h-4 rounded border-navy/30 text-rose-gold focus:ring-rose-gold bg-white">
+                        <label for="product-active" class="text-sm text-navy-700">Active (visible in shop)</label>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 pt-4 border-t border-navy/20">
+                        <button type="button" id="cancel-btn" class="px-6 py-2 text-navy-600 hover:text-navy transition-colors">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Picker Modal -->
+    <div id="image-picker-modal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-white/90 backdrop-blur-sm" id="picker-overlay"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-navy-50 rounded-lg max-w-4xl w-full max-h-[80vh] flex flex-col">
+                <div class="p-4 border-b border-navy/20 flex items-center justify-between flex-shrink-0">
+                    <h2 class="font-serif text-2xl font-semibold">Select Images</h2>
+                    <button id="close-picker" class="text-navy-600 hover:text-navy">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div class="p-4 border-b border-navy/20 flex-shrink-0">
+                    <input type="text" id="picker-search" placeholder="Search images..." class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                </div>
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div id="picker-grid" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-3">
+                        <p class="text-navy-600 text-center py-8 col-span-full">Loading...</p>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-navy/20 flex items-center justify-between flex-shrink-0">
+                    <span id="picker-selected-count" class="text-sm text-navy-600">0 selected</span>
+                    <div class="flex gap-3">
+                        <button type="button" id="picker-cancel" class="px-4 py-2 text-navy-600 hover:text-navy transition-colors">Cancel</button>
+                        <button type="button" id="picker-confirm" class="btn-primary">Add Selected</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="../scripts/admin-auth.js"></script>
+    <script defer src="../scripts/admin-products.js"></script>
+</body>
+</html>
+

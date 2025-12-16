@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wicka Admin | Login</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#C4707A">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link href="../styles/output.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md mx-auto px-4">
+        <div class="text-center mb-8">
+            <a href="../index.html" class="inline-flex items-center space-x-2 mb-6">
+                <img src="" alt="Wicka Logo" class="h-16 lg:h-20 w-auto">
+                <span class="font-serif text-2xl font-semibold tracking-wide">Wicka</span>
+            </a>
+            <h1 class="font-serif text-3xl font-semibold">Admin Login</h1>
+        </div>
+
+        <div class="bg-navy-50 rounded-lg p-8">
+            <!-- Login Form -->
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-navy-700 mb-2">Email Address</label>
+                    <input type="email" id="email" name="email" required autocomplete="email"
+                        class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-navy-700 mb-2">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password"
+                        class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors">
+                </div>
+
+                <div id="error-message" class="hidden text-red-400 text-sm text-center"></div>
+
+                <button type="submit" id="submit-btn" class="btn-primary w-full py-3">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- MFA Verification Form (hidden by default) -->
+            <form id="mfa-form" class="hidden space-y-6">
+                <div class="text-center mb-4">
+                    <div class="w-12 h-12 bg-rose-gold/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </div>
+                    <p class="text-navy-600 text-sm">Enter the 6-digit code from your authenticator app</p>
+                </div>
+
+                <div>
+                    <input type="text" id="mfa-code" name="mfa-code" required autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
+                        class="w-full px-4 py-4 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors text-center text-2xl tracking-widest font-mono"
+                        placeholder="000000">
+                </div>
+
+                <div id="mfa-error-message" class="hidden text-red-400 text-sm text-center"></div>
+
+                <button type="submit" id="mfa-submit-btn" class="btn-primary w-full py-3">
+                    Verify
+                </button>
+
+                <div class="text-center">
+                    <button type="button" id="use-backup-btn" class="text-sm text-navy-600 hover:text-navy transition-colors">
+                        Use backup code instead
+                    </button>
+                </div>
+
+                <div class="text-center">
+                    <button type="button" id="back-to-login" class="text-sm text-navy-500 hover:text-navy transition-colors">
+                        &larr; Back to login
+                    </button>
+                </div>
+            </form>
+
+            <!-- Backup Code Form (hidden by default) -->
+            <form id="backup-form" class="hidden space-y-6">
+                <div class="text-center mb-4">
+                    <p class="text-navy-600 text-sm">Enter one of your backup codes</p>
+                </div>
+
+                <div>
+                    <input type="text" id="backup-code" name="backup-code" required autocomplete="off"
+                        class="w-full px-4 py-4 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold transition-colors text-center text-xl tracking-widest font-mono uppercase"
+                        placeholder="XXXXXXXX">
+                </div>
+
+                <div id="backup-error-message" class="hidden text-red-400 text-sm text-center"></div>
+
+                <button type="submit" id="backup-submit-btn" class="btn-primary w-full py-3">
+                    Verify Backup Code
+                </button>
+
+                <div class="text-center">
+                    <button type="button" id="back-to-mfa" class="text-sm text-navy-500 hover:text-navy transition-colors">
+                        &larr; Use authenticator instead
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <p class="text-center text-sm text-navy-500 mt-6">
+            <a href="../index.html" class="hover:text-navy transition-colors">&larr; Back to Store</a>
+        </p>
+    </div>
+
+    <script defer src="../scripts/admin-login.js"></script>
+</body>
+</html>
+

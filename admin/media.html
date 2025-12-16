@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wicka Admin | Media Library</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#C4707A">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="../styles/output.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen">
+    <!-- Admin Navigation -->
+    <nav class="bg-navy-50 border-b border-navy/20 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <img src="" alt="Wicka Logo" class="h-16 lg:h-20 w-auto">
+                    <span class="font-serif text-2xl font-semibold">Admin</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
+                    <a href="products.html" class="text-navy-700 hover:text-navy transition-colors">Products</a>
+                    <a href="media.html" class="text-rose-gold font-medium">Media</a>
+                    <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
+                    <a href="website.html" class="text-navy-700 hover:text-navy transition-colors">Website</a>
+                    <a href="users.html" class="text-navy-700 hover:text-navy transition-colors admin-only-link">Users</a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="user-name" class="text-sm text-navy-600"></span>
+                <button id="logout-btn" class="text-sm text-navy-600 hover:text-navy transition-colors">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2">
+        <div class="flex items-center space-x-4">
+            <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="products.html" class="text-navy-700 text-sm hover:text-navy">Products</a>
+            <a href="media.html" class="text-rose-gold text-sm font-medium">Media</a>
+            <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
+            <a href="website.html" class="text-navy-700 text-sm hover:text-navy">Website</a>
+            <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="font-serif text-3xl font-semibold">Media Library</h1>
+            <label class="btn-primary cursor-pointer">
+                <input type="file" id="upload-input" accept="image/*" multiple class="hidden">
+                Upload Images
+            </label>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="bg-navy-50 rounded-lg p-4 mb-6">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-1">
+                    <input type="text" id="search-input" placeholder="Search by filename..." class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="image-count" class="text-sm text-navy-600">0 images</span>
+                    <button id="refresh-btn" class="px-4 py-2 bg-navy-100 hover:bg-gray-700 rounded-lg text-sm transition-colors">
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Progress -->
+        <div id="upload-progress" class="hidden bg-navy-50 rounded-lg p-4 mb-6">
+            <div class="flex items-center gap-4">
+                <div class="flex-1 bg-navy-100 rounded-full h-2 overflow-hidden">
+                    <div id="progress-bar" class="bg-rose-gold h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <span id="progress-text" class="text-sm text-navy-600">Uploading...</span>
+            </div>
+        </div>
+
+        <!-- Image Grid -->
+        <div id="media-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <p class="text-navy-600 text-center py-8 col-span-full">Loading...</p>
+        </div>
+    </main>
+
+    <!-- Image Detail Modal -->
+    <div id="image-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-white/90 backdrop-blur-sm" id="modal-overlay"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-navy-50 rounded-lg max-w-2xl w-full relative">
+                <div class="p-4 border-b border-navy/20 flex items-center justify-between">
+                    <h2 id="modal-filename" class="font-medium truncate pr-4">Image</h2>
+                    <button id="close-modal" class="text-navy-600 hover:text-navy">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                <div class="p-4">
+                    <div class="aspect-square bg-white rounded-lg overflow-hidden mb-4">
+                        <img id="modal-image" src="" alt="" class="w-full h-full object-contain">
+                    </div>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs text-navy-500 mb-1">Filename</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="modal-rename" class="flex-1 px-3 py-2 bg-white border border-navy/30 rounded-lg text-sm focus:outline-none focus:border-rose-gold">
+                                <button id="rename-btn" class="px-4 py-2 bg-navy-100 hover:bg-gray-700 rounded-lg text-sm transition-colors">
+                                    Rename
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-navy-500 mb-1">URL (click to copy)</label>
+                            <input type="text" id="modal-url" readonly class="w-full px-3 py-2 bg-white border border-navy/30 rounded-lg text-sm cursor-pointer hover:border-rose-gold transition-colors">
+                        </div>
+                        <div class="flex gap-3">
+                            <button id="copy-url-btn" class="flex-1 px-4 py-2 bg-navy-100 hover:bg-gray-700 rounded-lg text-sm transition-colors">
+                                Copy URL
+                            </button>
+                            <button id="delete-image-btn" class="px-4 py-2 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg text-sm transition-colors">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-navy-50 border border-navy/30 rounded-lg px-4 py-3 shadow-xl transform translate-y-full opacity-0 transition-all duration-300 z-50">
+        <span id="toast-message">Copied!</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="../scripts/admin-auth.js"></script>
+    <script defer src="../scripts/admin-media.js"></script>
+</body>
+</html>
+

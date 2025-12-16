@@ -1,0 +1,358 @@
+/**
+ * Wicka - Main JavaScript
+ * Global functionality for navigation, search, and UI interactions
+ */
+
+// ============================================
+// Security Helpers
+// ============================================
+
+/**
+ * Escape HTML to prevent XSS attacks
+ * @param {string} unsafe - Potentially unsafe string
+ * @returns {string} Escaped string safe for HTML insertion
+ */
+function escapeHtml(unsafe) {
+    if (unsafe == null) return '';
+    return String(unsafe)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// ============================================
+// Mobile Navigation
+// ============================================
+function initMobileNav() {
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (mobileMenuToggle && mobileMenu) {
+        mobileMenuToggle.addEventListener('click', () => {
+            const isExpanded = mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+            mobileMenuToggle.setAttribute('aria-expanded', !isExpanded);
+            mobileMenu.classList.toggle('hidden');
+
+            // Update icon
+            const icon = mobileMenuToggle.querySelector('svg');
+            if (!isExpanded) {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
+            } else {
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>';
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                mobileMenu.classList.add('hidden');
+                mobileMenuToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+}
+
+// ============================================
+// Search Modal
+// ============================================
+function initSearch() {
+    const searchToggle = document.getElementById('search-toggle');
+    const searchModal = document.getElementById('search-modal');
+    const searchClose = document.getElementById('search-close');
+    const searchOverlay = document.getElementById('search-overlay');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+
+    if (!searchToggle || !searchModal) return;
+
+    let products = [];
+
+    // Load products for search (uses shared cached API)
+    async function loadProducts() {
+        try {
+            products = await window.API.fetchProducts();
+        } catch (error) {
+            console.error('Error loading products for search:', error);
+        }
+    }
+
+    // Delay search product loading to prioritize page content
+    setTimeout(loadProducts, 100);
+
+    function openSearch() {
+        searchModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => searchInput.focus(), 100);
+    }
+
+    function closeSearch() {
+        searchModal.classList.add('hidden');
+        document.body.style.overflow = '';
+        searchInput.value = '';
+        searchResults.innerHTML = '';
+    }
+
+    searchToggle.addEventListener('click', openSearch);
+    searchClose?.addEventListener('click', closeSearch);
+    searchOverlay?.addEventListener('click', closeSearch);
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !searchModal.classList.contains('hidden')) {
+            closeSearch();
+        }
+    });
+
+    // Search functionality
+    let searchTimeout;
+    searchInput?.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        const query = e.target.value.toLowerCase().trim();
+
+        if (query.length < 2) {
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        searchTimeout = setTimeout(() => {
+            const results = products.filter(product => {
+                return product.title.toLowerCase().includes(query) ||
+                       product.description.toLowerCase().includes(query) ||
+                       product.tags.some(tag => tag.toLowerCase().includes(query));
+            }).slice(0, 5);
+
+            if (results.length === 0) {
+                searchResults.innerHTML = `
+                    <p class="text-gray-400 text-center py-8">No products found for "${escapeHtml(query)}"</p>
+                `;
+            } else {
+                searchResults.innerHTML = results.map(product => `
+                    <a href="product.html?slug=${encodeURIComponent(product.slug)}" class="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition-colors">
+                        <div class="w-16 h-16 bg-gray-800 rounded-lg flex-shrink-0">
+                            <!-- IMAGE_PLACEHOLDER: Search result thumbnail -->
+                        </div>
+                        <div>
+                            <h4 class="font-medium">${escapeHtml(product.title)}</h4>
+                            <p class="text-rose-gold text-sm">£${product.price_gbp.toFixed(2)}</p>
+                        </div>
+                    </a>
+                `).join('');
+            }
+        }, 300);
+    });
+}
+
+// ============================================
+// Scroll Effects
+// ============================================
+function initScrollEffects() {
+    const nav = document.querySelector('nav');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            nav?.classList.add('shadow-lg');
+        } else {
+            nav?.classList.remove('shadow-lg');
+        }
+    });
+
+    // Intersection Observer for fade-in animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-fade-in-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// ============================================
+// Product Card Component
+// ============================================
+function createProductCard(product) {
+    const stockBadge = getStockBadge(product.stock);
+    const tagBadges = getTagBadges(product.tags);
+    const safeTitle = escapeHtml(product.title);
+    const safeSlug = encodeURIComponent(product.slug);
+
+    const imageUrl = product.images && product.images.length > 0 ? product.images[0] : null;
+    const imageHtml = imageUrl
+        ? `<img src="${imageUrl}" alt="${safeTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">`
+        : `<div class="w-full h-full bg-gradient-to-br from-navy-100 to-navy-200 group-hover:scale-105 transition-transform duration-500"></div>`;
+
+    return `
+        <article class="product-card group">
+            <a href="product.html?slug=${safeSlug}" class="block">
+                <div class="relative aspect-square overflow-hidden rounded-lg bg-navy-100 mb-4">
+                    ${imageHtml}
+                    ${stockBadge}
+                    ${tagBadges}
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                </div>
+                <h3 class="font-medium text-navy group-hover:text-rose-gold transition-colors mb-1">${safeTitle}</h3>
+                <p class="text-rose-gold font-medium">£${product.price_gbp.toFixed(2)}</p>
+            </a>
+            <a
+                href="product.html?slug=${safeSlug}"
+                class="view-details-btn mt-3 w-full py-2 text-sm border border-navy/20 rounded-lg hover:bg-navy hover:border-navy hover:text-white transition-colors opacity-0 group-hover:opacity-100 block text-center text-navy"
+            >
+                View Details
+            </a>
+        </article>
+    `;
+}
+
+function getStockBadge(stock) {
+    if (stock === 0) {
+        return '<span class="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">Sold Out</span>';
+    }
+    if (stock <= 5) {
+        return `<span class="absolute top-3 left-3 bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-medium">Only ${stock} left</span>`;
+    }
+    return '';
+}
+
+function getTagBadges(tags) {
+    let badges = '';
+    if (tags.includes('new')) {
+        badges += '<span class="absolute top-3 right-3 bg-rose-gold text-black px-2 py-1 rounded-full text-xs font-medium">New</span>';
+    } else if (tags.includes('bestseller')) {
+        badges += '<span class="absolute top-3 right-3 bg-pastel-pink text-black px-2 py-1 rounded-full text-xs font-medium">Bestseller</span>';
+    }
+    return badges;
+}
+
+// ============================================
+// Quick Add to Cart
+// ============================================
+function initQuickAdd() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.add-to-cart-quick');
+        if (btn && !btn.disabled) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const productId = parseInt(btn.dataset.productId);
+            const title = btn.dataset.productTitle;
+            const price = parseFloat(btn.dataset.productPrice);
+
+            const cartItem = {
+                id: productId,
+                title: title,
+                price: price,
+                quantity: 1,
+                variation: null,
+                image: ''
+            };
+
+            if (typeof addToCart === 'function') {
+                addToCart(cartItem);
+
+                // Animate button with checkmark feedback
+                if (typeof animateCartButton === 'function') {
+                    animateCartButton(btn);
+                }
+            }
+        }
+    });
+}
+
+// ============================================
+// Smooth Scroll for Anchor Links
+// ============================================
+function initSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+
+            const target = document.querySelector(targetId);
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+}
+
+// ============================================
+// Accessibility Helpers
+// ============================================
+function initAccessibility() {
+    // Skip link functionality
+    const skipLink = document.querySelector('[href="#main-content"]');
+    skipLink?.addEventListener('click', (e) => {
+        const main = document.getElementById('main-content');
+        if (main) {
+            main.setAttribute('tabindex', '-1');
+            main.focus();
+        }
+    });
+
+    // Focus trap for modals
+    document.querySelectorAll('[role="dialog"]').forEach(modal => {
+        const focusableElements = modal.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        modal.addEventListener('keydown', (e) => {
+            if (e.key !== 'Tab') return;
+
+            if (e.shiftKey) {
+                if (document.activeElement === firstElement) {
+                    e.preventDefault();
+                    lastElement.focus();
+                }
+            } else {
+                if (document.activeElement === lastElement) {
+                    e.preventDefault();
+                    firstElement.focus();
+                }
+            }
+        });
+    });
+}
+
+// ============================================
+// Service Worker - COMPLETELY DISABLED
+// ============================================
+function initServiceWorker() {
+    // Do nothing - service workers disabled
+}
+
+// ============================================
+// Initialize All
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    initMobileNav();
+    initSearch();
+    initScrollEffects();
+    initQuickAdd();
+    initSmoothScroll();
+    initAccessibility();
+    initServiceWorker();
+});
+
+// Make functions globally available
+window.createProductCard = createProductCard;
+window.escapeHtml = escapeHtml;

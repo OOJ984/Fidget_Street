@@ -262,10 +262,10 @@ function initFooterForm() {
 // Initialize on DOM ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        initPopup();
+        // initPopup(); // DISABLED - will re-enable later
         initFooterForm();
     });
 } else {
-    initPopup();
+    // initPopup(); // DISABLED - will re-enable later
     initFooterForm();
 }

@@ -186,6 +186,7 @@ function createProductCard(product) {
     const tagBadges = getTagBadges(product.tags);
     const safeTitle = escapeHtml(product.title);
     const safeSlug = encodeURIComponent(product.slug);
+    const isWishlisted = typeof isInWishlist === 'function' && isInWishlist(product.id);
 
     const imageUrl = product.images && product.images.length > 0 ? product.images[0] : null;
     const imageHtml = imageUrl
@@ -194,32 +195,70 @@ function createProductCard(product) {
 
     return `
         <article class="product-card group">
-            <a href="product.html?slug=${safeSlug}" class="block">
-                <div class="relative aspect-square overflow-hidden rounded-lg bg-navy-100 mb-4">
-                    ${imageHtml}
+            <!-- Image container with heart button outside the link -->
+            <div class="relative mb-4">
+                <a href="product.html?slug=${safeSlug}" class="block">
+                    <div class="aspect-square overflow-hidden rounded-lg bg-navy-100">
+                        ${imageHtml}
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors pointer-events-none"></div>
+                    </div>
+                </a>
+                <!-- Badges on top left -->
+                <div class="absolute top-3 left-3 z-10 flex flex-col gap-1 pointer-events-none">
                     ${stockBadge}
                     ${tagBadges}
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
                 </div>
+                <!-- Wishlist Heart Icon on top right - OUTSIDE the link -->
+                <button
+                    type="button"
+                    class="wishlist-heart absolute top-3 right-3 z-20 p-2 bg-white/90 hover:bg-white rounded-full shadow-md transition-all hover:scale-110"
+                    data-product-id="${product.id}"
+                    data-product-title="${safeTitle}"
+                    data-product-price="${product.price_gbp}"
+                    data-product-slug="${safeSlug}"
+                    data-product-image="${imageUrl || ''}"
+                    aria-label="Add to wishlist"
+                >
+                    <svg class="w-5 h-5 heart-icon" viewBox="0 0 24 24" fill="${isWishlisted ? '#ec4899' : 'none'}" stroke="${isWishlisted ? '#ec4899' : '#6b7280'}" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                </button>
+            </div>
+            <a href="product.html?slug=${safeSlug}" class="block">
                 <h3 class="font-medium text-navy group-hover:text-rose-gold transition-colors mb-1">${safeTitle}</h3>
                 <p class="text-rose-gold font-medium">£${product.price_gbp.toFixed(2)}</p>
             </a>
-            <a
-                href="product.html?slug=${safeSlug}"
-                class="view-details-btn mt-3 w-full py-2 text-sm border border-navy/20 rounded-lg hover:bg-navy hover:border-navy hover:text-white transition-colors opacity-0 group-hover:opacity-100 block text-center text-navy"
-            >
-                View Details
-            </a>
+            <div class="flex flex-col gap-2 mt-3">
+                <a
+                    href="product.html?slug=${safeSlug}"
+                    class="view-details-btn w-full py-2 text-sm border border-navy/20 rounded-lg hover:bg-navy hover:border-navy hover:text-white transition-colors block text-center text-navy"
+                >
+                    View Details
+                </a>
+                <button
+                    class="add-to-cart-quick w-full py-2 text-sm border rounded-lg transition-colors flex items-center justify-center gap-2 text-white hover:opacity-90"
+                    style="background-color: #71c7e1; border-color: #71c7e1;"
+                    data-product-id="${product.id}"
+                    data-product-title="${safeTitle}"
+                    data-product-price="${product.price_gbp}"
+                    ${product.stock === 0 ? 'disabled style="background-color: #9ca3af; border-color: #9ca3af;"' : ''}
+                >
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    ${product.stock === 0 ? 'Sold Out' : 'Add to Cart'}
+                </button>
+            </div>
         </article>
     `;
 }
 
 function getStockBadge(stock) {
     if (stock === 0) {
-        return '<span class="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">Sold Out</span>';
+        return '<span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">Sold Out</span>';
     }
     if (stock <= 5) {
-        return `<span class="absolute top-3 left-3 bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-medium">Only ${stock} left</span>`;
+        return `<span class="bg-yellow-500 text-black px-2 py-1 rounded-full text-xs font-medium">Only ${stock} left</span>`;
     }
     return '';
 }
@@ -227,9 +266,9 @@ function getStockBadge(stock) {
 function getTagBadges(tags) {
     let badges = '';
     if (tags.includes('new')) {
-        badges += '<span class="absolute top-3 right-3 bg-rose-gold text-black px-2 py-1 rounded-full text-xs font-medium">New</span>';
+        badges += '<span class="bg-rose-gold text-white px-2 py-1 rounded-full text-xs font-medium">New</span>';
     } else if (tags.includes('bestseller')) {
-        badges += '<span class="absolute top-3 right-3 bg-pastel-pink text-black px-2 py-1 rounded-full text-xs font-medium">Bestseller</span>';
+        badges += '<span class="bg-pastel-pink text-black px-2 py-1 rounded-full text-xs font-medium">Bestseller</span>';
     }
     return badges;
 }

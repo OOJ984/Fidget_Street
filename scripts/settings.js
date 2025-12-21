@@ -1,5 +1,5 @@
 /**
- * Wicka - Website Settings Loader
+ * Fidget Street - Website Settings Loader
  * Loads and applies custom website settings
  *
  * Strategy: Cache with background refresh
@@ -9,34 +9,34 @@
  * 4. If settings changed, update cache and re-apply
  */
 
-const SETTINGS_KEY = 'wicka_website_settings';
-const SETTINGS_TIMESTAMP_KEY = 'wicka_website_settings_ts';
+const SETTINGS_KEY = 'fidgetstreet_website_settings';
+const SETTINGS_TIMESTAMP_KEY = 'fidgetstreet_website_settings_ts';
 const CACHE_MAX_AGE = 0; // Always fetch fresh - settings can change anytime
 
 // Default settings (fallback values)
 const defaultSettings = {
-    companyName: 'Wicka',
-    tagline: 'Style Meets Purpose',
+    companyName: 'Fidget Street',
+    tagline: 'Everyday Satisfaction',
     logoUrl: '',
     faviconUrl: '',
-    primaryColor: '#C4707A',
-    secondaryColor: '#F5D0D5',
-    contactEmail: 'wicka@protonmail.com',
+    primaryColor: '#71c7e1',
+    secondaryColor: '#A8E0A2',
+    contactEmail: 'hello@fidgetstreet.co.uk',
     contactPhone: '',
     businessAddress: '',
-    instagramUrl: 'https://instagram.com/wicka',
+    instagramUrl: 'https://instagram.com/fidgetstreet',
     facebookUrl: '',
     twitterUrl: '',
-    defaultTitleSuffix: 'Wicka',
-    defaultDescription: 'Style Meets Purpose by Wicka. Modern, aesthetic organisers and 3D-printed holders made by young designers.',
+    defaultTitleSuffix: 'Fidget Street',
+    defaultDescription: 'Eco-friendly fidget toys for focus, fun, and stress relief. Safe for ages 6+. Made from plant-based PLA plastic.',
     ogImageUrl: '',
-    freeShippingThreshold: 20,
+    freeShippingThreshold: 30,
     shippingCost: 2.99,
     currency: 'GBP',
     maxQuantity: 10,
-    footerTagline: 'Style Meets Purpose made by young designers. Premium quality, affordable prices.',
-    copyrightText: 'Wicka. All rights reserved.',
-    footerNote: 'A Young Enterprise company'
+    footerTagline: 'Everyday Satisfaction - Eco-friendly fidget toys for all ages.',
+    copyrightText: 'Fidget Street. All rights reserved.',
+    footerNote: ''
 };
 
 /**
@@ -172,7 +172,7 @@ function applyColors(settings) {
     const root = document.documentElement;
 
     // Only apply if different from default
-    if (settings.primaryColor && settings.primaryColor !== '#C4707A') {
+    if (settings.primaryColor && settings.primaryColor !== '#71c7e1') {
         // Set CSS custom property for primary color
         root.style.setProperty('--color-rose-gold', settings.primaryColor);
 
@@ -215,8 +215,8 @@ function applyColors(settings) {
  */
 function applyLogo(settings) {
     if (settings.logoUrl) {
-        // Find only the site logo (Wicka Logo), not other logos like YE logo
-        const logos = document.querySelectorAll('img[alt="Wicka Logo"]');
+        // Find the site logo
+        const logos = document.querySelectorAll('img[alt="Fidget Street Logo"]');
         logos.forEach(logo => {
             logo.src = settings.logoUrl;
         });
@@ -246,7 +246,7 @@ function applyFavicon(settings) {
  * Apply company name where appropriate
  */
 function applyCompanyName(settings) {
-    if (settings.companyName && settings.companyName !== 'Wicka') {
+    if (settings.companyName && settings.companyName !== 'Fidget Street') {
         // Update any company name displays (be careful not to break existing content)
         // This is intentionally conservative to avoid breaking the design
         // Future: Update title tags and meta descriptions dynamically

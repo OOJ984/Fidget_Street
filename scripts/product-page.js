@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadProduct(productSlug);
     setupQuantityControls();
     setupAddToCart();
+    setupAddToWishlist();
 });
 
 async function loadProduct(slug) {
@@ -45,7 +46,7 @@ async function loadProduct(slug) {
 function renderProduct(product) {
     document.getElementById('breadcrumb-product').textContent = product.title;
     document.getElementById('product-title').textContent = product.title;
-    document.title = `Wicka | ${product.title}`;
+    document.title = `Fidget Street | ${product.title}`;
 
     defaultImages = product.images && product.images.length > 0 ? product.images : [];
     variationImages = product.variation_images || {};
@@ -188,7 +189,7 @@ function loadRelatedProducts(products, currentProduct) {
 }
 
 function updatePageMeta(product) {
-    document.querySelector('meta[property="og:title"]').content = `Wicka | ${product.title}`;
+    document.querySelector('meta[property="og:title"]').content = `Fidget Street | ${product.title}`;
     document.querySelector('meta[property="og:description"]').content = product.description;
     document.querySelector('meta[name="description"]').content = product.description;
     injectProductSchema(product);
@@ -206,7 +207,7 @@ function injectProductSchema(product) {
         "image": product.images && product.images.length > 0 ? product.images[0] : null,
         "brand": {
             "@type": "Brand",
-            "name": "Wicka"
+            "name": "Fidget Street"
         },
         "offers": {
             "@type": "Offer",
@@ -218,7 +219,7 @@ function injectProductSchema(product) {
                 : "https://schema.org/OutOfStock",
             "seller": {
                 "@type": "Organization",
-                "name": "Wicka"
+                "name": "Fidget Street"
             }
         },
         "category": product.category,
@@ -252,13 +253,13 @@ function injectBreadcrumbSchema(product) {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://wicka.co.uk/"
+                "item": "https://fidgetstreet.netlify.app/"
             },
             {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Shop",
-                "item": "https://wicka.co.uk/products.html"
+                "item": "https://fidgetstreet.netlify.app/products.html"
             },
             {
                 "@type": "ListItem",
@@ -341,9 +342,9 @@ function showCartNotification() {
 function setupBuyNow() {
     const buyNowBtn = document.getElementById('buy-now-btn');
     const buyNowMessage = document.getElementById('buy-now-message');
-    
+
     if (!currentProduct) return;
-    
+
     if (currentProduct.trading_station_url) {
         buyNowBtn.href = currentProduct.trading_station_url;
         buyNowBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
@@ -357,5 +358,98 @@ function setupBuyNow() {
         buyNowBtn.addEventListener('click', (e) => {
             e.preventDefault();
         });
+    }
+}
+
+function setupAddToWishlist() {
+    const addToWishlistBtn = document.getElementById('add-to-wishlist-btn');
+    if (!addToWishlistBtn) return;
+
+    // Update button state on load
+    updateWishlistButtonState();
+
+    addToWishlistBtn.addEventListener('click', () => {
+        if (!currentProduct) return;
+
+        let productImage = null;
+        if (selectedVariation && variationImages[selectedVariation] && variationImages[selectedVariation].length > 0) {
+            productImage = variationImages[selectedVariation][0];
+        } else if (defaultImages.length > 0) {
+            productImage = defaultImages[0];
+        }
+
+        const product = {
+            id: currentProduct.id,
+            title: currentProduct.title,
+            price: currentProduct.price_gbp,
+            slug: currentProduct.slug,
+            image: productImage
+        };
+
+        const wasInWishlist = typeof isInWishlist === 'function' && isInWishlist(currentProduct.id);
+
+        if (wasInWishlist) {
+            // Remove from wishlist
+            if (typeof removeFromWishlist === 'function') {
+                removeFromWishlist(currentProduct.id);
+            }
+        } else {
+            // Add to wishlist
+            if (typeof addToWishlist === 'function') {
+                addToWishlist(product);
+            }
+            // Open the wishlist sidebar
+            openWishlistSidebar();
+        }
+
+        updateWishlistButtonState();
+    });
+}
+
+function updateWishlistButtonState() {
+    const addToWishlistBtn = document.getElementById('add-to-wishlist-btn');
+    if (!addToWishlistBtn || !currentProduct) return;
+
+    const inWishlist = typeof isInWishlist === 'function' && isInWishlist(currentProduct.id);
+    const svg = addToWishlistBtn.querySelector('svg');
+    const span = addToWishlistBtn.querySelector('span');
+
+    if (inWishlist) {
+        addToWishlistBtn.style.backgroundColor = '#fce7f3';
+        addToWishlistBtn.style.borderColor = '#ec4899';
+        addToWishlistBtn.style.color = '#ec4899';
+        if (svg) {
+            svg.setAttribute('fill', '#ec4899');
+        }
+        if (span) {
+            span.textContent = 'In Wishlist';
+        }
+    } else {
+        addToWishlistBtn.style.backgroundColor = '#fdf2f8';
+        addToWishlistBtn.style.borderColor = '#ec4899';
+        addToWishlistBtn.style.color = '#ec4899';
+        if (svg) {
+            svg.setAttribute('fill', 'none');
+        }
+        if (span) {
+            span.textContent = 'Add to Wishlist';
+        }
+    }
+}
+
+function openWishlistSidebar() {
+    const wishlistSidebar = document.getElementById('wishlist-sidebar');
+    const wishlistPanel = document.getElementById('wishlist-panel');
+
+    if (wishlistSidebar && wishlistPanel) {
+        wishlistSidebar.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            wishlistPanel.classList.remove('translate-x-full');
+        }, 10);
+        // Render wishlist items if function exists
+        if (typeof renderWishlistItems === 'function') {
+            renderWishlistItems();
+        }
     }
 }

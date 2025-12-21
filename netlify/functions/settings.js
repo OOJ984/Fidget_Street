@@ -15,28 +15,28 @@ const supabase = createClient(
 
 // Default settings (fallback if database is empty or unavailable)
 const defaultSettings = {
-    companyName: 'Wicka',
-    tagline: 'Style Meets Purpose',
+    companyName: 'Fidget Street',
+    tagline: 'Everyday Satisfaction',
     logoUrl: '',
     faviconUrl: '',
-    primaryColor: '#C4707A',
-    secondaryColor: '#F5D0D5',
-    contactEmail: 'wicka@protonmail.com',
+    primaryColor: '#71c7e1',
+    secondaryColor: '#A8E0A2',
+    contactEmail: 'hello@fidgetstreet.co.uk',
     contactPhone: '',
     businessAddress: '',
-    instagramUrl: 'https://instagram.com/wicka',
+    instagramUrl: 'https://instagram.com/fidgetstreet',
     facebookUrl: '',
     twitterUrl: '',
-    defaultTitleSuffix: 'Wicka',
-    defaultDescription: 'Style Meets Purpose by Wicka. Modern, aesthetic organisers and 3D-printed holders made by young designers.',
+    defaultTitleSuffix: 'Fidget Street',
+    defaultDescription: 'Eco-friendly fidget toys for focus, fun, and stress relief. Safe for ages 6+. Made from plant-based PLA plastic.',
     ogImageUrl: '',
-    freeShippingThreshold: 20,
+    freeShippingThreshold: 30,
     shippingCost: 2.99,
     currency: 'GBP',
     maxQuantity: 10,
-    footerTagline: 'Style Meets Purpose made by young designers. Premium quality, affordable prices.',
-    copyrightText: 'Wicka. All rights reserved.',
-    footerNote: 'A Young Enterprise company'
+    footerTagline: 'Everyday Satisfaction - Eco-friendly fidget toys for all ages.',
+    copyrightText: 'Fidget Street. All rights reserved.',
+    footerNote: ''
 };
 
 exports.handler = async (event, context) => {

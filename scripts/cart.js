@@ -308,33 +308,36 @@ function updateCartSidebar() {
     if (cart.length === 0) {
         cartItems.innerHTML = `
             <div class="text-center py-8">
-                <svg class="w-16 h-16 mx-auto text-gray-700 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                 </svg>
-                <p class="text-gray-400">Your cart is empty</p>
-                <a href="products.html" class="text-rose-gold hover:underline text-sm mt-2 inline-block">Start Shopping</a>
+                <p class="text-gray-500">Your cart is empty</p>
+                <a href="products.html" class="hover:underline text-sm mt-2 inline-block" style="color: #71c7e1;">Start Shopping</a>
             </div>
         `;
     } else {
         cartItems.innerHTML = cart.map(item => {
             const safeTitle = escapeHtmlCart(item.title);
             const safeVariation = escapeHtmlCart(item.variation);
+            const imageHtml = item.image
+                ? `<img src="${item.image}" alt="${safeTitle}" class="w-full h-full object-cover">`
+                : '<div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200"></div>';
             return `
-            <div class="flex gap-4 pb-4 border-b border-white/10" data-item-id="${item.id}">
-                <div class="w-16 h-16 bg-gray-800 rounded-lg flex-shrink-0">
-                    <!-- IMAGE_PLACEHOLDER: Cart item thumbnail -->
+            <div class="flex gap-4 pb-4 border-b border-gray-200" data-item-id="${item.id}">
+                <div class="w-16 h-16 bg-gray-100 rounded-lg flex-shrink-0 overflow-hidden">
+                    ${imageHtml}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <h4 class="font-medium text-sm truncate">${safeTitle}</h4>
+                    <h4 class="font-medium text-sm truncate text-gray-800">${safeTitle}</h4>
                     ${item.variation ? `<p class="text-xs text-gray-500">${safeVariation}</p>` : ''}
-                    <p class="text-rose-gold text-sm mt-1">£${item.price.toFixed(2)}</p>
+                    <p class="text-sm mt-1" style="color: #71c7e1;">£${item.price.toFixed(2)}</p>
                     <div class="flex items-center justify-between mt-2">
                         <div class="flex items-center space-x-2">
-                            <button class="cart-qty-btn w-6 h-6 rounded bg-gray-800 text-xs hover:bg-gray-700" data-action="decrease" data-id="${item.id}">−</button>
-                            <span class="text-sm">${item.quantity}</span>
-                            <button class="cart-qty-btn w-6 h-6 rounded bg-gray-800 text-xs hover:bg-gray-700" data-action="increase" data-id="${item.id}">+</button>
+                            <button class="cart-qty-btn w-6 h-6 rounded-full bg-gray-100 text-gray-700 text-xs hover:bg-gray-200 transition-colors" data-action="decrease" data-id="${item.id}">−</button>
+                            <span class="text-sm text-gray-800">${item.quantity}</span>
+                            <button class="cart-qty-btn w-6 h-6 rounded-full bg-gray-100 text-gray-700 text-xs hover:bg-gray-200 transition-colors" data-action="increase" data-id="${item.id}">+</button>
                         </div>
-                        <button class="text-gray-500 hover:text-rose-gold text-xs cart-remove-btn" data-id="${item.id}">Remove</button>
+                        <button class="text-red-500 hover:text-red-600 text-xs cart-remove-btn" data-id="${item.id}">Remove</button>
                     </div>
                 </div>
             </div>
@@ -355,6 +358,7 @@ function initCartSidebar() {
     const cartPanel = document.getElementById('cart-panel');
     const cartOverlay = document.getElementById('cart-overlay');
     const cartClose = document.getElementById('cart-close');
+    const cartToggle = document.getElementById('cart-toggle');
 
     if (!cartSidebar) return;
 
@@ -364,6 +368,7 @@ function initCartSidebar() {
         setTimeout(() => {
             cartPanel?.classList.remove('translate-x-full');
         }, 10);
+        updateCartSidebar();
     }
 
     function closeCart() {
@@ -373,6 +378,9 @@ function initCartSidebar() {
             document.body.style.overflow = '';
         }, 300);
     }
+
+    // Open cart on toggle button click
+    cartToggle?.addEventListener('click', openCart);
 
     // Open cart on custom event
     window.addEventListener('openCart', openCart);

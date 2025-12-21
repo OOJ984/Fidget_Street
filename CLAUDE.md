@@ -41,18 +41,18 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 1. Created fidget_street folder (copied from Wicka as base)
 2. Updated tailwind.config.js with new color palette
 3. Removed node_modules, .git, .netlify from copy
+4. Stripe payment integration configured and tested
+5. Order number format changed from PP- to FS- prefix
+6. Webhook retrieves full session for shipping details
+7. Success page displays actual order number
+8. Admin panel shows full order details with shipping address
 
 ### TODO (REMAINING):
-1. Rebrand all HTML pages from "Wicka" to "Fidget Street"
-2. Update navigation with fidget toy categories
-3. Update footer links
-4. Create new playful homepage design
-5. Update product categories in database schema
-6. Update all references to "organisers" to "fidget toys"
-7. Create/update About page for Fidget Street brand
-8. Update contact email and social links
-9. Create playful background patterns
-10. Update meta tags, og:image, etc.
+1. Create logo and brand assets
+2. Create playful background patterns
+3. Update meta tags, og:image, etc.
+4. Set up production Stripe keys (currently using test mode)
+5. Configure email notifications for orders
 
 ## Key Files to Update
 
@@ -116,6 +116,31 @@ npm run build
 ### Test admin login
 - URL: http://localhost:8888/admin/
 - Email: admin@fidgetstreet.co.uk
+
+### Stripe CLI (local webhook testing)
+```bash
+# Login (expires after 90 days)
+C:\Users\coxj5\scoop\apps\stripe\current\stripe.exe login
+
+# Forward webhooks to local dev server
+C:\Users\coxj5\scoop\apps\stripe\current\stripe.exe listen --forward-to localhost:8888/.netlify/functions/webhooks
+
+# Test checkout webhook
+C:\Users\coxj5\scoop\apps\stripe\current\stripe.exe trigger checkout.session.completed
+```
+
+## Stripe Payment Configuration
+
+See `stripe-payment-settings.md` for detailed payment method recommendations.
+
+**Recommended payment methods (UK-focused):**
+- Cards (1.5% + 20p)
+- Apple Pay, Google Pay, Samsung Pay (same as cards)
+- Link (same as cards)
+- Amazon Pay (same as cards)
+- Revolut Pay (0.8% + 2p - cheapest!)
+
+**Avoid for UK:** Klarna (~5%), EU bank methods (+1.5% Brexit fee)
 
 ## Important Notes
 

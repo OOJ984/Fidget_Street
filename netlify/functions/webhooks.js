@@ -69,7 +69,10 @@ exports.handler = async (event, context) => {
     try {
         switch (stripeEvent.type) {
             case 'checkout.session.completed': {
-                const session = stripeEvent.data.object;
+                const sessionFromEvent = stripeEvent.data.object;
+
+                // Retrieve full session to get shipping_details (not always in webhook payload)
+                const session = await stripe.checkout.sessions.retrieve(sessionFromEvent.id);
 
                 // Parse items from metadata
                 let items = [];

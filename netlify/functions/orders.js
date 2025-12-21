@@ -7,6 +7,7 @@
  * Input validation on all user-provided data
  */
 
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
 const { getCorsHeaders } = require('./utils/security');
 const {
@@ -35,10 +36,56 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        // GET - Retrieve order by order_number
+        // GET - Retrieve order by order_number or session_id
         if (event.httpMethod === 'GET') {
             const params = event.queryStringParameters || {};
 
+            // Option 1: Look up by Stripe session_id
+            if (params.session_id) {
+                try {
+                    // Get payment_intent from Stripe session
+                    const stripeSession = await stripe.checkout.sessions.retrieve(params.session_id);
+                    const paymentId = stripeSession.payment_intent;
+
+                    if (!paymentId) {
+                        return {
+                            statusCode: 404,
+                            headers,
+                            body: JSON.stringify({ error: 'Payment not found for session' })
+                        };
+                    }
+
+                    // Look up order by payment_id
+                    const { data, error } = await supabase
+                        .from('orders')
+                        .select('order_number, status, items, total, shipping, created_at')
+                        .eq('payment_id', paymentId)
+                        .single();
+
+                    if (error || !data) {
+                        return {
+                            statusCode: 404,
+                            headers,
+                            body: JSON.stringify({ error: 'Order not found' })
+                        };
+                    }
+
+                    return {
+                        statusCode: 200,
+                        headers,
+                        body: JSON.stringify(data)
+                    };
+                } catch (stripeError) {
+                    console.error('Stripe session lookup error:', stripeError);
+                    return {
+                        statusCode: 404,
+                        headers,
+                        body: JSON.stringify({ error: 'Invalid session' })
+                    };
+                }
+            }
+
+            // Option 2: Look up by order_number
             // Validate order number format
             const orderNumValidation = validateOrderNumber(params.order_number);
             if (!orderNumValidation.valid) {

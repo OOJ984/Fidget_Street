@@ -12,8 +12,8 @@ const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-
 // Accepts: +44..., 07..., 01..., 02..., with optional spaces/dashes
 const PHONE_REGEX = /^(?:\+?44|0)[\s.-]?(?:\d[\s.-]?){9,10}$/;
 
-// Order number format: PP-YYYYMMDD-XXXX
-const ORDER_NUMBER_REGEX = /^PP-\d{8}-\d{4}$/;
+// Order number format: FS-YYYYMMDD-XXXX (Fidget Street)
+const ORDER_NUMBER_REGEX = /^FS-\d{8}-\d{4}$/;
 
 // Limits
 const MAX_QUANTITY_PER_ITEM = 99;

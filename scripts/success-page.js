@@ -15,13 +15,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (orderNumber) {
         document.getElementById('order-number').textContent = orderNumber;
     } else if (sessionId) {
-        // For Stripe, we might need to look up the order
+        // For Stripe, look up the order by session_id
         document.getElementById('order-number').textContent = 'Processing...';
 
-        // Try to get order details from session storage
         try {
-            // Order was created via webhook, show generic success
-            document.getElementById('order-number').textContent = 'Confirmed';
+            // Fetch order from API using session_id
+            const response = await fetch(`/api/orders?session_id=${encodeURIComponent(sessionId)}`);
+
+            if (response.ok) {
+                const order = await response.json();
+                document.getElementById('order-number').textContent = order.order_number;
+            } else {
+                // Order might still be processing via webhook, retry after delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                const retryResponse = await fetch(`/api/orders?session_id=${encodeURIComponent(sessionId)}`);
+
+                if (retryResponse.ok) {
+                    const order = await retryResponse.json();
+                    document.getElementById('order-number').textContent = order.order_number;
+                } else {
+                    // Show confirmed but order number unavailable
+                    document.getElementById('order-number').textContent = 'Confirmed';
+                }
+            }
         } catch (error) {
             console.error('Error fetching order:', error);
             document.getElementById('order-number').textContent = 'Confirmed';

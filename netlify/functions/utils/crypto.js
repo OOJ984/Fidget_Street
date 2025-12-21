@@ -111,8 +111,11 @@ function encryptOrderPII(order) {
         encrypted.customer_phone = encrypt(encrypted.customer_phone);
     }
     if (encrypted.shipping_address && typeof encrypted.shipping_address === 'object') {
-        // Encrypt the entire address as JSON string
-        encrypted.shipping_address = encrypt(JSON.stringify(encrypted.shipping_address));
+        // Only stringify if encryption is enabled, otherwise keep as object for JSONB
+        if (isEncryptionEnabled()) {
+            encrypted.shipping_address = encrypt(JSON.stringify(encrypted.shipping_address));
+        }
+        // If no encryption, leave as object - Supabase will store as JSONB
     }
 
     return encrypted;

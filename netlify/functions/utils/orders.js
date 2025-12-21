@@ -5,13 +5,13 @@
 
 /**
  * Generate unique order number
- * Format: PP-YYYYMMDD-XXXX (e.g., PP-20241205-4829)
+ * Format: FS-YYYYMMDD-XXXX (e.g., FS-20251221-4829)
  * @returns {string}
  */
 function generateOrderNumber() {
     const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    return `PP-${date}-${random}`;
+    return `FS-${date}-${random}`;
 }
 
 /**

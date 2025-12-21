@@ -74,8 +74,9 @@
                                     <a href="products.html" class="block px-4 py-2 text-gray-800 hover:bg-soft-blue-50 transition-colors font-medium">All Products</a>
                                     <a href="products.html?category=articulated-toys" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Articulated Toys</a>
                                     <a href="products.html?category=fidget-cubes" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Fidget Cubes</a>
-                                    <a href="products.html?category=clickers" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Clicker Toys</a>
-                                    <a href="products.html?category=stress-balls" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Stress Balls</a>
+                                    <a href="products.html?category=finger-spinners" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Finger Spinners</a>
+                                    <a href="products.html?category=push-bubbles" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Push Bubbles</a>
+                                    <a href="products.html?category=bundles" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Sensory Bundles</a>
                                 </div>
                             </div>
                         </div>
@@ -92,6 +93,13 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
+                    </button>
+                    <!-- Wishlist -->
+                    <button id="wishlist-toggle" class="relative p-2 text-white hover:text-gray-300 transition-colors" aria-label="Wishlist">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span id="wishlist-count" class="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
                     </button>
                     <!-- Cart -->
                     <button id="cart-toggle" class="relative p-2 text-white hover:text-gray-300 transition-colors" aria-label="Cart">
@@ -119,8 +127,9 @@
                     <a href="products.html" class="block text-white/80 hover:text-white py-1 pl-4">All Products</a>
                     <a href="products.html?category=articulated-toys" class="block text-white/80 hover:text-white py-1 pl-4">Articulated Toys</a>
                     <a href="products.html?category=fidget-cubes" class="block text-white/80 hover:text-white py-1 pl-4">Fidget Cubes</a>
-                    <a href="products.html?category=clickers" class="block text-white/80 hover:text-white py-1 pl-4">Clicker Toys</a>
-                    <a href="products.html?category=stress-balls" class="block text-white/80 hover:text-white py-1 pl-4">Stress Balls</a>
+                    <a href="products.html?category=finger-spinners" class="block text-white/80 hover:text-white py-1 pl-4">Finger Spinners</a>
+                    <a href="products.html?category=push-bubbles" class="block text-white/80 hover:text-white py-1 pl-4">Push Bubbles</a>
+                    <a href="products.html?category=bundles" class="block text-white/80 hover:text-white py-1 pl-4">Sensory Bundles</a>
                 </div>
                 <a href="about.html" class="block text-white hover:text-gray-100 py-2 font-medium">About</a>
                 <a href="events.html" class="block text-white hover:text-gray-100 py-2 font-medium">Events</a>
@@ -241,12 +250,18 @@
                         </div>
 
                         <!-- Add to Cart -->
-                        <div class="space-y-4">
-                            <button id="add-to-cart-btn" class="w-full py-4 text-white font-medium rounded-full transition-all hover:opacity-90 flex items-center justify-center space-x-2" style="background-color: #051745;">
+                        <div class="space-y-3">
+                            <button id="add-to-cart-btn" class="w-full py-4 text-white font-medium rounded-full transition-all hover:opacity-90 flex items-center justify-center space-x-2" style="background-color: #71c7e1;">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                                 </svg>
                                 <span>Add to Cart</span>
+                            </button>
+                            <button id="add-to-wishlist-btn" class="w-full py-4 font-medium rounded-full transition-all hover:opacity-90 flex items-center justify-center space-x-2 border-2" style="background-color: #fdf2f8; border-color: #ec4899; color: #ec4899;">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                </svg>
+                                <span>Add to Wishlist</span>
                             </button>
                         </div>
 
@@ -328,8 +343,9 @@
                         <li><a href="products.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">All Products</a></li>
                         <li><a href="products.html?category=articulated-toys" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Articulated Toys</a></li>
                         <li><a href="products.html?category=fidget-cubes" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Fidget Cubes</a></li>
-                        <li><a href="products.html?category=clickers" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Clicker Toys</a></li>
-                        <li><a href="products.html?category=stress-balls" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Stress Balls</a></li>
+                        <li><a href="products.html?category=finger-spinners" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Finger Spinners</a></li>
+                        <li><a href="products.html?category=push-bubbles" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Push Bubbles</a></li>
+                        <li><a href="products.html?category=bundles" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Sensory Bundles</a></li>
                     </ul>
                 </div>
 
@@ -374,11 +390,59 @@
         </div>
     </div>
 
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-black/50" id="cart-overlay"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform translate-x-full transition-transform duration-300" id="cart-panel">
+            <div class="flex flex-col h-full">
+                <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #71c7e1;">Your Cart</h2>
+                    <button id="cart-close" class="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="cart-items" class="flex-1 overflow-y-auto p-6"></div>
+                <div class="p-6 border-t border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-gray-600">Subtotal</span>
+                        <span id="cart-subtotal" class="font-semibold">£0.00</span>
+                    </div>
+                    <a href="cart.html" class="block w-full text-center py-3 text-white font-medium rounded-full transition-all hover:opacity-90 hover:scale-105" style="background-color: #71c7e1;">
+                        View Cart & Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Sidebar -->
+    <div id="wishlist-sidebar" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-label="Wishlist">
+        <div id="wishlist-overlay" class="absolute inset-0 bg-black/50"></div>
+        <div id="wishlist-panel" class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform translate-x-full transition-transform duration-300">
+            <div class="flex flex-col h-full">
+                <div class="flex items-center justify-between p-4 border-b">
+                    <h2 class="text-lg font-semibold">My Wishlist</h2>
+                    <button id="wishlist-close" class="p-2 hover:bg-gray-100 rounded-lg" aria-label="Close wishlist">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="wishlist-items" class="flex-1 overflow-y-auto">
+                    <!-- Wishlist items will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script defer src="scripts/api.js"></script>
     <script defer src="scripts/settings.js"></script>
     <script defer src="scripts/main.js"></script>
     <script defer src="scripts/cart.js"></script>
+    <script defer src="scripts/wishlist.js"></script>
     <script defer src="scripts/newsletter.js"></script>
     <script defer src="scripts/product-page.js"></script>
 </body>

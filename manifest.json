@@ -1,11 +1,11 @@
 {
-  "name": "Wicka",
-  "short_name": "Wicka",
-  "description": "Hand-designed organisers made by young designers",
+  "name": "Fidget Street",
+  "short_name": "Fidget Street",
+  "description": "Fun fidget toys, sensory toys, and stress relief items for kids and adults",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#C4707A",
+  "background_color": "#ffffff",
+  "theme_color": "#71c7e1",
   "orientation": "portrait-primary",
   "icons": [
     {
@@ -46,7 +46,7 @@
     {
       "name": "Shop All Products",
       "short_name": "Shop",
-      "description": "Browse our organiser collection",
+      "description": "Browse our fidget toy collection",
       "url": "/products.html",
       "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
     },

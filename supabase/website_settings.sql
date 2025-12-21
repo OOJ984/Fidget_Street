@@ -1,45 +1,45 @@
--- Website Settings Table
+-- Website Settings Table for Fidget Street
 -- Run this SQL in your Supabase SQL Editor to create the settings table
 
 CREATE TABLE IF NOT EXISTS website_settings (
     id SERIAL PRIMARY KEY,
 
     -- Branding
-    company_name TEXT DEFAULT 'Dangle & Display',
-    tagline TEXT DEFAULT 'Handcrafted Luxury Jewelry',
+    company_name TEXT DEFAULT 'Fidget Street',
+    tagline TEXT DEFAULT 'Everyday Satisfaction',
     logo_url TEXT DEFAULT '',
     favicon_url TEXT DEFAULT '',
 
     -- Colors
-    primary_color TEXT DEFAULT '#C4707A',
-    secondary_color TEXT DEFAULT '#F5D0D5',
+    primary_color TEXT DEFAULT '#71c7e1',
+    secondary_color TEXT DEFAULT '#A8E0A2',
 
     -- Contact
-    contact_email TEXT DEFAULT 'hello@dangleanddisplay.co.uk',
+    contact_email TEXT DEFAULT 'hello@fidgetstreet.co.uk',
     contact_phone TEXT DEFAULT '',
     business_address TEXT DEFAULT '',
 
     -- Social Media
-    instagram_url TEXT DEFAULT 'https://instagram.com/dangleanddisplay',
-    tiktok_url TEXT DEFAULT 'https://tiktok.com/@dangleanddisplay',
+    instagram_url TEXT DEFAULT 'https://instagram.com/fidgetstreet',
+    tiktok_url TEXT DEFAULT '',
     facebook_url TEXT DEFAULT '',
     twitter_url TEXT DEFAULT '',
 
     -- SEO
-    default_title_suffix TEXT DEFAULT 'Dangle & Display',
-    default_description TEXT DEFAULT 'Handcrafted luxury jewelry by Dangle & Display. Modern, aesthetic earrings and 3D-printed holders made by young artisans.',
+    default_title_suffix TEXT DEFAULT 'Fidget Street',
+    default_description TEXT DEFAULT 'Eco-friendly fidget toys for focus, fun, and stress relief. Safe for ages 6+. Made from plant-based PLA plastic.',
     og_image_url TEXT DEFAULT '',
 
     -- Shipping
-    free_shipping_threshold DECIMAL(10,2) DEFAULT 20.00,
+    free_shipping_threshold DECIMAL(10,2) DEFAULT 30.00,
     shipping_cost DECIMAL(10,2) DEFAULT 2.99,
     currency TEXT DEFAULT 'GBP',
     max_quantity INTEGER DEFAULT 10,
 
     -- Footer
-    footer_tagline TEXT DEFAULT 'Handcrafted luxury jewelry made by young artisans. Premium quality, affordable prices.',
-    copyright_text TEXT DEFAULT 'Dangle & Display. All rights reserved.',
-    footer_note TEXT DEFAULT 'A Young Enterprise Company',
+    footer_tagline TEXT DEFAULT 'Everyday Satisfaction - Eco-friendly fidget toys for all ages.',
+    copyright_text TEXT DEFAULT 'Fidget Street. All rights reserved.',
+    footer_note TEXT DEFAULT '',
 
     -- Timestamps
     created_at TIMESTAMPTZ DEFAULT NOW(),

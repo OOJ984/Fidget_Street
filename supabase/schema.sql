@@ -1,4 +1,4 @@
--- Dangle & Display Database Schema
+-- Fidget Street Database Schema
 -- Run this in your Supabase SQL Editor
 
 -- ============================================
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS products (
     slug TEXT UNIQUE NOT NULL,
     price_gbp DECIMAL(10,2) NOT NULL,
     currency TEXT DEFAULT 'GBP',
-    category TEXT NOT NULL CHECK (category IN ('crystal-earrings', 'charm-earrings', 'holders')),
+    category TEXT NOT NULL CHECK (category IN ('articulated-toys', 'fidget-cubes', 'finger-spinners', 'push-bubbles', 'bundles')),
     materials TEXT[] DEFAULT '{}',
     dimensions TEXT,
     variations TEXT[] DEFAULT '{}',

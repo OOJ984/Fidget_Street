@@ -1,9 +1,17 @@
--- Fidget Street Seed Data
--- Run this AFTER schema.sql in Supabase SQL Editor
+-- ============================================
+-- Fidget Street Database Update
+-- Run this in Supabase SQL Editor to update from Wicka to Fidget Street
+-- ============================================
 
--- ============================================
--- Insert Products (19 Fidget Toys)
--- ============================================
+-- STEP 1: Delete old products FIRST
+DELETE FROM products;
+
+-- STEP 2: Update the category constraint
+ALTER TABLE products DROP CONSTRAINT IF EXISTS products_category_check;
+ALTER TABLE products ADD CONSTRAINT products_category_check
+    CHECK (category IN ('articulated-toys', 'fidget-cubes', 'finger-spinners', 'push-bubbles', 'bundles'));
+
+-- STEP 3: Insert all 19 Fidget Street products
 INSERT INTO products (id, title, slug, price_gbp, currency, category, materials, dimensions, variations, stock, tags, description, images, is_active)
 VALUES
 -- Articulated Toys (5)
@@ -128,32 +136,32 @@ VALUES
 -- Reset the sequence
 SELECT setval('products_id_seq', 19, true);
 
--- ============================================
--- Insert Default Admin User
--- ============================================
-INSERT INTO admin_users (email, password_hash, name, role)
-VALUES (
-    'admin@fidgetstreet.co.uk',
-    'REPLACE_WITH_GENERATED_HASH',
-    'Fidget Street Admin',
-    'super_admin'
-) ON CONFLICT (email) DO NOTHING;
+-- STEP 4: Update order number prefix to FS- (Fidget Street)
+CREATE OR REPLACE FUNCTION generate_order_number()
+RETURNS TEXT AS $$
+DECLARE
+    new_number TEXT;
+BEGIN
+    new_number := 'FS-' || TO_CHAR(NOW(), 'YYYYMMDD') || '-' || LPAD(FLOOR(RANDOM() * 10000)::TEXT, 4, '0');
+    RETURN new_number;
+END;
+$$ LANGUAGE plpgsql;
 
--- ============================================
--- Insert default website settings
--- ============================================
-INSERT INTO website_settings (
-    id, company_name, tagline, contact_email, instagram_url,
-    primary_color, secondary_color, default_title_suffix, default_description,
-    free_shipping_threshold, footer_tagline, copyright_text
-) VALUES (
-    1, 'Fidget Street', 'Everyday Satisfaction', 'hello@fidgetstreet.co.uk', 'https://instagram.com/fidgetstreet',
-    '#71c7e1', '#A8E0A2', 'Fidget Street', 'Eco-friendly fidget toys for focus, fun, and stress relief. Safe for ages 6+.',
-    30, 'Everyday Satisfaction - Eco-friendly fidget toys for all ages.', 'Fidget Street. All rights reserved.'
-) ON CONFLICT (id) DO NOTHING;
+-- STEP 5: Update website_settings
+UPDATE website_settings SET
+    company_name = 'Fidget Street',
+    tagline = 'Everyday Satisfaction',
+    contact_email = 'hello@fidgetstreet.co.uk',
+    instagram_url = 'https://instagram.com/fidgetstreet',
+    primary_color = '#71c7e1',
+    secondary_color = '#A8E0A2',
+    default_title_suffix = 'Fidget Street',
+    default_description = 'Eco-friendly fidget toys for focus, fun, and stress relief. Safe for ages 6+.',
+    free_shipping_threshold = 30,
+    footer_tagline = 'Everyday Satisfaction - Eco-friendly fidget toys for all ages.',
+    copyright_text = 'Fidget Street. All rights reserved.'
+WHERE id = 1;
 
--- ============================================
--- Verify data
--- ============================================
-SELECT 'Products inserted: ' || COUNT(*) FROM products;
+-- Verify the updates
+SELECT 'Products: ' || COUNT(*) FROM products;
 SELECT 'Categories: ' || string_agg(DISTINCT category, ', ') FROM products;

@@ -46,6 +46,17 @@ exports.handler = async (event, context) => {
         };
     }
 
+    // SECURITY: Validate Content-Type header
+    const contentType = event.headers['content-type'] || event.headers['Content-Type'] || '';
+    if (!contentType.includes('application/json')) {
+        console.warn('Webhook received with invalid Content-Type:', contentType);
+        return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ error: 'Invalid Content-Type. Expected application/json' })
+        };
+    }
+
     const sig = event.headers['stripe-signature'];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -210,6 +221,72 @@ exports.handler = async (event, context) => {
                     };
                 }
                 console.log('Order created:', createdOrder.order_number);
+
+                // Decrement stock for each item in the order
+                // Use optimistic locking to prevent overselling in concurrent scenarios
+                for (const item of items) {
+                    if (!item.id) {
+                        console.warn('Item missing ID, cannot decrement stock:', item);
+                        continue;
+                    }
+
+                    // Get current stock level
+                    const { data: product, error: fetchError } = await supabase
+                        .from('products')
+                        .select('id, title, stock')
+                        .eq('id', item.id)
+                        .single();
+
+                    if (fetchError || !product) {
+                        console.error(`Failed to fetch product ${item.id} for stock decrement:`, fetchError);
+                        continue;
+                    }
+
+                    const currentStock = product.stock || 0;
+                    const newStock = Math.max(0, currentStock - item.quantity);
+
+                    // Use optimistic locking - only update if stock hasn't changed
+                    const { data: updated, error: updateError } = await supabase
+                        .from('products')
+                        .update({
+                            stock: newStock,
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', item.id)
+                        .eq('stock', currentStock) // Optimistic lock
+                        .select('id, stock')
+                        .single();
+
+                    if (updateError || !updated) {
+                        // Optimistic lock failed - another order may have modified stock
+                        console.error(`CRITICAL: Stock decrement failed for ${product.title} (ID: ${item.id})`);
+                        console.error(`Order ${createdOrder.order_number} - expected stock ${currentStock}, may have been modified`);
+                        console.error('Error:', updateError);
+                        // Don't fail the webhook - order is already paid
+                        // This should be investigated manually or retry with fresh stock value
+
+                        // Retry with fresh stock value (best effort)
+                        const { data: freshProduct } = await supabase
+                            .from('products')
+                            .select('stock')
+                            .eq('id', item.id)
+                            .single();
+
+                        if (freshProduct) {
+                            const freshNewStock = Math.max(0, freshProduct.stock - item.quantity);
+                            await supabase
+                                .from('products')
+                                .update({
+                                    stock: freshNewStock,
+                                    updated_at: new Date().toISOString()
+                                })
+                                .eq('id', item.id);
+                            console.log(`Retry: ${product.title} stock updated to ${freshNewStock}`);
+                        }
+                    } else {
+                        console.log(`Stock updated: ${product.title} - ${currentStock} -> ${newStock} (ordered: ${item.quantity})`);
+                    }
+                }
 
                 // Increment discount code use count and record usage if discount was applied
                 if (discountCode) {

@@ -31,3 +31,8 @@ supabase/.temp/
 # Windows junk
 nul
 _ul
+
+# Test artifacts
+coverage/
+playwright-report/
+test-results/

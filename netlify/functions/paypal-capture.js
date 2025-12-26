@@ -2,12 +2,16 @@
  * PayPal Capture API
  * POST /api/paypal-capture - Capture PayPal payment after approval
  *
- * Security: CORS restricted to allowed origins only
+ * Security:
+ * - CORS restricted to allowed origins only
+ * - Prices verified against database before order creation
+ * - PayPal captured amount validated against server-calculated total
  */
 
 const { createClient } = require('@supabase/supabase-js');
 const { getCorsHeaders } = require('./utils/security');
 const { generateOrderNumber } = require('./utils/orders');
+const { verifyCartPrices, calculateShipping, SHIPPING_CONFIG } = require('./utils/checkout');
 
 const PAYPAL_API = process.env.PAYPAL_SANDBOX === 'true'
     ? 'https://api-m.sandbox.paypal.com'
@@ -87,8 +91,25 @@ exports.handler = async (event, context) => {
         const payment = purchase.payments.captures[0];
         const shipping = purchase.shipping;
 
+        // SECURITY: Verify cart prices against database (never trust client prices)
+        const verification = await verifyCartPrices(items);
+        if (!verification.valid) {
+            console.error('Price verification failed:', verification.error);
+            // Payment already captured - log critical error but don't fail
+            // In production, this should trigger an alert for manual review
+            console.error('CRITICAL: PayPal payment captured but price verification failed!');
+        }
+
+        // Use verified items if available, otherwise fall back to client items
+        const verifiedItems = verification.valid ? verification.items : items;
+
+        // Calculate subtotal from verified database prices
+        const subtotal = verifiedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
         // Extract discount info from custom_id (set during checkout)
         let discountInfo = null;
+        let discountAmount = 0;
+
         if (purchase.custom_id) {
             try {
                 discountInfo = JSON.parse(purchase.custom_id);
@@ -97,14 +118,59 @@ exports.handler = async (event, context) => {
             }
         }
 
-        // Calculate totals from items
-        const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const discountAmount = discountInfo?.discount_amount || 0;
-        const discountedSubtotal = subtotal - discountAmount;
-        const shippingCost = discountedSubtotal >= 20 ? 0 : 3.49;
-        const total = discountedSubtotal + shippingCost;
+        // SECURITY: Re-validate discount code server-side (don't trust custom_id amount)
+        if (discountInfo?.discount_code) {
+            const { data: discount, error: discountError } = await supabase
+                .from('discount_codes')
+                .select('*')
+                .eq('code', discountInfo.discount_code.toUpperCase().trim())
+                .eq('is_active', true)
+                .single();
 
-        // Create order in database
+            if (discount && !discountError) {
+                const now = new Date();
+                const startsAt = discount.starts_at ? new Date(discount.starts_at) : null;
+                const expiresAt = discount.expires_at ? new Date(discount.expires_at) : null;
+
+                const isValid = (!startsAt || startsAt <= now) &&
+                                (!expiresAt || expiresAt > now) &&
+                                (!discount.max_uses || discount.use_count < discount.max_uses);
+
+                if (isValid) {
+                    if (discount.discount_type === 'percentage') {
+                        discountAmount = Math.round((subtotal * discount.discount_value) / 100 * 100) / 100;
+                    } else if (discount.discount_type === 'fixed') {
+                        discountAmount = Math.min(discount.discount_value, subtotal);
+                    }
+                    // free_delivery type has discountAmount = 0
+                    discountInfo.validated = true;
+                    discountInfo.discount_type = discount.discount_type;
+                }
+            }
+        }
+
+        // Calculate totals using verified prices
+        const discountedSubtotal = subtotal - discountAmount;
+        const isFreeDelivery = discountInfo?.discount_type === 'free_delivery';
+        const shippingCost = isFreeDelivery ? 0 : calculateShipping(discountedSubtotal, false);
+        const expectedTotal = Math.round((discountedSubtotal + shippingCost) * 100) / 100;
+
+        // SECURITY: Validate PayPal's captured amount against server-calculated total
+        const capturedAmount = parseFloat(payment.amount.value);
+        const tolerance = 0.02; // 2 pence tolerance for rounding differences
+
+        if (Math.abs(capturedAmount - expectedTotal) > tolerance) {
+            console.error('CRITICAL: Amount mismatch!', {
+                captured: capturedAmount,
+                expected: expectedTotal,
+                difference: Math.abs(capturedAmount - expectedTotal),
+                orderID: orderID
+            });
+            // Payment already captured - log for manual review
+            // Don't fail the request as the customer has already paid
+        }
+
+        // Create order in database using verified prices
         const orderData = {
             order_number: generateOrderNumber(),
             customer_email: customer?.email || captureData.payer?.email_address,
@@ -116,16 +182,16 @@ exports.handler = async (event, context) => {
                 postal_code: shipping.address.postal_code,
                 country: shipping.address.country_code
             } : null,
-            items: items,
+            items: verifiedItems, // SECURITY: Use verified items, not client items
             subtotal: subtotal,
             shipping: shippingCost,
-            total: total,
+            total: expectedTotal, // SECURITY: Use server-calculated total
             discount_code: discountInfo?.discount_code || null,
-            discount_amount: discountAmount || null,
+            discount_amount: discountAmount > 0 ? discountAmount : null,
             status: 'paid',
             payment_method: 'paypal',
             payment_id: payment.id,
-            notes: `PayPal Order: ${orderID}`
+            notes: `PayPal Order: ${orderID}${Math.abs(capturedAmount - expectedTotal) > 0.01 ? ' [AMOUNT MISMATCH - REVIEW]' : ''}`
         };
 
         const { data: order, error } = await supabase

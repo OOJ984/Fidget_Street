@@ -26,6 +26,54 @@ const MIN_ITEM_PRICE = 0.01;
 const MAX_ITEM_PRICE = 10000;
 
 /**
+ * SECURITY: Comprehensive XSS detection patterns
+ * Detects various XSS attack vectors including:
+ * - HTML tags (script, img, iframe, etc.)
+ * - Event handlers (onclick, onerror, etc.)
+ * - JavaScript protocol (javascript:, data:, vbscript:)
+ * - Encoded characters that could bypass basic filters
+ */
+const XSS_PATTERNS = [
+    /<[^>]*>/i,                           // HTML tags
+    /javascript\s*:/i,                     // javascript: protocol
+    /data\s*:/i,                           // data: protocol (can embed JS)
+    /vbscript\s*:/i,                       // vbscript: protocol
+    /on\w+\s*=/i,                          // Event handlers (onclick=, onerror=, etc.)
+    /expression\s*\(/i,                    // CSS expression (IE)
+    /&#/,                                  // HTML numeric entities (could hide malicious content)
+    /%3C|%3E/i,                           // URL encoded < >
+    /\x00/,                                // Null bytes
+    /<!\[CDATA\[/i,                        // CDATA blocks
+    /style\s*=\s*["']?[^"']*(?:expression|javascript|behavior)/i  // Malicious CSS
+];
+
+/**
+ * Check string for potential XSS content
+ * @param {string} str - String to check
+ * @returns {boolean} - True if potential XSS detected
+ */
+function containsXSS(str) {
+    if (!str || typeof str !== 'string') return false;
+    return XSS_PATTERNS.some(pattern => pattern.test(str));
+}
+
+/**
+ * Sanitize string by encoding HTML special characters
+ * Use this for data that will be displayed in HTML context
+ * @param {string} str - String to sanitize
+ * @returns {string} - Sanitized string
+ */
+function encodeHTML(str) {
+    if (!str || typeof str !== 'string') return '';
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;');
+}
+
+/**
  * Validate email format
  * @param {string} email
  * @returns {{ valid: boolean, error?: string }}
@@ -99,8 +147,8 @@ function validateName(name) {
         return { valid: false, error: 'Name is too long' };
     }
 
-    // Basic XSS prevention - no HTML tags
-    if (/<[^>]*>/.test(trimmed)) {
+    // SECURITY: Comprehensive XSS prevention
+    if (containsXSS(trimmed)) {
         return { valid: false, error: 'Name contains invalid characters' };
     }
 
@@ -189,9 +237,9 @@ function validateShippingAddress(address) {
         }
     }
 
-    // Basic XSS prevention
+    // SECURITY: Comprehensive XSS prevention
     for (const field of Object.keys(address)) {
-        if (typeof address[field] === 'string' && /<[^>]*>/.test(address[field])) {
+        if (typeof address[field] === 'string' && containsXSS(address[field])) {
             return { valid: false, error: `Shipping address: ${field} contains invalid characters` };
         }
     }
@@ -235,6 +283,9 @@ module.exports = {
     validateShippingAddress,
     validateOrderNumber,
     sanitizeString,
+    // SECURITY: XSS prevention utilities
+    containsXSS,
+    encodeHTML,
     // Export limits for testing
     MAX_QUANTITY_PER_ITEM,
     MAX_ITEMS_PER_ORDER,

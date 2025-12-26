@@ -11,34 +11,28 @@ async function loadInstagramFeed() {
     const grid = document.getElementById('instagram-grid');
 
     try {
-        const response = await fetch('data/instagram_sample.json');
+        const response = await fetch('/api/instagram');
         const posts = await response.json();
 
-        grid.innerHTML = posts.map(post => `
+        grid.innerHTML = posts.map(post => {
+            const hasImage = post.image && post.image.length > 0;
+            return `
             <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="group relative aspect-square overflow-hidden rounded-lg">
-                <!-- IMAGE_PLACEHOLDER: Instagram post - ${post.caption} -->
-                <div class="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900"></div>
+                ${hasImage
+                    ? `<img src="${post.image}" alt="${post.caption?.substring(0, 50) || 'Instagram post'}" class="w-full h-full object-cover" loading="lazy">`
+                    : `<div class="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                        <svg class="w-12 h-12 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"/>
+                        </svg>
+                    </div>`
+                }
                 <div class="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors flex items-center justify-center">
                     <div class="opacity-0 group-hover:opacity-100 transition-opacity text-center p-4">
-                        <div class="flex items-center justify-center space-x-4 mb-2">
-                            <span class="flex items-center text-sm">
-                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                                </svg>
-                                ${post.likes}
-                            </span>
-                            <span class="flex items-center text-sm">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                                ${post.comments}
-                            </span>
-                        </div>
-                        <p class="text-xs line-clamp-2">${post.caption}</p>
+                        <p class="text-xs text-white line-clamp-3">${post.caption || ''}</p>
                     </div>
                 </div>
             </a>
-        `).join('');
+        `}).join('');
     } catch (error) {
         console.error('Error loading Instagram feed:', error);
         grid.innerHTML = '<p class="col-span-full text-center text-gray-500">Unable to load Instagram feed</p>';

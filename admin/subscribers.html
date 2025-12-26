@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidget Street Admin | Email Subscribers</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#71c7e1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="../styles/output.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen">
+    <!-- Admin Navigation -->
+    <nav class="bg-navy-50 border-b border-navy/20 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <img src="../assets/logo.png" alt="Fidget Street Logo" class="h-16 lg:h-20 w-auto">
+                    <span class="font-serif text-2xl font-semibold">Admin</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
+                    <a href="products.html" class="text-navy-700 hover:text-navy transition-colors">Products</a>
+                    <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
+                    <div class="relative nav-dropdown">
+                        <button class="text-soft-blue font-medium flex items-center gap-1">
+                            More
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu absolute top-full left-0 mt-1 bg-white border border-navy/20 rounded-lg shadow-lg py-2 min-w-[160px] z-50" style="display:none">
+                            <a href="colors.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Colours</a>
+                            <a href="sizes.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Sizes</a>
+                            <a href="media.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Media</a>
+                            <a href="analytics.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Analytics</a>
+                            <a href="subscribers.html" class="block px-4 py-2 text-soft-blue font-medium bg-navy-50">Subscribers</a>
+                            <a href="email-builder.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Emails</a>
+                            <a href="discounts.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Discounts</a>
+                            <a href="gift-cards.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Gift Cards</a>
+                            <a href="website.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Website</a>
+                            <a href="users.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50 admin-only-link">Users</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="user-name" class="text-sm text-navy-600"></span>
+                <button id="logout-btn" class="text-sm text-navy-600 hover:text-navy transition-colors">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2 overflow-x-auto">
+        <div class="flex items-center space-x-4 whitespace-nowrap">
+            <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="analytics.html" class="text-navy-700 text-sm hover:text-navy">Analytics</a>
+            <a href="products.html" class="text-navy-700 text-sm hover:text-navy">Products</a>
+            <a href="colors.html" class="text-navy-700 text-sm hover:text-navy">Colours</a>
+            <a href="media.html" class="text-navy-700 text-sm hover:text-navy">Media</a>
+            <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
+            <a href="subscribers.html" class="text-soft-blue text-sm font-medium">Subscribers</a>
+            <a href="email-builder.html" class="text-navy-700 text-sm hover:text-navy">Emails</a>
+            <a href="discounts.html" class="text-navy-700 text-sm hover:text-navy">Discounts</a>
+            <a href="gift-cards.html" class="text-navy-700 text-sm hover:text-navy">Gift Cards</a>
+            <a href="website.html" class="text-navy-700 text-sm hover:text-navy">Website</a>
+            <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="font-serif text-3xl font-semibold">Email Subscribers</h1>
+                <p class="text-navy-600 mt-1">Manage your newsletter mailing list</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="export-btn" class="btn-secondary py-2 px-4 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    Export CSV
+                </button>
+                <a href="email-builder.html" class="btn-primary py-2 px-4 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Create Email
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-navy-50 rounded-lg p-6">
+                <div class="text-sm text-navy-600 mb-1">Total Subscribers</div>
+                <div id="total-count" class="text-3xl font-semibold text-navy">0</div>
+            </div>
+            <div class="bg-navy-50 rounded-lg p-6">
+                <div class="text-sm text-navy-600 mb-1">Active Subscribers</div>
+                <div id="active-count" class="text-3xl font-semibold text-green-600">0</div>
+            </div>
+            <div class="bg-navy-50 rounded-lg p-6">
+                <div class="text-sm text-navy-600 mb-1">Unsubscribed</div>
+                <div id="inactive-count" class="text-3xl font-semibold text-red-500">0</div>
+            </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="flex items-center gap-4 mb-4">
+            <select id="filter-status" class="px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                <option value="all">All Subscribers</option>
+                <option value="active">Active Only</option>
+                <option value="inactive">Unsubscribed</option>
+            </select>
+            <input type="text" id="search-input" placeholder="Search by email..."
+                class="flex-1 max-w-sm px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+        </div>
+
+        <!-- Subscribers Table -->
+        <div class="bg-navy-50 rounded-lg overflow-hidden">
+            <div id="subscribers-container" class="overflow-x-auto">
+                <div class="flex justify-center py-12">
+                    <div class="animate-spin w-8 h-8 border-4 border-soft-blue border-t-transparent rounded-full"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copy All Emails Button -->
+        <div class="mt-4 flex justify-end">
+            <button id="copy-emails-btn" class="text-sm text-soft-blue hover:text-soft-blue/80 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                Copy All Active Emails
+            </button>
+        </div>
+    </main>
+
+    <!-- Unsubscribe Confirmation Modal -->
+    <div id="unsubscribe-modal" class="hidden fixed inset-0 bg-navy-900/90 flex items-center justify-center z-50 p-4">
+        <div class="bg-navy-50 rounded-lg max-w-sm w-full p-6">
+            <h3 class="text-xl font-semibold mb-4">Unsubscribe User?</h3>
+            <p class="text-navy-600 mb-2">Are you sure you want to unsubscribe:</p>
+            <p id="unsubscribe-email" class="font-medium mb-6"></p>
+            <div class="flex gap-3">
+                <button id="cancel-unsubscribe" class="flex-1 btn-secondary py-2">Cancel</button>
+                <button id="confirm-unsubscribe" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition-colors">Unsubscribe</button>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="../scripts/admin-nav.js"></script>
+    <script defer src="../scripts/admin-subscribers.js"></script>
+</body>
+</html>

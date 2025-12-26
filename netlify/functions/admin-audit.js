@@ -66,7 +66,12 @@ exports.handler = async (event, context) => {
             }
 
             if (params.user_email) {
-                query = query.ilike('user_email', `%${params.user_email}%`);
+                // SECURITY: Escape SQL wildcards to prevent injection
+                const emailSearch = params.user_email.trim()
+                    .replace(/\\/g, '\\\\')
+                    .replace(/%/g, '\\%')
+                    .replace(/_/g, '\\_');
+                query = query.ilike('user_email', `%${emailSearch}%`);
             }
 
             if (params.resource_type) {
@@ -86,10 +91,10 @@ exports.handler = async (event, context) => {
                 query = query.lte('created_at', params.to);
             }
 
-            // Pagination
-            const page = parseInt(params.page, 10) || 1;
-            const limit = Math.min(parseInt(params.limit, 10) || 50, 100);
-            const offset = (page - 1) * limit;
+            // Pagination with validation
+            const page = Math.max(1, parseInt(params.page, 10) || 1);
+            const limit = Math.min(Math.max(1, parseInt(params.limit, 10) || 50), 100);
+            const offset = Math.min((page - 1) * limit, 10000); // Cap offset to prevent DoS
 
             query = query.range(offset, offset + limit - 1);
 

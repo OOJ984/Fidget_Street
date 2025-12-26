@@ -7,10 +7,11 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
-// Configuration (set high to effectively disable rate limiting)
-const MAX_ATTEMPTS_PER_EMAIL = 1000;
-const MAX_ATTEMPTS_PER_IP = 10000;
-const LOCKOUT_DURATION_MINUTES = 1;
+// SECURITY: Rate limiting configuration
+// These values protect against brute force attacks
+const MAX_ATTEMPTS_PER_EMAIL = 5;      // 5 attempts per email
+const MAX_ATTEMPTS_PER_IP = 50;        // 50 attempts per IP (allows multiple users)
+const LOCKOUT_DURATION_MINUTES = 15;   // 15 minute lockout
 const DB_TIMEOUT_MS = 5000; // 5 second timeout for DB operations
 
 /**

@@ -30,19 +30,22 @@ const supabase = createClient(
 );
 
 /**
- * Generate a unique gift card code
+ * Generate a unique gift card code using cryptographically secure random
  */
 async function generateGiftCardCode() {
+    const crypto = require('crypto');
     let attempts = 0;
     const maxAttempts = 10;
 
     while (attempts < maxAttempts) {
-        // Generate code: GC-XXXX-XXXX-XXXX
+        // Generate code: GC-XXXX-XXXX-XXXX using crypto.randomBytes
         const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusing chars (0,O,1,I)
+        const randomBytes = crypto.randomBytes(12); // 12 bytes for 12 characters
         let code = 'GC-';
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 4; j++) {
-                code += chars.charAt(Math.floor(Math.random() * chars.length));
+                const idx = i * 4 + j;
+                code += chars.charAt(randomBytes[idx] % chars.length);
             }
             if (i < 2) code += '-';
         }
@@ -137,7 +140,11 @@ exports.handler = async (event, context) => {
 
             // Search by code or email
             if (params.search) {
-                const searchTerm = params.search.trim();
+                // SECURITY: Escape SQL wildcards to prevent injection
+                const searchTerm = params.search.trim()
+                    .replace(/\\/g, '\\\\')  // Escape backslashes first
+                    .replace(/%/g, '\\%')    // Escape percent signs
+                    .replace(/_/g, '\\_');   // Escape underscores
                 query = query.or(`code.ilike.%${searchTerm}%,purchaser_email.ilike.%${searchTerm}%,recipient_email.ilike.%${searchTerm}%`);
             }
 

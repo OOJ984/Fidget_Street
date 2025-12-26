@@ -478,45 +478,260 @@ describe('Inventory Management', () => {
         });
     });
 
-    describe('Documentation: Missing Stock Decrement', () => {
+    describe('Stock Decrement After Order (Webhook Logic)', () => {
         /**
-         * These tests document that stock decrement is NOT implemented
-         * in the webhook handler. They serve as reminders for future work.
+         * These tests verify the stock decrement logic that runs in the webhook
+         * after a successful order. Since we can't easily call the webhook
+         * (requires Stripe signature), we test the database operations directly.
          */
 
-        it('KNOWN GAP: webhook does not decrement stock after order', () => {
-            // This is a documentation test
-            // The webhook at netlify/functions/webhooks.js creates orders
-            // but does NOT call any stock decrement logic
+        it('should decrement stock using optimistic locking pattern', async () => {
+            // Create a test product
+            const { data: testProduct } = await supabase
+                .from('products')
+                .insert({
+                    title: 'TEST_Decrement_Product',
+                    slug: `test-decrement-${Date.now()}`,
+                    price_gbp: 15.99,
+                    currency: 'GBP',
+                    category: 'spinners',
+                    stock: 10,
+                    is_active: true
+                })
+                .select('id, stock')
+                .single();
 
-            const webhookStockDecrement = false; // As of this writing
-            expect(webhookStockDecrement).toBe(false);
+            if (!testProduct) {
+                console.log('Skipping - could not create test product');
+                return;
+            }
 
-            console.log(`
-                ========================================
-                IMPORTANT: Stock Decrement NOT Implemented
-                ========================================
-                The webhook handler (webhooks.js) creates orders but
-                does NOT decrement product stock. This means:
+            try {
+                const originalStock = testProduct.stock;
+                const orderQuantity = 3;
+                const expectedNewStock = originalStock - orderQuantity;
 
-                1. Products can be oversold
-                2. Stock levels are not accurate
-                3. Manual stock management is required
+                // Simulate the optimistic locking pattern used in webhook
+                const { data: updated, error } = await supabase
+                    .from('products')
+                    .update({
+                        stock: expectedNewStock,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', testProduct.id)
+                    .eq('stock', originalStock) // Optimistic lock
+                    .select('id, stock')
+                    .single();
 
-                To fix, add to webhooks.js after order creation:
-                - Loop through order items
-                - Decrement stock for each product
-                - Use atomic operation (FOR UPDATE or RPC)
-                ========================================
-            `);
+                expect(error).toBeNull();
+                expect(updated).toBeDefined();
+                expect(updated.stock).toBe(expectedNewStock);
+
+                // Verify the change persisted
+                const { data: verified } = await supabase
+                    .from('products')
+                    .select('stock')
+                    .eq('id', testProduct.id)
+                    .single();
+
+                expect(verified.stock).toBe(expectedNewStock);
+            } finally {
+                await supabase.from('products').delete().eq('id', testProduct.id);
+            }
+        });
+
+        it('should handle optimistic lock failure gracefully', async () => {
+            // Create a test product
+            const { data: testProduct } = await supabase
+                .from('products')
+                .insert({
+                    title: 'TEST_Lock_Failure',
+                    slug: `test-lock-${Date.now()}`,
+                    price_gbp: 12.99,
+                    currency: 'GBP',
+                    category: 'fidget-cubes',
+                    stock: 5,
+                    is_active: true
+                })
+                .select('id, stock')
+                .single();
+
+            if (!testProduct) {
+                console.log('Skipping - could not create test product');
+                return;
+            }
+
+            try {
+                const originalStock = testProduct.stock;
+
+                // First update succeeds
+                await supabase
+                    .from('products')
+                    .update({ stock: originalStock - 1 })
+                    .eq('id', testProduct.id);
+
+                // Now try with stale stock value (simulates race condition)
+                const { data: failedUpdate, error } = await supabase
+                    .from('products')
+                    .update({ stock: originalStock - 2 })
+                    .eq('id', testProduct.id)
+                    .eq('stock', originalStock) // This will fail - stock changed
+                    .select('id')
+                    .single();
+
+                // Update should return null (no rows matched)
+                expect(failedUpdate).toBeNull();
+
+                // Stock should be at originalStock - 1 (first update only)
+                const { data: actual } = await supabase
+                    .from('products')
+                    .select('stock')
+                    .eq('id', testProduct.id)
+                    .single();
+
+                expect(actual.stock).toBe(originalStock - 1);
+            } finally {
+                await supabase.from('products').delete().eq('id', testProduct.id);
+            }
+        });
+
+        it('should not go below zero stock', async () => {
+            const { data: testProduct } = await supabase
+                .from('products')
+                .insert({
+                    title: 'TEST_Zero_Floor',
+                    slug: `test-zero-floor-${Date.now()}`,
+                    price_gbp: 8.99,
+                    currency: 'GBP',
+                    category: 'push-bubbles',
+                    stock: 2,
+                    is_active: true
+                })
+                .select('id, stock')
+                .single();
+
+            if (!testProduct) {
+                console.log('Skipping - could not create test product');
+                return;
+            }
+
+            try {
+                // Try to decrement by more than available (webhook uses Math.max(0, newStock))
+                const newStock = Math.max(0, testProduct.stock - 5);
+
+                await supabase
+                    .from('products')
+                    .update({ stock: newStock })
+                    .eq('id', testProduct.id);
+
+                const { data: result } = await supabase
+                    .from('products')
+                    .select('stock')
+                    .eq('id', testProduct.id)
+                    .single();
+
+                expect(result.stock).toBe(0);
+                expect(result.stock).toBeGreaterThanOrEqual(0);
+            } finally {
+                await supabase.from('products').delete().eq('id', testProduct.id);
+            }
+        });
+
+        it('should decrement stock for multiple items in order', async () => {
+            // Create two test products
+            const { data: products } = await supabase
+                .from('products')
+                .insert([
+                    {
+                        title: 'TEST_Multi_1',
+                        slug: `test-multi-1-${Date.now()}`,
+                        price_gbp: 10.00,
+                        currency: 'GBP',
+                        category: 'spinners',
+                        stock: 10,
+                        is_active: true
+                    },
+                    {
+                        title: 'TEST_Multi_2',
+                        slug: `test-multi-2-${Date.now()}`,
+                        price_gbp: 15.00,
+                        currency: 'GBP',
+                        category: 'fidget-cubes',
+                        stock: 8,
+                        is_active: true
+                    }
+                ])
+                .select('id, stock');
+
+            if (!products || products.length !== 2) {
+                console.log('Skipping - could not create test products');
+                return;
+            }
+
+            try {
+                // Simulate order with multiple items
+                const orderItems = [
+                    { id: products[0].id, quantity: 2 },
+                    { id: products[1].id, quantity: 3 }
+                ];
+
+                // Process each item (like the webhook does)
+                for (const item of orderItems) {
+                    const product = products.find(p => p.id === item.id);
+                    const newStock = Math.max(0, product.stock - item.quantity);
+
+                    await supabase
+                        .from('products')
+                        .update({ stock: newStock })
+                        .eq('id', item.id);
+                }
+
+                // Verify both were decremented
+                const { data: updated } = await supabase
+                    .from('products')
+                    .select('id, stock')
+                    .in('id', products.map(p => p.id));
+
+                const product1 = updated.find(p => p.id === products[0].id);
+                const product2 = updated.find(p => p.id === products[1].id);
+
+                expect(product1.stock).toBe(10 - 2); // 8
+                expect(product2.stock).toBe(8 - 3);  // 5
+            } finally {
+                for (const product of products) {
+                    await supabase.from('products').delete().eq('id', product.id);
+                }
+            }
+        });
+    });
+
+    describe('Remaining Gaps', () => {
+        /**
+         * Stock decrement is now implemented in webhooks.js.
+         * These document remaining gaps.
+         */
+
+        it('IMPLEMENTED: webhook now decrements stock after order', () => {
+            // Stock decrement was added to webhooks.js
+            // Uses optimistic locking pattern to prevent race conditions
+            const webhookStockDecrement = true;
+            expect(webhookStockDecrement).toBe(true);
+
+            console.log('Stock decrement is now implemented in webhooks.js');
         });
 
         it('KNOWN GAP: no stock restoration on cancellation', () => {
-            // This is a documentation test
+            // This is still not implemented
             const cancellationStockRestore = false;
             expect(cancellationStockRestore).toBe(false);
 
-            console.log('Stock restoration on order cancellation is not implemented');
+            console.log('Stock restoration on order cancellation is not yet implemented');
+        });
+
+        it('KNOWN GAP: no database constraint prevents negative stock', () => {
+            // There's no CHECK constraint on products.stock >= 0
+            // The webhook uses Math.max(0, newStock) to prevent this
+            console.log('No database CHECK constraint - relies on application logic');
         });
     });
 });

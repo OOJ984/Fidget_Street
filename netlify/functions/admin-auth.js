@@ -25,7 +25,7 @@ if (!JWT_SECRET) {
 }
 
 const TOKEN_EXPIRY = '24h';
-const BCRYPT_ROUNDS = 12;
+const BCRYPT_ROUNDS = 10; // Reduced from 12 for faster login (still secure)
 
 /**
  * Hash password with bcrypt

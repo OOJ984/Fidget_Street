@@ -5,18 +5,30 @@
  */
 
 import { beforeAll, afterAll, beforeEach, vi } from 'vitest';
+import { config } from 'dotenv';
+
+// Load .env file for real Supabase credentials
+config();
 
 // Set test environment variables
 beforeAll(() => {
     // Generate a test encryption key (32 bytes = 64 hex chars)
-    process.env.ENCRYPTION_KEY = 'a'.repeat(64);
+    if (!process.env.ENCRYPTION_KEY) {
+        process.env.ENCRYPTION_KEY = 'a'.repeat(64);
+    }
 
-    // Set a test JWT secret
-    process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing';
+    // Set a test JWT secret if not provided
+    if (!process.env.JWT_SECRET) {
+        process.env.JWT_SECRET = 'test-jwt-secret-key-for-testing';
+    }
 
-    // Supabase test config (mocked)
-    process.env.SUPABASE_URL = 'https://test.supabase.co';
-    process.env.SUPABASE_SERVICE_KEY = 'test-service-key';
+    // Use real Supabase from .env if available, otherwise use test values
+    if (!process.env.SUPABASE_URL) {
+        process.env.SUPABASE_URL = 'https://test.supabase.co';
+    }
+    if (!process.env.SUPABASE_SERVICE_KEY && !process.env.SUPABASE_ANON_KEY) {
+        process.env.SUPABASE_SERVICE_KEY = 'test-service-key';
+    }
 });
 
 // Reset mocks between tests

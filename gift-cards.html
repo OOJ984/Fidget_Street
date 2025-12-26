@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Gift Cards | Fidget Street Digital Vouchers</title>
+    <meta name="description" content="Buy Fidget Street digital gift cards. The perfect gift for fidget toy lovers. Choose from £10, £25, £50, £100 or custom amounts. Instant delivery via email.">
+    <link rel="canonical" href="https://fidgetstreet.netlify.app/gift-cards.html">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#71c7e1">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Fidget Street Gift Cards">
+    <meta property="og:description" content="The perfect gift! Buy digital gift cards for fidget toy lovers. Choose your amount and send instantly.">
+    <meta property="og:type" content="product">
+    <meta property="og:url" content="https://fidgetstreet.netlify.app/gift-cards.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link href="styles/output.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased">
+    <!-- Rotating Announcement Bar -->
+    <div class="text-white text-center py-2.5 text-sm font-medium overflow-hidden" style="background: linear-gradient(90deg, #71c7e1 0%, #A8E0A2 50%, #D8B4E2 100%);">
+        <div class="max-w-7xl mx-auto px-4 relative h-6">
+            <a href="products.html" class="promo-message flex items-center justify-center gap-2 absolute inset-0 transition-all duration-500 opacity-100">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                </svg>
+                <span>Free Delivery Over £30 - Shop Now!</span>
+            </a>
+            <a href="products.html?category=bundles" class="promo-message flex items-center justify-center gap-2 absolute inset-0 transition-all duration-500 opacity-0">
+                <span>🎁</span>
+                <span>NEW: Bundle Deals - Save More When You Buy Together!</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 border-b border-soft-blue/20" style="background-color: #71c7e1;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <a href="index.html" class="flex items-center gap-2">
+                    <img src="/assets/logo.png" alt="Fidget Street Logo" class="h-10 lg:h-12 w-auto">
+                </a>
+
+                <div class="hidden lg:flex items-center justify-center flex-1">
+                    <div class="flex items-center space-x-12 lg:space-x-20">
+                        <a href="index.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Home</a>
+                        <div class="relative group">
+                            <a href="products.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2 flex items-center gap-1">
+                                Shop
+                                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </a>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                                <div class="bg-white border border-gray-200 rounded-lg py-2 min-w-48 shadow-xl">
+                                    <a href="products.html" class="block px-4 py-2 text-gray-800 hover:bg-soft-blue-50 transition-colors font-medium">All Products</a>
+                                    <a href="products.html?category=articulated-toys" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Articulated Toys</a>
+                                    <a href="products.html?category=fidget-cubes" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Fidget Cubes</a>
+                                    <a href="products.html?category=spinners" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Spinners</a>
+                                    <a href="products.html?category=push-bubbles" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Push Bubbles</a>
+                                    <a href="products.html?category=bundles" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors">Bundles</a>
+                                    <div class="border-t border-gray-100 my-2"></div>
+                                    <a href="gift-cards.html" class="block px-4 py-2 text-gray-700 hover:bg-soft-blue-50 transition-colors font-medium">Gift Cards</a>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="about.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">About</a>
+                        <a href="events.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Events</a>
+                        <a href="contact.html" class="text-white hover:text-gray-100 font-medium transition-colors px-2">Contact</a>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-6">
+                    <button id="search-toggle" class="p-2 text-white hover:text-gray-300 transition-colors" aria-label="Search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                    <a href="https://www.instagram.com/fidget_street/" target="_blank" rel="noopener noreferrer" class="hidden sm:block p-2 text-white hover:text-gray-300 transition-colors" aria-label="Instagram">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@fidget.street.official" target="_blank" rel="noopener noreferrer" class="hidden sm:block p-2 text-white hover:text-gray-300 transition-colors" aria-label="TikTok">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+                        </svg>
+                    </a>
+                    <button id="wishlist-toggle" class="relative p-2 text-white hover:text-gray-300 transition-colors" aria-label="Wishlist">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span id="wishlist-count" class="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <button id="cart-toggle" class="relative p-2 text-white hover:text-gray-300 transition-colors" aria-label="Cart">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                        </svg>
+                        <span id="cart-count" class="absolute -top-1 -right-1 w-5 h-5 bg-soft-blue text-white text-xs rounded-full flex items-center justify-center hidden">0</span>
+                    </button>
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 text-white" aria-label="Menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden border-t border-white/20" style="background-color: #71c7e1;">
+            <div class="px-4 py-6 space-y-4">
+                <a href="index.html" class="block text-white hover:text-gray-100 py-2 font-medium">Home</a>
+                <div class="space-y-2">
+                    <span class="block text-white py-2 font-medium">Shop</span>
+                    <a href="products.html" class="block text-white/80 hover:text-white py-1 pl-4">All Products</a>
+                    <a href="products.html?category=articulated-toys" class="block text-white/80 hover:text-white py-1 pl-4">Articulated Toys</a>
+                    <a href="products.html?category=fidget-cubes" class="block text-white/80 hover:text-white py-1 pl-4">Fidget Cubes</a>
+                    <a href="products.html?category=spinners" class="block text-white/80 hover:text-white py-1 pl-4">Spinners</a>
+                    <a href="products.html?category=push-bubbles" class="block text-white/80 hover:text-white py-1 pl-4">Push Bubbles</a>
+                    <a href="products.html?category=bundles" class="block text-white/80 hover:text-white py-1 pl-4">Bundles</a>
+                    <a href="gift-cards.html" class="block text-white/80 hover:text-white py-1 pl-4 font-medium">Gift Cards</a>
+                </div>
+                <a href="about.html" class="block text-white hover:text-gray-100 py-2 font-medium">About</a>
+                <a href="events.html" class="block text-white hover:text-gray-100 py-2 font-medium">Events</a>
+                <a href="contact.html" class="block text-white hover:text-gray-100 py-2 font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Page Header -->
+        <section class="relative py-16 lg:py-24 overflow-hidden" style="background: linear-gradient(135deg, #71c7e1 0%, #D9C7F0 35%, #FFF7F2 65%, #F6B6C8 100%);">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <h1 class="text-4xl lg:text-5xl font-bold mb-4" style="font-family: 'Fredoka', sans-serif; color: #1a1a2e;">
+                    Gift Cards
+                </h1>
+                <p class="text-lg text-gray-700 max-w-2xl mx-auto">
+                    The perfect gift for fidget toy lovers! Choose an amount and we'll email you the gift card code.
+                </p>
+                <!-- Digital Product Badge -->
+                <div class="mt-6 inline-flex items-center gap-2 bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow-sm">
+                    <svg class="w-5 h-5 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="text-sm font-medium text-gray-700">Digital Product - Instant Email Delivery</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gift Card Selection -->
+        <section class="py-16">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <!-- Gift Card Preview -->
+                    <div class="p-8 text-center" style="background: linear-gradient(135deg, #71c7e1 0%, #A8E0A2 50%, #D8B4E2 100%);">
+                        <div class="bg-white/90 backdrop-blur rounded-xl p-6 max-w-sm mx-auto shadow-lg">
+                            <div class="text-sm text-gray-500 mb-2">Fidget Street Gift Card</div>
+                            <div id="gift-card-preview-amount" class="text-4xl font-bold mb-2" style="font-family: 'Fredoka', sans-serif; color: #71c7e1;">£25</div>
+                            <div class="text-xs text-gray-400">Valid for all products</div>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="gift-card-form" class="p-8 space-y-8">
+                        <!-- Amount Selection -->
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-900 mb-4">Choose Amount</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                                <button type="button" class="amount-btn py-4 px-6 rounded-xl border-2 border-gray-200 text-gray-700 font-semibold hover:border-soft-blue hover:bg-soft-blue-50 transition-all" data-amount="10">£10</button>
+                                <button type="button" class="amount-btn py-4 px-6 rounded-xl border-2 border-soft-blue bg-soft-blue-50 text-soft-blue font-semibold" data-amount="25">£25</button>
+                                <button type="button" class="amount-btn py-4 px-6 rounded-xl border-2 border-gray-200 text-gray-700 font-semibold hover:border-soft-blue hover:bg-soft-blue-50 transition-all" data-amount="50">£50</button>
+                                <button type="button" class="amount-btn py-4 px-6 rounded-xl border-2 border-gray-200 text-gray-700 font-semibold hover:border-soft-blue hover:bg-soft-blue-50 transition-all" data-amount="100">£100</button>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-gray-500">Or custom amount:</span>
+                                <div class="relative flex-1 max-w-32">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">£</span>
+                                    <input type="number" id="custom-amount" min="5" max="500" step="1" placeholder="5-500" class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-soft-blue text-center">
+                                </div>
+                            </div>
+                            <input type="hidden" id="selected-amount" name="amount" value="25">
+                        </div>
+
+                        <!-- Your Details -->
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-900 mb-4">Your Details</label>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="purchaser-name" class="block text-sm text-gray-600 mb-2">Your Name</label>
+                                    <input type="text" id="purchaser-name" name="purchaser_name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-soft-blue" placeholder="Your name">
+                                </div>
+                                <div>
+                                    <label for="purchaser-email" class="block text-sm text-gray-600 mb-2">Your Email</label>
+                                    <input type="email" id="purchaser-email" name="purchaser_email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-soft-blue" placeholder="your@email.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recipient Details (Optional) -->
+                        <div>
+                            <label class="block text-lg font-semibold text-gray-900 mb-2">Recipient Details <span class="text-sm font-normal text-gray-500">(optional)</span></label>
+                            <p class="text-sm text-gray-500 mb-4">Leave blank if you're buying this for yourself or want to forward it manually.</p>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="recipient-name" class="block text-sm text-gray-600 mb-2">Recipient's Name</label>
+                                    <input type="text" id="recipient-name" name="recipient_name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-soft-blue" placeholder="Their name">
+                                </div>
+                                <div>
+                                    <label for="recipient-email" class="block text-sm text-gray-600 mb-2">Recipient's Email</label>
+                                    <input type="email" id="recipient-email" name="recipient_email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-soft-blue" placeholder="their@email.com">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personal Message -->
+                        <div>
+                            <label for="personal-message" class="block text-lg font-semibold text-gray-900 mb-2">Personal Message <span class="text-sm font-normal text-gray-500">(optional)</span></label>
+                            <textarea id="personal-message" name="personal_message" rows="3" maxlength="200" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-soft-blue resize-none" placeholder="Add a personal message to include with the gift card..."></textarea>
+                            <p class="text-xs text-gray-400 mt-1"><span id="message-char-count">0</span>/200 characters</p>
+                        </div>
+
+                        <!-- Error Message -->
+                        <p id="gift-card-error" class="text-red-500 text-sm hidden"></p>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="buy-gift-card-btn" class="w-full py-4 text-white font-semibold text-lg rounded-full transition-all hover:opacity-90 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed" style="background: linear-gradient(90deg, #71c7e1 0%, #A8E0A2 100%);">
+                            <span id="btn-text">Buy Gift Card - £25</span>
+                            <span id="btn-loading" class="hidden">
+                                <svg class="animate-spin h-5 w-5 inline mr-2" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Processing...
+                            </span>
+                        </button>
+
+                        <p class="text-center text-sm text-gray-500">
+                            Secure payment via Stripe. Gift card code will be displayed on the confirmation page.
+                        </p>
+                    </form>
+                </div>
+
+                <!-- Already have a gift card? -->
+                <div class="mt-8 p-6 bg-gray-50 rounded-xl text-center">
+                    <p class="text-gray-600 mb-3">Already have a gift card?</p>
+                    <a href="check-balance.html" class="inline-flex items-center gap-2 px-6 py-3 border-2 border-soft-blue text-soft-blue font-medium rounded-full hover:bg-soft-blue hover:text-white transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        Check Balance & History
+                    </a>
+                </div>
+
+                <!-- Info Cards -->
+                <div class="grid sm:grid-cols-3 gap-6 mt-12">
+                    <div class="text-center p-6">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background-color: #71c7e1;">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">Digital Delivery</h3>
+                        <p class="text-sm text-gray-500">No shipping required - code shown instantly after purchase</p>
+                    </div>
+                    <div class="text-center p-6">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background-color: #A8E0A2;">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">Valid for 1 Year</h3>
+                        <p class="text-sm text-gray-500">Use your gift card balance within 12 months</p>
+                    </div>
+                    <div class="text-center p-6">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style="background-color: #D8B4E2;">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 mb-2">Flexible Use</h3>
+                        <p class="text-sm text-gray-500">Use full balance or split across orders</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200" role="contentinfo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-2 md:col-span-1">
+                    <a href="index.html" class="flex items-center space-x-2 mb-4">
+                        <span class="text-xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #71c7e1;">Fidget Street</span>
+                    </a>
+                    <p class="text-gray-500 text-sm mb-4">Fidget toys for focus, fun, and stress relief!</p>
+                    <div class="flex space-x-3">
+                        <a href="https://www.instagram.com/fidget_street/" class="text-gray-400 hover:text-soft-blue transition-colors" target="_blank" rel="noopener noreferrer">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                        <a href="https://www.tiktok.com/@fidget.street.official" class="text-gray-400 hover:text-soft-blue transition-colors" target="_blank" rel="noopener noreferrer">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/></svg>
+                        </a>
+                        <a href="mailto:Fidget.Street@protonmail.com" class="text-gray-400 hover:text-soft-blue transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Shop -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Shop</h3>
+                    <ul class="space-y-2">
+                        <li><a href="products.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">All Products</a></li>
+                        <li><a href="products.html?category=articulated-toys" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Articulated Toys</a></li>
+                        <li><a href="products.html?category=fidget-cubes" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Fidget Cubes</a></li>
+                        <li><a href="products.html?category=spinners" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Spinners</a></li>
+                        <li><a href="gift-cards.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors font-medium">Gift Cards</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="about.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">About Us</a></li>
+                        <li><a href="contact.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Contact</a></li>
+                        <li><a href="events.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Events</a></li>
+                        <li><a href="faq.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Help -->
+                <div>
+                    <h3 class="font-semibold text-gray-900 mb-4">Help</h3>
+                    <ul class="space-y-2">
+                        <li><a href="returns.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Returns</a></li>
+                        <li><a href="privacy.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Privacy</a></li>
+                        <li><a href="terms.html" class="text-gray-500 hover:text-soft-blue text-sm transition-colors">Terms</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-8 border-t border-gray-200">
+                <p class="text-gray-400 text-sm text-center">&copy; 2025 Fidget Street. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-black/50" id="cart-overlay"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform translate-x-full transition-transform duration-300" id="cart-panel">
+            <div class="flex flex-col h-full">
+                <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold" style="font-family: 'Fredoka', sans-serif; color: #71c7e1;">Your Cart</h2>
+                    <button id="cart-close" class="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="cart-items" class="flex-1 overflow-y-auto p-6"></div>
+                <div class="p-6 border-t border-gray-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-gray-600">Subtotal</span>
+                        <span id="cart-subtotal" class="font-semibold">£0.00</span>
+                    </div>
+                    <a href="cart.html" class="block w-full text-center py-3 text-white font-medium rounded-full transition-all hover:opacity-90 hover:scale-105" style="background-color: #71c7e1;">
+                        View Cart & Checkout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Sidebar -->
+    <div id="wishlist-sidebar" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+        <div class="absolute inset-0 bg-black/50" id="wishlist-overlay"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform translate-x-full transition-transform duration-300" id="wishlist-panel">
+            <div class="flex flex-col h-full">
+                <div class="flex items-center justify-between p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold flex items-center gap-2" style="font-family: 'Fredoka', sans-serif; color: #ec4899;">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        Your Wishlist
+                    </h2>
+                    <button id="wishlist-close" class="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="wishlist-items" class="flex-1 overflow-y-auto"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script defer src="scripts/api.js"></script>
+    <script defer src="scripts/settings.js"></script>
+    <script defer src="scripts/wishlist.js"></script>
+    <script defer src="scripts/main.js"></script>
+    <script defer src="scripts/cart.js"></script>
+    <script defer src="scripts/gift-cards.js"></script>
+</body>
+</html>

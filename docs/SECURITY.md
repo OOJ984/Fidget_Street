@@ -6,11 +6,11 @@ This document outlines the security measures implemented in the Fidget Street e-
 
 ---
 
-## December 2024 Security Audit
+## December 2025 Security Audit
 
 ### Summary
 
-A comprehensive security review was conducted on December 26, 2024, identifying **47 vulnerabilities** across authentication, input validation, payment processing, and data handling. All critical and high-priority issues have been remediated.
+A comprehensive security review was conducted on December 26, 2025, identifying **47 vulnerabilities** across authentication, input validation, payment processing, and data handling. All critical and high-priority issues have been remediated.
 
 | Severity | Found | Fixed | Remaining |
 |----------|-------|-------|-----------|
@@ -674,7 +674,17 @@ Response:
 
 ## Remaining Security Considerations
 
-These items were identified in the December 2024 audit but not fixed due to acceptable risk or complexity tradeoffs. They should be addressed in future work if the threat model changes.
+These items were identified in the December 2025 audit but not fixed due to acceptable risk or complexity tradeoffs. They should be addressed in future work if the threat model changes.
+
+**Tracked in GitHub Issues:**
+- [#9 - Replace localStorage token storage with httpOnly cookies](https://github.com/OOJ984/Fidget_Street/issues/9)
+- [#10 - Enforce encryption key in production](https://github.com/OOJ984/Fidget_Street/issues/10)
+- [#11 - Add Content-Type validation to webhook endpoint](https://github.com/OOJ984/Fidget_Street/issues/11)
+- [#12 - Move MFA rate limiting to database](https://github.com/OOJ984/Fidget_Street/issues/12)
+- [#13 - Implement refresh token rotation](https://github.com/OOJ984/Fidget_Street/issues/13)
+- [#14 - Add IP allowlisting for admin panel](https://github.com/OOJ984/Fidget_Street/issues/14)
+- [#15 - Add anomaly detection for suspicious activity](https://github.com/OOJ984/Fidget_Street/issues/15)
+- [#16 - Implement CSP reporting endpoint](https://github.com/OOJ984/Fidget_Street/issues/16)
 
 ### Medium Priority (Future Work)
 
@@ -718,5 +728,5 @@ These items were identified in the December 2024 audit but not fixed due to acce
 
 | Date | Version | Author | Changes |
 |------|---------|--------|---------|
-| 2024-12-26 | 2.0.0 | Security Audit | Comprehensive audit and 38 vulnerability fixes |
-| 2024-xx-xx | 1.0.0 | Initial | Original security documentation |
+| 2025-12-26 | 2.0.0 | Security Audit | Comprehensive audit - 47 vulnerabilities identified, 38 fixed. See GitHub Issues #9-#16 for remaining items. |
+| 2025-xx-xx | 1.0.0 | Initial | Original security documentation |

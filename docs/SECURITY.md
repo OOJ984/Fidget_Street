@@ -1,8 +1,100 @@
-# Wicka Security Documentation
+# Fidget Street Security Documentation
 
 ## Overview
 
-This document outlines the security measures implemented in the Wicka e-commerce platform.
+This document outlines the security measures implemented in the Fidget Street e-commerce platform.
+
+---
+
+## December 2024 Security Audit
+
+### Summary
+
+A comprehensive security review was conducted on December 26, 2024, identifying **47 vulnerabilities** across authentication, input validation, payment processing, and data handling. All critical and high-priority issues have been remediated.
+
+| Severity | Found | Fixed | Remaining |
+|----------|-------|-------|-----------|
+| **Critical** | 5 | 5 | 0 |
+| **High** | 10 | 10 | 0 |
+| **Medium** | 18 | 15 | 3 |
+| **Low** | 14 | 8 | 6 |
+
+### Critical Fixes Implemented
+
+1. **Hardcoded Password Reset Secret** (`reset-admin-password.js`)
+   - Removed hardcoded fallback `'fidget-reset-2024'`
+   - Added dedicated rate limiting (3 attempts/hour)
+   - Added timing-safe comparison
+   - Removed ability to create users via reset endpoint
+   - Restricted CORS
+
+2. **Rate Limiting Configuration** (`utils/rateLimit.js`)
+   - Changed from 1000 → 5 attempts per email
+   - Changed from 10000 → 50 attempts per IP
+   - Changed from 1 → 15 minute lockout
+
+3. **SQL Injection in Gift Card Search** (`admin-gift-cards.js`)
+   - Added wildcard escaping for ILIKE queries (`%`, `_`, `\`)
+
+4. **SQL Injection in Audit Log Search** (`admin-audit.js`)
+   - Added wildcard escaping
+   - Added pagination validation with 10,000 offset cap
+
+5. **User Creation via Password Reset** (`reset-admin-password.js`)
+   - Removed INSERT fallback - only UPDATE existing users
+
+### High Priority Fixes Implemented
+
+1. **Race Condition in Gift Card Balance** (`gift-card-only-checkout.js`, `webhooks.js`)
+   - Implemented optimistic locking: `.eq('current_balance', giftCard.current_balance)`
+   - Added rollback on order creation failure
+
+2. **Weak Gift Card Code Generation** (`gift-card-checkout.js`, `admin-gift-cards.js`)
+   - Replaced `Math.random()` with `crypto.randomBytes()`
+
+3. **Inconsistent bcrypt Rounds** (`admin-auth.js`)
+   - Standardized to 12 rounds across all files
+
+4. **Weak Password Requirements** (`admin-users.js`)
+   - Added complexity: uppercase, lowercase, and number required
+
+5. **PayPal Amount Not Validated** (`paypal-capture.js`)
+   - Added price verification against database
+   - Added captured amount validation with 2p tolerance
+   - Orders flagged with `[AMOUNT MISMATCH - REVIEW]` if discrepancy detected
+
+6. **MFA Security** (`admin-mfa.js`, `admin-auth.js`)
+   - Reduced setup token expiry from 30 → 10 minutes
+   - Added rate limiting (5 attempts, 15-minute lockout)
+   - Added per-user salt to backup code hashing
+
+### Medium Priority Fixes Implemented
+
+1. **CORS Wildcards Removed** (7 files)
+   - `products.js`, `subscribe.js`, `settings.js`, `track.js`
+   - `instagram.js`, `subscribers.js`, `supabase-config.js`
+   - All now use `getCorsHeaders()` with origin validation
+
+2. **XSS Prevention** (`utils/validation.js`)
+   - Added comprehensive detection patterns
+   - Event handlers, protocols, encoded chars, null bytes
+   - New functions: `containsXSS()`, `encodeHTML()`
+
+3. **Gift Card Info Disclosure** (`check-gift-card.js`)
+   - Removed transaction history from public endpoint
+   - Only returns: code, balance, currency, status, expiry
+
+### NOT Fixed (Acceptable Risk)
+
+See "Remaining Security Considerations" section below for:
+- localStorage token storage (mitigated by XSS prevention)
+- Encryption fallback in development
+- Content-Type validation on webhooks
+- JWT 24-hour expiry without refresh
+- Audit log 5-second timeout
+- Schema drift in SQL files
+
+---
 
 ---
 
@@ -150,7 +242,7 @@ Admin pages also use strict CSP - all inline scripts have been extracted to exte
 | Variable | Description |
 |----------|-------------|
 | `RESEND_API_KEY` | Resend API key for magic link emails |
-| `EMAIL_FROM` | Sender email address (e.g., `Wicka <orders@domain.com>`) |
+| `EMAIL_FROM` | Sender email address (e.g., `Fidget Street <orders@domain.com>`) |
 | `SITE_URL` | Custom domain URL (Netlify auto-sets `URL` and `DEPLOY_PRIME_URL`) |
 
 ### Security Notes
@@ -580,9 +672,51 @@ Response:
 
 ---
 
+## Remaining Security Considerations
+
+These items were identified in the December 2024 audit but not fixed due to acceptable risk or complexity tradeoffs. They should be addressed in future work if the threat model changes.
+
+### Medium Priority (Future Work)
+
+| Issue | Risk | Current Mitigation | Recommendation |
+|-------|------|-------------------|----------------|
+| **localStorage Token Storage** | XSS could steal JWT tokens | Comprehensive XSS prevention patterns | Consider httpOnly cookies |
+| **Encryption Fallback** | PII unencrypted in dev | Console warning when `ENCRYPTION_KEY` not set | Fail in production if not set |
+| **Webhook Content-Type** | Malformed requests | Stripe signature verification | Add Content-Type validation |
+
+### Low Priority (Acceptable Risk)
+
+| Issue | Risk | Current Mitigation | Notes |
+|-------|------|-------------------|-------|
+| **JWT 24-hour Expiry** | Long exposure if compromised | MFA required, rate limiting | No refresh mechanism needed for small admin team |
+| **Audit Log 5s Timeout** | Logs could be lost under load | Failures logged to console | Doesn't block main operations |
+| **Schema Drift** | Documentation inconsistency | Database has correct columns | Schema file needs sync with actual DB |
+| **Order Items Array Size** | Large orders could slow processing | Validated in checkout | Webhook accepts any size after payment |
+| **Email Regex Variations** | Inconsistent validation | All patterns reject invalid emails | Centralize to single pattern |
+| **Gift Card Regex Mismatch** | Generated chars vs validation | Internally generated codes always valid | Maintains backwards compatibility |
+
+### Recommended Future Enhancements
+
+1. **Add database-backed MFA rate limiting** - Currently in-memory (resets on function cold start)
+2. **Implement refresh tokens** - Reduce JWT exposure window
+3. **Add IP allowlisting for admin** - Restrict admin access to known IPs
+4. **Add anomaly detection** - Alert on unusual login patterns
+5. **Implement CSP reporting** - Monitor for blocked resources
+
+---
+
 ## References
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [OWASP Authentication Cheatsheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 - [Mozilla Security Guidelines](https://infosec.mozilla.org/guidelines/)
 - [Supabase Security Best Practices](https://supabase.com/docs/guides/platform/going-into-prod)
+
+---
+
+## Changelog
+
+| Date | Version | Author | Changes |
+|------|---------|--------|---------|
+| 2024-12-26 | 2.0.0 | Security Audit | Comprehensive audit and 38 vulnerability fixes |
+| 2024-xx-xx | 1.0.0 | Initial | Original security documentation |

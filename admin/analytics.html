@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidget Street Admin | Analytics</title>
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#C4707A">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link href="../styles/output.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen">
+    <!-- Admin Navigation -->
+    <nav class="bg-navy-50 border-b border-navy/20 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <img src="../assets/logo.png" alt="Fidget Street Logo" class="h-16 lg:h-20 w-auto">
+                    <span class="font-serif text-2xl font-semibold">Admin</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
+                    <a href="products.html" class="text-navy-700 hover:text-navy transition-colors">Products</a>
+                    <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
+                    <div class="relative nav-dropdown">
+                        <button class="text-soft-blue font-medium flex items-center gap-1">
+                            More
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu absolute top-full left-0 mt-1 bg-white border border-navy/20 rounded-lg shadow-lg py-2 min-w-[160px] z-50" style="display:none">
+                            <a href="colors.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Colours</a>
+                            <a href="sizes.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Sizes</a>
+                            <a href="media.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Media</a>
+                            <a href="analytics.html" class="block px-4 py-2 text-soft-blue font-medium bg-navy-50">Analytics</a>
+                            <a href="subscribers.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Subscribers</a>
+                            <a href="email-builder.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Emails</a>
+                            <a href="discounts.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Discounts</a>
+                            <a href="gift-cards.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Gift Cards</a>
+                            <a href="website.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Website</a>
+                            <a href="users.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50 admin-only-link">Users</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="user-name" class="text-sm text-navy-600"></span>
+                <button id="logout-btn" class="text-sm text-navy-600 hover:text-navy transition-colors">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2 overflow-x-auto">
+        <div class="flex items-center space-x-4 whitespace-nowrap">
+            <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="analytics.html" class="text-soft-blue text-sm font-medium">Analytics</a>
+            <a href="products.html" class="text-navy-700 text-sm hover:text-navy">Products</a>
+            <a href="colors.html" class="text-navy-700 text-sm hover:text-navy">Colours</a>
+            <a href="media.html" class="text-navy-700 text-sm hover:text-navy">Media</a>
+            <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
+            <a href="subscribers.html" class="text-navy-700 text-sm hover:text-navy">Subscribers</a>
+            <a href="email-builder.html" class="text-navy-700 text-sm hover:text-navy">Emails</a>
+            <a href="discounts.html" class="text-navy-700 text-sm hover:text-navy">Discounts</a>
+            <a href="gift-cards.html" class="text-navy-700 text-sm hover:text-navy">Gift Cards</a>
+            <a href="website.html" class="text-navy-700 text-sm hover:text-navy">Website</a>
+            <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="font-serif text-3xl font-semibold">Analytics</h1>
+            <select id="period-select" class="border border-navy/20 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-soft-blue">
+                <option value="today">Today</option>
+                <option value="7days" selected>Last 7 Days</option>
+                <option value="30days">Last 30 Days</option>
+                <option value="all">All Time</option>
+            </select>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-soft-blue"></div>
+            <p class="mt-4 text-navy-600">Loading analytics...</p>
+        </div>
+
+        <!-- Analytics Content -->
+        <div id="analytics-content" class="hidden">
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-navy-50 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-navy-600 text-sm">Total Views</h3>
+                        <svg class="w-5 h-5 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                    </div>
+                    <p id="stat-views" class="text-3xl font-semibold">0</p>
+                    <p id="stat-views-label" class="text-sm text-navy-500 mt-1">Last 7 days</p>
+                </div>
+
+                <div class="bg-navy-50 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-navy-600 text-sm">Unique Visitors</h3>
+                        <svg class="w-5 h-5 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <p id="stat-visitors" class="text-3xl font-semibold">0</p>
+                    <p id="stat-visitors-label" class="text-sm text-navy-500 mt-1">Last 7 days</p>
+                </div>
+
+                <div class="bg-navy-50 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-navy-600 text-sm">Views Today</h3>
+                        <svg class="w-5 h-5 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <p id="stat-today" class="text-3xl font-semibold">0</p>
+                    <p class="text-sm text-navy-500 mt-1">Since midnight</p>
+                </div>
+
+                <div class="bg-navy-50 rounded-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-navy-600 text-sm">Avg Daily Views</h3>
+                        <svg class="w-5 h-5 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <p id="stat-avg" class="text-3xl font-semibold">0</p>
+                    <p id="stat-avg-label" class="text-sm text-navy-500 mt-1">Last 7 days</p>
+                </div>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Top Pages -->
+                <div class="bg-navy-50 rounded-lg p-6">
+                    <h2 class="font-semibold text-lg mb-4">Top Pages</h2>
+                    <div id="top-pages" class="space-y-3">
+                        <!-- Populated by JS -->
+                    </div>
+                    <p id="no-pages" class="text-navy-500 text-sm hidden">No page views yet</p>
+                </div>
+
+                <!-- Daily Breakdown -->
+                <div class="bg-navy-50 rounded-lg p-6">
+                    <h2 class="font-semibold text-lg mb-4">Daily Views</h2>
+                    <div id="daily-views" class="space-y-2">
+                        <!-- Populated by JS -->
+                    </div>
+                    <p id="no-daily" class="text-navy-500 text-sm hidden">No data for this period</p>
+                </div>
+            </div>
+
+            <!-- Referrers -->
+            <div class="mt-8 bg-navy-50 rounded-lg p-6">
+                <h2 class="font-semibold text-lg mb-4">Top Referrers</h2>
+                <div id="top-referrers" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Populated by JS -->
+                </div>
+                <p id="no-referrers" class="text-navy-500 text-sm hidden">No referrer data yet</p>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="error-state" class="hidden text-center py-12">
+            <svg class="w-12 h-12 text-coral mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <p class="text-navy-600">Failed to load analytics</p>
+            <button onclick="loadAnalytics()" class="mt-4 text-soft-blue hover:underline">Try again</button>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../scripts/admin-nav.js"></script>
+    <script src="../scripts/admin-auth.js"></script>
+    <script>
+        const API_BASE = '/.netlify/functions';
+        let currentPeriod = '7days';
+
+        document.getElementById('period-select').addEventListener('change', (e) => {
+            currentPeriod = e.target.value;
+            loadAnalytics();
+        });
+
+        async function loadAnalytics() {
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('analytics-content');
+            const error = document.getElementById('error-state');
+
+            loading.classList.remove('hidden');
+            content.classList.add('hidden');
+            error.classList.add('hidden');
+
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${API_BASE}/admin-analytics?period=${currentPeriod}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to load analytics');
+
+                const data = await response.json();
+                renderAnalytics(data);
+
+                loading.classList.add('hidden');
+                content.classList.remove('hidden');
+            } catch (err) {
+                console.error('Analytics error:', err);
+                loading.classList.add('hidden');
+                error.classList.remove('hidden');
+            }
+        }
+
+        function renderAnalytics(data) {
+            const periodLabels = {
+                'today': 'Today',
+                '7days': 'Last 7 days',
+                '30days': 'Last 30 days',
+                'all': 'All time'
+            };
+
+            // Update stats
+            document.getElementById('stat-views').textContent = formatNumber(data.totalViews || 0);
+            document.getElementById('stat-visitors').textContent = formatNumber(data.uniqueVisitors || 0);
+            document.getElementById('stat-today').textContent = formatNumber(data.todayViews || 0);
+            document.getElementById('stat-avg').textContent = formatNumber(Math.round(data.avgDaily || 0));
+
+            // Update labels
+            document.getElementById('stat-views-label').textContent = periodLabels[currentPeriod];
+            document.getElementById('stat-visitors-label').textContent = periodLabels[currentPeriod];
+            document.getElementById('stat-avg-label').textContent = periodLabels[currentPeriod];
+
+            // Top pages
+            const topPages = document.getElementById('top-pages');
+            const noPages = document.getElementById('no-pages');
+            topPages.innerHTML = '';
+
+            if (data.topPages && data.topPages.length > 0) {
+                noPages.classList.add('hidden');
+                const maxViews = data.topPages[0].views;
+
+                data.topPages.forEach(page => {
+                    const percentage = (page.views / maxViews) * 100;
+                    const div = document.createElement('div');
+                    div.innerHTML = `
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm truncate max-w-[200px]" title="${page.page_path}">${formatPagePath(page.page_path)}</span>
+                            <span class="text-sm font-medium">${formatNumber(page.views)}</span>
+                        </div>
+                        <div class="h-2 bg-navy-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-soft-blue rounded-full" style="width: ${percentage}%"></div>
+                        </div>
+                    `;
+                    topPages.appendChild(div);
+                });
+            } else {
+                noPages.classList.remove('hidden');
+            }
+
+            // Daily views
+            const dailyViews = document.getElementById('daily-views');
+            const noDaily = document.getElementById('no-daily');
+            dailyViews.innerHTML = '';
+
+            if (data.dailyBreakdown && data.dailyBreakdown.length > 0) {
+                noDaily.classList.add('hidden');
+                const maxDaily = Math.max(...data.dailyBreakdown.map(d => d.views));
+
+                data.dailyBreakdown.slice(0, 7).forEach(day => {
+                    const percentage = maxDaily > 0 ? (day.views / maxDaily) * 100 : 0;
+                    const div = document.createElement('div');
+                    div.innerHTML = `
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-sm">${formatDate(day.date)}</span>
+                            <span class="text-sm font-medium">${formatNumber(day.views)}</span>
+                        </div>
+                        <div class="h-2 bg-navy-200 rounded-full overflow-hidden">
+                            <div class="h-full bg-mint rounded-full" style="width: ${percentage}%"></div>
+                        </div>
+                    `;
+                    dailyViews.appendChild(div);
+                });
+            } else {
+                noDaily.classList.remove('hidden');
+            }
+
+            // Referrers
+            const referrers = document.getElementById('top-referrers');
+            const noReferrers = document.getElementById('no-referrers');
+            referrers.innerHTML = '';
+
+            if (data.topReferrers && data.topReferrers.length > 0) {
+                noReferrers.classList.add('hidden');
+
+                data.topReferrers.forEach(ref => {
+                    const div = document.createElement('div');
+                    div.className = 'bg-white rounded-lg p-4';
+                    div.innerHTML = `
+                        <p class="text-sm text-navy-600 truncate" title="${ref.referrer || 'Direct'}">${formatReferrer(ref.referrer)}</p>
+                        <p class="text-2xl font-semibold mt-1">${formatNumber(ref.count)}</p>
+                    `;
+                    referrers.appendChild(div);
+                });
+            } else {
+                noReferrers.classList.remove('hidden');
+            }
+        }
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat().format(num);
+        }
+
+        function formatPagePath(path) {
+            if (!path || path === '/') return 'Home';
+            return path.replace(/\.html$/, '').replace(/^\//, '').replace(/-/g, ' ').replace(/\//g, ' / ');
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) return 'Today';
+            if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+
+            return date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+        }
+
+        function formatReferrer(ref) {
+            if (!ref || ref === '' || ref === 'null') return 'Direct / Bookmark';
+            try {
+                const url = new URL(ref);
+                return url.hostname.replace('www.', '');
+            } catch {
+                return ref;
+            }
+        }
+
+        // Load on page load
+        document.addEventListener('DOMContentLoaded', loadAnalytics);
+    </script>
+</body>
+</html>

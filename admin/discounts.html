@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidget Street Admin | Discount Codes</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#71c7e1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="../styles/output.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen">
+    <!-- Admin Navigation -->
+    <nav class="bg-navy-50 border-b border-navy/20 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <img src="../assets/logo.png" alt="Fidget Street Logo" class="h-16 lg:h-20 w-auto">
+                    <span class="font-serif text-2xl font-semibold">Admin</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
+                    <a href="products.html" class="text-navy-700 hover:text-navy transition-colors">Products</a>
+                    <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
+                    <div class="relative nav-dropdown">
+                        <button class="text-soft-blue font-medium flex items-center gap-1">
+                            More
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu absolute top-full left-0 mt-1 bg-white border border-navy/20 rounded-lg shadow-lg py-2 min-w-[160px] z-50" style="display:none">
+                            <a href="colors.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Colours</a>
+                            <a href="sizes.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Sizes</a>
+                            <a href="media.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Media</a>
+                            <a href="analytics.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Analytics</a>
+                            <a href="subscribers.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Subscribers</a>
+                            <a href="email-builder.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Emails</a>
+                            <a href="discounts.html" class="block px-4 py-2 text-soft-blue font-medium bg-navy-50">Discounts</a>
+                            <a href="gift-cards.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Gift Cards</a>
+                            <a href="website.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Website</a>
+                            <a href="users.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50 admin-only-link">Users</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="user-name" class="text-sm text-navy-600"></span>
+                <button id="logout-btn" class="text-sm text-navy-600 hover:text-navy transition-colors">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2 overflow-x-auto">
+        <div class="flex items-center space-x-4 whitespace-nowrap">
+            <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="analytics.html" class="text-navy-700 text-sm hover:text-navy">Analytics</a>
+            <a href="products.html" class="text-navy-700 text-sm hover:text-navy">Products</a>
+            <a href="colors.html" class="text-navy-700 text-sm hover:text-navy">Colours</a>
+            <a href="media.html" class="text-navy-700 text-sm hover:text-navy">Media</a>
+            <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
+            <a href="subscribers.html" class="text-navy-700 text-sm hover:text-navy">Subscribers</a>
+            <a href="email-builder.html" class="text-navy-700 text-sm hover:text-navy">Emails</a>
+            <a href="discounts.html" class="text-soft-blue text-sm font-medium">Discounts</a>
+            <a href="gift-cards.html" class="text-navy-700 text-sm hover:text-navy">Gift Cards</a>
+            <a href="website.html" class="text-navy-700 text-sm hover:text-navy">Website</a>
+            <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="font-serif text-3xl font-semibold">Discount Codes</h1>
+                <p class="text-navy-600 mt-1">Create and manage promotional discount codes</p>
+            </div>
+            <button id="add-discount-btn" class="btn-primary py-2 px-4 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Add Discount Code
+            </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-navy-50 rounded-lg p-6">
+                <div class="text-sm text-navy-600 mb-1">Total Codes</div>
+                <div id="total-count" class="text-3xl font-semibold text-navy">0</div>
+            </div>
+            <div class="bg-navy-50 rounded-lg p-6">
+                <div class="text-sm text-navy-600 mb-1">Active</div>
+                <div id="active-count" class="text-3xl font-semibold text-green-600">0</div>
+            </div>
+            <div class="bg-navy-50 rounded-lg p-6">
+                <div class="text-sm text-navy-600 mb-1">Scheduled</div>
+                <div id="scheduled-count" class="text-3xl font-semibold text-blue-600">0</div>
+            </div>
+            <div class="bg-navy-50 rounded-lg p-6">
+                <div class="text-sm text-navy-600 mb-1">Total Uses</div>
+                <div id="uses-count" class="text-3xl font-semibold text-soft-blue">0</div>
+            </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="flex items-center gap-4 mb-4">
+            <select id="filter-status" class="px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                <option value="all">All Codes</option>
+                <option value="active">Active</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="expired">Expired</option>
+                <option value="inactive">Inactive</option>
+            </select>
+            <input type="text" id="search-input" placeholder="Search by code or name..."
+                class="flex-1 max-w-sm px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+        </div>
+
+        <!-- Discounts Table -->
+        <div class="bg-navy-50 rounded-lg overflow-hidden">
+            <div id="discounts-container" class="overflow-x-auto">
+                <div class="flex justify-center py-12">
+                    <div class="animate-spin w-8 h-8 border-4 border-soft-blue border-t-transparent rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div id="discount-modal" class="hidden fixed inset-0 bg-navy-900/90 flex items-start justify-center z-50 p-4 overflow-y-auto">
+        <div class="bg-navy-50 rounded-lg max-w-lg w-full my-8">
+            <div class="flex items-center justify-between p-6 border-b border-navy/20">
+                <h3 id="modal-title" class="text-xl font-semibold">Add Discount Code</h3>
+                <button id="close-modal" class="text-navy-600 hover:text-navy">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="discount-form" class="p-6 space-y-6">
+                <input type="hidden" id="discount-id">
+
+                <!-- Code -->
+                <div>
+                    <label for="discount-code" class="block text-sm font-medium text-navy-700 mb-2">
+                        Discount Code <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="discount-code" required
+                        class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue uppercase"
+                        placeholder="e.g. SAVE10">
+                    <p class="text-xs text-navy-500 mt-1">Customers will enter this code at checkout</p>
+                </div>
+
+                <!-- Name/Description -->
+                <div>
+                    <label for="discount-name" class="block text-sm font-medium text-navy-700 mb-2">
+                        Name / Description <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="discount-name" required
+                        class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue"
+                        placeholder="e.g. 10% off summer sale">
+                </div>
+
+                <!-- Discount Type and Value -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="discount-type" class="block text-sm font-medium text-navy-700 mb-2">
+                            Discount Type <span class="text-red-500">*</span>
+                        </label>
+                        <select id="discount-type" required
+                            class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                            <option value="percentage">Percentage (%)</option>
+                            <option value="fixed">Fixed Amount (£)</option>
+                            <option value="free_delivery">Free Delivery</option>
+                        </select>
+                    </div>
+                    <div id="value-field">
+                        <label for="discount-value" class="block text-sm font-medium text-navy-700 mb-2">
+                            Value <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" id="discount-value" min="0.01" step="0.01"
+                            class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue"
+                            placeholder="10">
+                    </div>
+                </div>
+
+                <!-- Minimum Order Amount -->
+                <div class="border-t border-navy/20 pt-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <input type="checkbox" id="min-order-toggle" class="w-5 h-5 text-soft-blue border-navy/30 rounded focus:ring-soft-blue">
+                        <label for="min-order-toggle" class="text-sm font-medium text-navy-700 cursor-pointer">Require minimum order amount</label>
+                    </div>
+                    <div id="min-order-fields" class="hidden">
+                        <label for="min-order-amount" class="block text-sm text-navy-600 mb-2">Minimum order amount (£):</label>
+                        <select id="min-order-amount"
+                            class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                            <option value="10">£10</option>
+                            <option value="15">£15</option>
+                            <option value="20">£20</option>
+                            <option value="25">£25</option>
+                            <option value="30">£30</option>
+                            <option value="35">£35</option>
+                            <option value="40">£40</option>
+                            <option value="50">£50</option>
+                            <option value="75">£75</option>
+                            <option value="100">£100</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                        <input type="number" id="min-order-custom" min="1" step="0.01" placeholder="Enter amount"
+                            class="hidden w-full mt-3 px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                    </div>
+                    <p id="no-min-order" class="text-sm text-navy-500">No minimum order required</p>
+                </div>
+
+                <!-- Schedule Start -->
+                <div class="border-t border-navy/20 pt-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <input type="checkbox" id="schedule-toggle" class="w-5 h-5 text-soft-blue border-navy/30 rounded focus:ring-soft-blue">
+                        <label for="schedule-toggle" class="text-sm font-medium text-navy-700 cursor-pointer">Schedule start date</label>
+                    </div>
+                    <div id="schedule-fields" class="hidden">
+                        <label for="starts-at" class="block text-sm text-navy-600 mb-2">Code becomes active on:</label>
+                        <input type="datetime-local" id="starts-at"
+                            class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                    </div>
+                    <p id="starts-now" class="text-sm text-navy-500">Code is active immediately</p>
+                </div>
+
+                <!-- Expiry Duration -->
+                <div class="border-t border-navy/20 pt-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <input type="checkbox" id="expiry-toggle" class="w-5 h-5 text-soft-blue border-navy/30 rounded focus:ring-soft-blue">
+                        <label for="expiry-toggle" class="text-sm font-medium text-navy-700 cursor-pointer">Set expiry</label>
+                    </div>
+                    <div id="expiry-fields" class="hidden space-y-4">
+                        <div>
+                            <label class="block text-sm text-navy-600 mb-2">Expires after:</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="number" id="expiry-value" min="1" value="1"
+                                    class="px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                                <select id="expiry-unit"
+                                    class="px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                                    <option value="days">Days</option>
+                                    <option value="weeks">Weeks</option>
+                                    <option value="months">Months</option>
+                                    <option value="years">Years</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-navy-600 mb-2">Or set specific date:</label>
+                            <input type="datetime-local" id="expires-at"
+                                class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                        </div>
+                    </div>
+                    <p id="never-expires" class="text-sm text-navy-500">Code will never expire</p>
+                </div>
+
+                <!-- Total Usage Limit -->
+                <div class="border-t border-navy/20 pt-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <input type="checkbox" id="limit-toggle" class="w-5 h-5 text-soft-blue border-navy/30 rounded focus:ring-soft-blue">
+                        <label for="limit-toggle" class="text-sm font-medium text-navy-700 cursor-pointer">Limit total uses (everyone combined)</label>
+                    </div>
+                    <div id="limit-fields" class="hidden">
+                        <label for="max-uses" class="block text-sm text-navy-600 mb-2">Maximum total uses:</label>
+                        <select id="max-uses"
+                            class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                            <option value="10">10 uses</option>
+                            <option value="25">25 uses</option>
+                            <option value="50">50 uses</option>
+                            <option value="100">100 uses</option>
+                            <option value="250">250 uses</option>
+                            <option value="500">500 uses</option>
+                            <option value="1000">1000 uses</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                        <input type="number" id="max-uses-custom" min="1" placeholder="Enter number"
+                            class="hidden w-full mt-3 px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                    </div>
+                    <p id="unlimited-uses" class="text-sm text-navy-500">Unlimited total uses</p>
+                </div>
+
+                <!-- Per-Person Limit -->
+                <div class="border-t border-navy/20 pt-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <input type="checkbox" id="per-person-toggle" class="w-5 h-5 text-soft-blue border-navy/30 rounded focus:ring-soft-blue">
+                        <label for="per-person-toggle" class="text-sm font-medium text-navy-700 cursor-pointer">Limit uses per customer</label>
+                    </div>
+                    <div id="per-person-fields" class="hidden">
+                        <label for="max-per-person" class="block text-sm text-navy-600 mb-2">Maximum uses per customer:</label>
+                        <select id="max-per-person"
+                            class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
+                            <option value="1">1 use per customer</option>
+                            <option value="2">2 uses per customer</option>
+                            <option value="3">3 uses per customer</option>
+                            <option value="5">5 uses per customer</option>
+                            <option value="10">10 uses per customer</option>
+                        </select>
+                    </div>
+                    <p id="unlimited-per-person" class="text-sm text-navy-500">Unlimited uses per customer</p>
+                </div>
+
+                <!-- Active Status (only for editing) -->
+                <div id="active-field" class="hidden border-t border-navy/20 pt-6">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="is-active" class="w-5 h-5 text-soft-blue border-navy/30 rounded focus:ring-soft-blue">
+                        <span class="ml-3 text-sm font-medium text-navy-700">Code is active</span>
+                    </label>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error-message" class="hidden text-red-500 text-sm"></div>
+
+                <!-- Actions -->
+                <div class="flex gap-4 pt-4 border-t border-navy/20">
+                    <button type="button" id="cancel-btn" class="flex-1 btn-secondary py-3">Cancel</button>
+                    <button type="submit" id="save-btn" class="flex-1 btn-primary py-3">Save Code</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="hidden fixed inset-0 bg-navy-900/90 flex items-center justify-center z-50 p-4">
+        <div class="bg-navy-50 rounded-lg max-w-sm w-full p-6">
+            <h3 class="text-xl font-semibold mb-4">Deactivate Discount Code?</h3>
+            <p class="text-navy-600 mb-2">Are you sure you want to deactivate:</p>
+            <p id="delete-code" class="font-medium font-mono mb-6"></p>
+            <div class="flex gap-3">
+                <button id="cancel-delete" class="flex-1 btn-secondary py-2">Cancel</button>
+                <button id="confirm-delete" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition-colors">Deactivate</button>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="../scripts/admin-nav.js"></script>
+    <script defer src="../scripts/admin-auth.js"></script>
+    <script defer src="../scripts/admin-discounts.js"></script>
+</body>
+</html>

@@ -75,9 +75,15 @@ CREATE TABLE IF NOT EXISTS admin_users (
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     name TEXT,
-    role TEXT DEFAULT 'admin' CHECK (role IN ('admin', 'super_admin')),
+    role TEXT DEFAULT 'business_processing' CHECK (role IN ('business_processing', 'website_admin')),
+    is_active BOOLEAN DEFAULT true,
+    mfa_enabled BOOLEAN DEFAULT false,
+    mfa_secret TEXT,
+    mfa_backup_codes TEXT[], -- Hashed backup codes
+    mfa_backup_salt TEXT, -- Per-user salt for backup code hashing
     last_login TIMESTAMPTZ,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ============================================

@@ -95,15 +95,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayResults(data) {
-        const { giftCard, transactions } = data;
+        const { giftCard } = data;
 
         // Hide form, show results
         lookupForm.classList.add('hidden');
         resultsSection.classList.remove('hidden');
 
-        // Update balance
+        // Update balance (note: initial_balance no longer returned for security)
         document.getElementById('current-balance').textContent = '£' + parseFloat(giftCard.current_balance).toFixed(2);
-        document.getElementById('original-amount').textContent = '£' + parseFloat(giftCard.initial_balance).toFixed(2);
+        const originalAmountEl = document.getElementById('original-amount');
+        if (originalAmountEl) {
+            originalAmountEl.textContent = 'N/A'; // No longer shown publicly
+            originalAmountEl.parentElement?.classList.add('hidden'); // Hide the original amount row if present
+        }
         document.getElementById('display-code').textContent = giftCard.code;
 
         // Expiry date - show countdown
@@ -180,73 +184,17 @@ document.addEventListener('DOMContentLoaded', function() {
         statusEl.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ' + statusClass;
         statusEl.textContent = statusText;
 
-        // Transactions
+        // Transaction history - no longer shown publicly for security
+        // Hide transaction section if it exists
+        const transactionsSection = document.querySelector('[data-transactions-section]');
+        if (transactionsSection) {
+            transactionsSection.classList.add('hidden');
+        }
         const transactionsList = document.getElementById('transactions-list');
         const noTransactions = document.getElementById('no-transactions');
-
-        if (transactions && transactions.length > 0) {
-            noTransactions.classList.add('hidden');
-            transactionsList.innerHTML = transactions.map(function(tx) {
-                const date = new Date(tx.created_at);
-                const dateStr = date.toLocaleDateString('en-GB', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                let icon = '';
-                let amountColor = '';
-                let amountPrefix = '';
-                let description = '';
-
-                switch (tx.transaction_type) {
-                    case 'activation':
-                        icon = '<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
-                        amountColor = 'text-green-600';
-                        amountPrefix = '+';
-                        description = 'Gift card activated';
-                        break;
-                    case 'redemption':
-                        icon = '<svg class="w-5 h-5 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>';
-                        amountColor = 'text-red-600';
-                        amountPrefix = '-';
-                        description = tx.order_number ? 'Used on order #' + tx.order_number : 'Used on purchase';
-                        break;
-                    case 'refund':
-                        icon = '<svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>';
-                        amountColor = 'text-green-600';
-                        amountPrefix = '+';
-                        description = 'Refund applied';
-                        break;
-                    case 'expiration':
-                        icon = '<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-                        amountColor = 'text-red-600';
-                        amountPrefix = '-';
-                        description = 'Gift card expired';
-                        break;
-                    default:
-                        icon = '<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
-                        amountColor = 'text-gray-600';
-                        amountPrefix = '';
-                        description = tx.notes || 'Adjustment';
-                }
-
-                return '<div class="flex items-center gap-4 p-4 hover:bg-gray-50">' +
-                    '<div class="flex-shrink-0">' + icon + '</div>' +
-                    '<div class="flex-1 min-w-0">' +
-                        '<p class="text-sm font-medium text-gray-900">' + description + '</p>' +
-                        '<p class="text-xs text-gray-500">' + dateStr + '</p>' +
-                    '</div>' +
-                    '<div class="text-right">' +
-                        '<p class="text-sm font-semibold ' + amountColor + '">' + amountPrefix + '£' + Math.abs(parseFloat(tx.amount)).toFixed(2) + '</p>' +
-                        '<p class="text-xs text-gray-500">Balance: £' + parseFloat(tx.balance_after).toFixed(2) + '</p>' +
-                    '</div>' +
-                '</div>';
-            }).join('');
-        } else {
-            transactionsList.innerHTML = '';
+        if (transactionsList) transactionsList.innerHTML = '';
+        if (noTransactions) {
+            noTransactions.textContent = 'Transaction history is available in your account or by contacting support.';
             noTransactions.classList.remove('hidden');
         }
     }

@@ -30,43 +30,50 @@ Tests the full HTTP request/response cycle with mock events:
 - [x] `products.js` - `tests/functions/products-handler.test.js` (19 tests)
 - [x] `validate-discount.js` - `tests/functions/validate-discount-handler.test.js` (24 tests)
 - [x] `webhooks.js` - `tests/functions/webhooks-handler.test.js` (22 tests)
+- [x] `validate-gift-card.js` - `tests/functions/validate-gift-card-handler.test.js` (19 tests)
+- [x] `orders.js` - `tests/functions/orders-handler.test.js` (20 tests)
 
 Remaining functions to test:
 - [ ] `stripe-checkout.js`
 - [ ] `paypal-checkout.js`
-- [ ] `validate-gift-card.js`
-- [ ] `orders.js`
 
 ---
 
 ### [x] Add Inventory Management Tests
 **Labels:** `testing`, `priority-high`, `inventory`
-**Status:** COMPLETED - `tests/integration/inventory.test.js` (16 tests)
+**Status:** COMPLETED - `tests/integration/inventory.test.js` (23 tests)
 
-Tests stock validation and documents known gaps:
+Tests stock validation and operations:
 - [x] Test stock level queries
 - [x] Test out-of-stock rejection at checkout
 - [x] Test concurrent purchase simulation
 - [x] Test manual stock operations
+- [x] Test stock decrement after order (optimistic locking)
+- [x] Test zero floor protection
 
-**KNOWN GAPS DOCUMENTED:**
-- Stock is NOT decremented after successful order (webhook gap)
+**REMAINING GAPS:**
 - Stock restoration on cancellation is NOT implemented
-- No atomic RPC for stock operations
+- No atomic RPC for stock operations (uses optimistic locking instead)
 
 ---
 
-### [ ] Add Email Notification Tests
+### [x] Add Email Notification Tests
 **Labels:** `testing`, `priority-high`, `notifications`
+**Status:** COMPLETED - `tests/functions/email-notifications.test.js` (23 tests)
 
-Email sending is not tested at all.
+Tests for magic link email and customer authentication:
+- [x] Test HTTP method handling
+- [x] Test email format validation
+- [x] Test rate limiting for email requests
+- [x] Test development mode (no RESEND_API_KEY)
+- [x] Test privacy protection (same response for existing/non-existing emails)
+- [x] Test CORS headers and response format
 
-**Tasks:**
-- [ ] Mock email service (or use test mode)
-- [ ] Test order confirmation email sending
-- [ ] Test email content and formatting
-- [ ] Test gift card delivery email
-- [ ] Test password reset email
+**NOT YET IMPLEMENTED (marked as TODO in tests):**
+- Order confirmation email
+- Gift card delivery email
+- Shipping notification email
+- Admin password reset email
 
 ---
 
@@ -273,7 +280,14 @@ Some test files lack detailed comments.
 - [x] Create comprehensive test documentation
 - [x] Add Stripe webhook signature verification tests (22 tests)
 - [x] Add HTTP handler tests for products, validate-discount, webhooks (65 tests)
-- [x] Add inventory management tests (16 tests)
+- [x] Add inventory management tests (23 tests)
+- [x] Add stock decrement after order with optimistic locking
+- [x] Add validate-gift-card handler tests (19 tests)
+- [x] Add orders handler tests (20 tests)
+- [x] Add email notification tests (23 tests)
+- [x] Add security features tests (IP allowlist, cookies, XSS, encryption)
+
+**Total Tests:** 705+ passing tests across 26 test files
 
 ---
 

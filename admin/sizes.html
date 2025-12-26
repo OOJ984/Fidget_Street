@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fidget Street Admin | Size Management</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#71c7e1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="../styles/output.css" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="">
+</head>
+<body class="bg-white text-navy font-sans antialiased min-h-screen">
+    <!-- Admin Navigation -->
+    <nav class="bg-navy-50 border-b border-navy/20 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <a href="../index.html" class="flex items-center space-x-2">
+                    <img src="../assets/logo.png" alt="Fidget Street Logo" class="h-16 lg:h-20 w-auto">
+                    <span class="font-serif text-2xl font-semibold">Admin</span>
+                </a>
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
+                    <a href="products.html" class="text-navy-700 hover:text-navy transition-colors">Products</a>
+                    <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
+                    <div class="relative nav-dropdown">
+                        <button class="text-soft-blue font-medium flex items-center gap-1">
+                            More
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu absolute top-full left-0 mt-1 bg-white border border-navy/20 rounded-lg shadow-lg py-2 min-w-[160px] z-50" style="display:none">
+                            <a href="colors.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Colours</a>
+                            <a href="sizes.html" class="block px-4 py-2 text-soft-blue font-medium bg-navy-50">Sizes</a>
+                            <a href="media.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Media</a>
+                            <a href="analytics.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Analytics</a>
+                            <a href="subscribers.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Subscribers</a>
+                            <a href="email-builder.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Emails</a>
+                            <a href="discounts.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Discounts</a>
+                            <a href="gift-cards.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Gift Cards</a>
+                            <a href="website.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Website</a>
+                            <a href="users.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50 admin-only-link">Users</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="user-name" class="text-sm text-navy-600"></span>
+                <button id="logout-btn" class="text-sm text-navy-600 hover:text-navy transition-colors">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2 overflow-x-auto">
+        <div class="flex items-center space-x-4 whitespace-nowrap">
+            <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="analytics.html" class="text-navy-700 text-sm hover:text-navy">Analytics</a>
+            <a href="products.html" class="text-navy-700 text-sm hover:text-navy">Products</a>
+            <a href="colors.html" class="text-navy-700 text-sm hover:text-navy">Colours</a>
+            <a href="sizes.html" class="text-soft-blue text-sm font-medium">Sizes</a>
+            <a href="media.html" class="text-navy-700 text-sm hover:text-navy">Media</a>
+            <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
+            <a href="subscribers.html" class="text-navy-700 text-sm hover:text-navy">Subscribers</a>
+            <a href="email-builder.html" class="text-navy-700 text-sm hover:text-navy">Emails</a>
+            <a href="discounts.html" class="text-navy-700 text-sm hover:text-navy">Discounts</a>
+            <a href="gift-cards.html" class="text-navy-700 text-sm hover:text-navy">Gift Cards</a>
+            <a href="website.html" class="text-navy-700 text-sm hover:text-navy">Website</a>
+            <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="font-serif text-3xl font-semibold">Size Management</h1>
+                <p class="text-navy-600 mt-1">Manage product sizes. These can be selected when creating product variants.</p>
+            </div>
+            <button id="add-size-btn" class="btn-primary py-2 px-4 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Add Size
+            </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-navy-50 rounded-lg p-6">
+                <div class="text-sm text-navy-600 mb-1">Total Sizes</div>
+                <div id="total-count" class="text-3xl font-semibold text-navy">0</div>
+            </div>
+            <div class="bg-navy-50 rounded-lg p-6">
+                <div class="text-sm text-navy-600 mb-1">Common Sizes</div>
+                <div class="text-sm text-navy-500 mt-2">Mini, Small, Medium, Large, XL, One Size</div>
+            </div>
+        </div>
+
+        <!-- Info Banner -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div>
+                    <p class="text-blue-800 font-medium">How sizes work:</p>
+                    <ul class="text-blue-700 text-sm mt-1 space-y-1">
+                        <li>Create sizes here (e.g., Small, Medium, Large)</li>
+                        <li>When editing a product, create variants with color + size combinations</li>
+                        <li>Each variant can have its own stock level and price adjustment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sizes List -->
+        <div class="bg-navy-50 rounded-lg overflow-hidden">
+            <div id="sizes-container">
+                <div class="flex justify-center py-12">
+                    <div class="animate-spin w-8 h-8 border-4 border-soft-blue border-t-transparent rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div id="size-modal" class="hidden fixed inset-0 bg-navy-900/90 flex items-start justify-center z-50 p-4 overflow-y-auto">
+        <div class="bg-navy-50 rounded-lg max-w-md w-full my-8">
+            <div class="flex items-center justify-between p-6 border-b border-navy/20">
+                <h3 id="modal-title" class="text-xl font-semibold">Add Size</h3>
+                <button id="close-modal" class="text-navy-600 hover:text-navy">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="size-form" class="p-6 space-y-6">
+                <input type="hidden" id="size-id">
+
+                <!-- Size Name -->
+                <div>
+                    <label for="size-name" class="block text-sm font-medium text-navy-700 mb-2">
+                        Size Name <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="size-name" required
+                        class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue"
+                        placeholder="e.g. Small, Medium, Large">
+                </div>
+
+                <!-- Short Code -->
+                <div>
+                    <label for="short-code" class="block text-sm font-medium text-navy-700 mb-2">
+                        Short Code <span class="text-navy-400">(optional)</span>
+                    </label>
+                    <input type="text" id="short-code"
+                        class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue uppercase"
+                        placeholder="e.g. S, M, L, XL" maxlength="10">
+                    <p class="text-xs text-navy-500 mt-1">A short abbreviation for display (e.g., S for Small)</p>
+                </div>
+
+                <!-- Display Order -->
+                <div>
+                    <label for="display-order" class="block text-sm font-medium text-navy-700 mb-2">
+                        Display Order
+                    </label>
+                    <input type="number" id="display-order" min="0" value="0"
+                        class="w-full px-4 py-3 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue"
+                        placeholder="0">
+                    <p class="text-xs text-navy-500 mt-1">Lower numbers appear first in dropdowns</p>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error-message" class="hidden text-red-500 text-sm"></div>
+
+                <!-- Actions -->
+                <div class="flex gap-4 pt-4 border-t border-navy/20">
+                    <button type="button" id="cancel-btn" class="flex-1 btn-secondary py-3">Cancel</button>
+                    <button type="submit" id="save-btn" class="flex-1 btn-primary py-3">Save Size</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="hidden fixed inset-0 bg-navy-900/90 flex items-center justify-center z-50 p-4">
+        <div class="bg-navy-50 rounded-lg max-w-sm w-full p-6">
+            <h3 class="text-xl font-semibold mb-4">Delete Size?</h3>
+            <p class="text-navy-600 mb-2">Are you sure you want to delete:</p>
+            <p id="delete-size-name" class="font-medium mb-4"></p>
+            <p class="text-sm text-red-500 mb-6">Product variants using this size will have their size reference removed.</p>
+            <div class="flex gap-3">
+                <button id="cancel-delete" class="flex-1 btn-secondary py-2">Cancel</button>
+                <button id="confirm-delete" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg transition-colors">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script defer src="../scripts/admin-nav.js"></script>
+    <script defer src="../scripts/admin-auth.js"></script>
+    <script defer src="../scripts/admin-sizes.js"></script>
+</body>
+</html>

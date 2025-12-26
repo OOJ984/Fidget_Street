@@ -25,7 +25,7 @@ if (!JWT_SECRET) {
 }
 
 const TOKEN_EXPIRY = '24h';
-const BCRYPT_ROUNDS = 10; // Reduced from 12 for faster login (still secure)
+const BCRYPT_ROUNDS = 12; // Standardized across all auth files
 
 /**
  * Hash password with bcrypt
@@ -228,7 +228,7 @@ exports.handler = async (event, context) => {
                         mfaSetupRequired: true
                     },
                     JWT_SECRET,
-                    { expiresIn: '30m' }
+                    { expiresIn: '10m' } // SECURITY: Reduced from 30m
                 );
 
                 return {

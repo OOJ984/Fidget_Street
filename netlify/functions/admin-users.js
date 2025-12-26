@@ -88,9 +88,15 @@ exports.handler = async (event, context) => {
                 return errorResponse(400, 'Invalid email format', headers);
             }
 
-            // Validate password strength
+            // Validate password strength and complexity
             if (password.length < 8) {
                 return errorResponse(400, 'Password must be at least 8 characters', headers);
+            }
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            if (!hasUppercase || !hasLowercase || !hasNumber) {
+                return errorResponse(400, 'Password must contain uppercase, lowercase, and number', headers);
             }
 
             // Validate role

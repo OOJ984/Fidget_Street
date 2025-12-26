@@ -314,6 +314,11 @@ function verifyToken(authHeaderOrEvent) {
         return null;
     }
 
+    // Handle null/undefined input
+    if (!authHeaderOrEvent) {
+        return null;
+    }
+
     // If it's an event object, try cookies first, then fall back to header
     if (typeof authHeaderOrEvent === 'object' && authHeaderOrEvent.headers) {
         const cookies = getCookieUtils();

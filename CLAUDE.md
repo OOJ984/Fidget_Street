@@ -49,14 +49,20 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 7. Success page displays actual order number
 8. Admin panel shows full order details with shipping address
 9. Instagram feed on homepage (manual upload system)
+10. Logo and brand assets added
+11. Page view analytics system
+12. Colors, sizes, and product variants management
+13. Discount codes system
+14. Gift cards system
+15. Newsletter subscribers and email builder
+16. Admin navigation with dropdown menu
+17. Database sync script for prod/non-prod parity
 
 ### TODO (REMAINING):
-1. Create logo and brand assets
-2. Create playful background patterns
-3. Update meta tags, og:image, etc.
-4. Set up production Stripe keys (currently using test mode)
-5. Configure email notifications for orders
-6. Add Instagram post images to assets/instagram/ folder
+1. Create playful background patterns
+2. Update meta tags, og:image, etc.
+3. Set up production Stripe keys (currently using test mode)
+4. Configure email notifications for orders
 
 ## Key Files to Update
 
@@ -78,6 +84,7 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 
 ```
 /
+├── 3d-designs/         # OpenSCAD fidget toy designs and STL exports
 ├── admin/              # Admin panel pages
 ├── assets/             # Static assets (logo, icons)
 ├── data/               # JSON seed data
@@ -88,6 +95,23 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 ├── supabase/           # Database schemas and migrations
 └── *.html              # Public pages
 ```
+
+### Admin Pages
+- `/admin/` - Login
+- `/admin/dashboard.html` - Overview
+- `/admin/products.html` - Product management
+- `/admin/orders.html` - Order management
+- `/admin/colors.html` - Color management
+- `/admin/sizes.html` - Size management
+- `/admin/media.html` - Media library
+- `/admin/analytics.html` - Page view stats
+- `/admin/subscribers.html` - Newsletter subscribers
+- `/admin/email-builder.html` - Marketing emails
+- `/admin/discounts.html` - Discount codes
+- `/admin/gift-cards.html` - Gift card management
+- `/admin/website.html` - Site settings
+- `/admin/users.html` - Admin user management
+- `/admin/audit.html` - Audit logs
 
 ## Environment Variables
 
@@ -149,12 +173,12 @@ See `stripe-payment-settings.md` for detailed payment method recommendations.
 
 ## Important Notes
 
-- DO NOT PUSH - user has no Netlify credit currently
 - This project is separate from Wicka and Print Pearl
-- Logo and assets need to be created/added later
 - Product images stored in Supabase Storage bucket `product-images`
 - Logo/favicon stored as base64 in `website_settings` table
 - Cart uses localStorage, fetches fresh product images from API
+- Two Supabase databases: prod (`ppprhhctcfqkbpfsebcr`) and non-prod (`qyvojrjxzkwqljghlkoe`)
+- Local dev uses non-prod database (configured in `.env`)
 
 ## Product Variations System
 
@@ -189,6 +213,87 @@ Run `supabase/migrations/010_variations.sql` to create the tables.
 3. On product page, customer selects color and size
 4. Selected variant info stored in cart with product
 5. Order contains the specific variant (color, size, adjusted price)
+
+## Analytics System
+
+Tracks page views for understanding site traffic.
+
+### Database Tables
+- **page_views** - Individual page view records (path, title, referrer, device, session)
+- **page_view_stats** - Aggregated daily stats per page
+
+### API Endpoints
+- `POST /api/track` - Record a page view (called from frontend)
+- `GET /api/admin-analytics` - Get analytics data for admin dashboard
+
+### Frontend
+`scripts/analytics.js` automatically tracks page views on every page load.
+
+## Discount Codes System
+
+Supports percentage, fixed amount, and free delivery discounts.
+
+### Database Tables
+- **discount_codes** - Code definitions with limits and expiry
+- **discount_usage** - Tracks per-customer usage
+
+### API Endpoints
+- `GET/POST/PUT/DELETE /api/admin-discounts` - Manage discount codes
+- `POST /api/validate-discount` - Validate code at checkout
+
+### Features
+- Percentage or fixed amount discounts
+- Free delivery option
+- Start/end dates
+- Max total uses
+- Max uses per customer
+- Minimum order amount
+
+## Gift Cards System
+
+Digital gift cards that can be purchased and redeemed.
+
+### Database Tables
+- **gift_cards** - Card details (code, balance, purchaser, recipient)
+- **gift_card_transactions** - Transaction history
+
+### API Endpoints
+- `GET/POST/PUT/DELETE /api/admin-gift-cards` - Manage gift cards
+- `POST /api/check-gift-card` - Check balance
+- `POST /api/validate-gift-card` - Validate at checkout
+- `POST /api/gift-card-checkout` - Purchase gift cards
+
+### Public Pages
+- `/gift-cards.html` - Purchase gift cards
+- `/check-balance.html` - Check gift card balance
+- `/gift-card-success.html` - Purchase confirmation
+
+## Newsletter System
+
+Email subscriber management and marketing emails.
+
+### Database Tables
+- **newsletter_subscribers** - Subscriber list with status
+
+### API Endpoints
+- `GET/POST/DELETE /api/subscribers` - Manage subscribers
+- `POST /api/subscribe` - Public subscription endpoint
+
+### Admin Pages
+- `/admin/subscribers.html` - View/manage subscribers
+- `/admin/email-builder.html` - Create marketing emails
+
+## Database Sync
+
+Two databases are used: prod and non-prod (for local development).
+
+### Sync Script
+Run `supabase/sync_all.sql` in Supabase SQL Editor for both databases to ensure they're identical.
+
+**Non-prod:** https://supabase.com/dashboard/project/qyvojrjxzkwqljghlkoe/sql
+**Prod:** https://supabase.com/dashboard/project/ppprhhctcfqkbpfsebcr/sql
+
+The script is idempotent (safe to run multiple times).
 
 ## Known Issues / Gotchas
 

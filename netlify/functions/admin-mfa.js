@@ -24,6 +24,54 @@ const {
     AUDIT_ACTIONS
 } = require('./utils/security');
 
+// SECURITY: In-memory rate limiting for MFA attempts
+// In production, consider using Redis or database for distributed rate limiting
+const mfaAttempts = new Map();
+const MFA_MAX_ATTEMPTS = 5;
+const MFA_LOCKOUT_MINUTES = 15;
+
+function checkMfaRateLimit(userId) {
+    const key = `mfa:${userId}`;
+    const record = mfaAttempts.get(key);
+
+    if (!record) {
+        return { allowed: true };
+    }
+
+    // Check if lockout has expired
+    const lockoutExpiry = record.lockedUntil;
+    if (lockoutExpiry && lockoutExpiry > Date.now()) {
+        const retryAfter = Math.ceil((lockoutExpiry - Date.now()) / 1000);
+        return { allowed: false, retryAfter };
+    }
+
+    // Reset if lockout expired
+    if (lockoutExpiry && lockoutExpiry <= Date.now()) {
+        mfaAttempts.delete(key);
+        return { allowed: true };
+    }
+
+    return { allowed: true };
+}
+
+function recordMfaFailure(userId) {
+    const key = `mfa:${userId}`;
+    const record = mfaAttempts.get(key) || { attempts: 0 };
+
+    record.attempts++;
+    record.lastAttempt = Date.now();
+
+    if (record.attempts >= MFA_MAX_ATTEMPTS) {
+        record.lockedUntil = Date.now() + (MFA_LOCKOUT_MINUTES * 60 * 1000);
+    }
+
+    mfaAttempts.set(key, record);
+}
+
+function clearMfaRateLimit(userId) {
+    mfaAttempts.delete(`mfa:${userId}`);
+}
+
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
@@ -45,16 +93,21 @@ function generateBackupCodes() {
     return codes;
 }
 
-// Hash backup codes for storage
-function hashBackupCodes(codes) {
+// Generate per-user salt for backup code hashing
+function generateBackupCodeSalt() {
+    return crypto.randomBytes(16).toString('hex');
+}
+
+// SECURITY: Hash backup codes with per-user salt
+function hashBackupCodes(codes, salt) {
     return codes.map(code =>
-        crypto.createHash('sha256').update(code).digest('hex')
+        crypto.createHash('sha256').update(code + salt).digest('hex')
     );
 }
 
-// Verify a backup code against stored hashes
-function verifyBackupCode(code, hashedCodes) {
-    const hashedInput = crypto.createHash('sha256').update(code.toUpperCase()).digest('hex');
+// SECURITY: Verify a backup code against stored hashes using per-user salt
+function verifyBackupCode(code, hashedCodes, salt) {
+    const hashedInput = crypto.createHash('sha256').update(code.toUpperCase() + salt).digest('hex');
     const index = hashedCodes.indexOf(hashedInput);
     return index;
 }
@@ -177,16 +230,18 @@ exports.handler = async (event, context) => {
                 return errorResponse(400, 'Invalid verification code. Please try again.', headers);
             }
 
-            // Generate backup codes
+            // Generate backup codes with per-user salt
             const backupCodes = generateBackupCodes();
-            const hashedBackupCodes = hashBackupCodes(backupCodes);
+            const backupCodeSalt = generateBackupCodeSalt();
+            const hashedBackupCodes = hashBackupCodes(backupCodes, backupCodeSalt);
 
-            // Enable MFA and store hashed backup codes
+            // Enable MFA and store hashed backup codes with salt
             const { error: updateError } = await supabase
                 .from('admin_users')
                 .update({
                     mfa_enabled: true,
                     mfa_backup_codes: hashedBackupCodes,
+                    mfa_backup_salt: backupCodeSalt, // SECURITY: Store per-user salt
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', user.userId);
@@ -231,6 +286,22 @@ exports.handler = async (event, context) => {
                 return errorResponse(401, 'Session expired. Please log in again.', headers);
             }
 
+            // SECURITY: Check rate limiting for MFA attempts
+            const rateLimit = checkMfaRateLimit(preMfaData.userId);
+            if (!rateLimit.allowed) {
+                return {
+                    statusCode: 429,
+                    headers: {
+                        ...headers,
+                        'Retry-After': String(rateLimit.retryAfter)
+                    },
+                    body: JSON.stringify({
+                        error: 'Too many MFA attempts. Please try again later.',
+                        retryAfter: rateLimit.retryAfter
+                    })
+                };
+            }
+
             // Get user's full data
             const { data: userData, error: fetchError } = await supabase
                 .from('admin_users')
@@ -257,8 +328,13 @@ exports.handler = async (event, context) => {
             });
 
             if (!verified) {
+                // SECURITY: Record failed attempt
+                recordMfaFailure(preMfaData.userId);
                 return errorResponse(400, 'Invalid verification code', headers);
             }
+
+            // SECURITY: Clear rate limit on success
+            clearMfaRateLimit(preMfaData.userId);
 
             // MFA verified! Issue the final JWT
             const finalToken = jwt.sign(
@@ -330,10 +406,26 @@ exports.handler = async (event, context) => {
                 return errorResponse(401, 'Session expired. Please log in again.', headers);
             }
 
-            // Get user's full data including backup codes
+            // SECURITY: Check rate limiting for MFA attempts (shared with TOTP)
+            const rateLimit = checkMfaRateLimit(preMfaData.userId);
+            if (!rateLimit.allowed) {
+                return {
+                    statusCode: 429,
+                    headers: {
+                        ...headers,
+                        'Retry-After': String(rateLimit.retryAfter)
+                    },
+                    body: JSON.stringify({
+                        error: 'Too many MFA attempts. Please try again later.',
+                        retryAfter: rateLimit.retryAfter
+                    })
+                };
+            }
+
+            // Get user's full data including backup codes and salt
             const { data: userData, error: fetchError } = await supabase
                 .from('admin_users')
-                .select('id, email, name, role, mfa_backup_codes, is_active')
+                .select('id, email, name, role, mfa_backup_codes, mfa_backup_salt, is_active')
                 .eq('id', preMfaData.userId)
                 .single();
 
@@ -347,12 +439,19 @@ exports.handler = async (event, context) => {
                 return errorResponse(400, 'No backup codes available', headers);
             }
 
-            // Find and verify backup code
-            const codeIndex = verifyBackupCode(code, userData.mfa_backup_codes);
+            // SECURITY: Find and verify backup code with per-user salt
+            // Support both old (no salt) and new (with salt) backup codes
+            const salt = userData.mfa_backup_salt || '';
+            const codeIndex = verifyBackupCode(code, userData.mfa_backup_codes, salt);
 
             if (codeIndex === -1) {
+                // SECURITY: Record failed attempt
+                recordMfaFailure(preMfaData.userId);
                 return errorResponse(400, 'Invalid backup code', headers);
             }
+
+            // SECURITY: Clear rate limit on success
+            clearMfaRateLimit(preMfaData.userId);
 
             // Remove used backup code
             const remainingCodes = [...userData.mfa_backup_codes];
@@ -437,14 +536,16 @@ exports.handler = async (event, context) => {
                 return errorResponse(400, 'Invalid verification code', headers);
             }
 
-            // Generate new backup codes
+            // Generate new backup codes with new salt
             const backupCodes = generateBackupCodes();
-            const hashedBackupCodes = hashBackupCodes(backupCodes);
+            const backupCodeSalt = generateBackupCodeSalt();
+            const hashedBackupCodes = hashBackupCodes(backupCodes, backupCodeSalt);
 
             const { error: updateError } = await supabase
                 .from('admin_users')
                 .update({
                     mfa_backup_codes: hashedBackupCodes,
+                    mfa_backup_salt: backupCodeSalt, // SECURITY: Store new salt
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', user.userId);

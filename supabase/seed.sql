@@ -63,19 +63,19 @@ VALUES
  ARRAY[]::TEXT[], true),
 
 -- Finger Spinners (3)
-(10, 'Classic Finger Spinner', 'classic-finger-spinner', 4.99, 'GBP', 'finger-spinners',
+(10, 'Classic Finger Spinner', 'classic-finger-spinner', 4.99, 'GBP', 'spinners',
  ARRAY['ABS plastic', 'Steel bearings'], '7cm diameter',
  ARRAY['Black', 'White', 'Blue', 'Red', 'Rainbow'], 50, ARRAY['featured', 'bestseller'],
  'The original fidget spinner! Smooth steel bearings provide satisfying long spins. Perfect for focus and stress relief.',
  ARRAY[]::TEXT[], true),
 
-(11, 'Metal Finger Spinner', 'metal-finger-spinner', 7.99, 'GBP', 'finger-spinners',
+(11, 'Metal Finger Spinner', 'metal-finger-spinner', 7.99, 'GBP', 'spinners',
  ARRAY['Zinc alloy', 'Ceramic bearings'], '6cm diameter',
  ARRAY['Silver', 'Gold', 'Black', 'Rainbow'], 30, ARRAY['new'],
  'Premium metal spinner with ultra-smooth ceramic bearings. Heavier weight for longer, more satisfying spins.',
  ARRAY[]::TEXT[], true),
 
-(12, 'LED Light-Up Spinner', 'led-light-up-spinner', 6.99, 'GBP', 'finger-spinners',
+(12, 'LED Light-Up Spinner', 'led-light-up-spinner', 6.99, 'GBP', 'spinners',
  ARRAY['ABS plastic', 'LED lights', 'Steel bearings'], '7.5cm diameter',
  ARRAY['Blue LED', 'Rainbow LED', 'Green LED'], 25, ARRAY['gift', 'new'],
  'Light up your spins! Features colorful LED lights that create amazing patterns when spinning. Batteries included.',
@@ -106,20 +106,20 @@ VALUES
  'Fun animal-shaped push bubbles! Choose from dinosaur, unicorn, dog, or cat. Kids love these!',
  ARRAY[]::TEXT[], true),
 
--- Sensory Bundles (3)
-(17, 'Mini Sensory Bundle', 'mini-sensory-bundle', 14.99, 'GBP', 'bundles',
+-- Bundles (3)
+(17, 'Mini Bundle', 'mini-sensory-bundle', 14.99, 'GBP', 'bundles',
  ARRAY['Various'], 'Multiple items',
  ARRAY['Mixed Colors'], 25, ARRAY['gift', 'bestseller'],
  'Perfect starter pack! Includes 1 Push Bubble, 1 Mini Fidget Cube Keychain, and 1 Classic Finger Spinner. Save over 20%!',
  ARRAY[]::TEXT[], true),
 
-(18, 'Standard Sensory Bundle', 'standard-sensory-bundle', 24.99, 'GBP', 'bundles',
+(18, 'Standard Bundle', 'standard-sensory-bundle', 24.99, 'GBP', 'bundles',
  ARRAY['Various'], 'Multiple items',
  ARRAY['Mixed Colors'], 20, ARRAY['featured', 'gift'],
  'Our most popular bundle! Includes 1 Articulated Snake, 1 Infinity Cube, 1 Classic Push Bubble, and 1 Classic Finger Spinner. Great value!',
  ARRAY[]::TEXT[], true),
 
-(19, 'Ultimate Sensory Bundle', 'ultimate-sensory-bundle', 39.99, 'GBP', 'bundles',
+(19, 'Ultimate Bundle', 'ultimate-sensory-bundle', 39.99, 'GBP', 'bundles',
  ARRAY['Various'], 'Multiple items',
  ARRAY['Mixed Colors'], 15, ARRAY['featured', 'gift'],
  'The ultimate sensory collection! Includes 1 Articulated Dragon, 1 Articulated Octopus, 1 Infinity Cube, 1 Jumbo Push Bubble, and 1 Metal Finger Spinner. Best value!',

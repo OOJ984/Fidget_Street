@@ -23,3 +23,11 @@ npm-debug.log*
 
 # Claude Code local settings
 .claude/
+
+# Temp files
+tmp/
+supabase/.temp/
+
+# Windows junk
+nul
+_ul

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS products (
     slug TEXT UNIQUE NOT NULL,
     price_gbp DECIMAL(10,2) NOT NULL,
     currency TEXT DEFAULT 'GBP',
-    category TEXT NOT NULL CHECK (category IN ('articulated-toys', 'fidget-cubes', 'finger-spinners', 'push-bubbles', 'bundles')),
+    category TEXT NOT NULL CHECK (category IN ('articulated-toys', 'fidget-cubes', 'spinners', 'push-bubbles', 'bundles')),
     materials TEXT[] DEFAULT '{}',
     dimensions TEXT,
     variations TEXT[] DEFAULT '{}',
@@ -20,6 +20,12 @@ CREATE TABLE IF NOT EXISTS products (
     images TEXT[] DEFAULT '{}',
     variation_images JSONB DEFAULT '{}'::jsonb,  -- Images per variation: { "Gold": ["url1", "url2"], "Silver": ["url3"] }
     trading_station_url TEXT,  -- YE Trading Station product listing URL
+    -- Sale pricing fields
+    is_on_sale BOOLEAN DEFAULT false,
+    sale_price_gbp DECIMAL(10,2),  -- Fixed sale price (if not using percentage)
+    sale_percentage INTEGER,  -- Percentage off (e.g. 20 for 20% off)
+    sale_starts_at TIMESTAMPTZ,  -- When sale begins (null = immediate)
+    sale_ends_at TIMESTAMPTZ,  -- When sale ends (null = no end)
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()

@@ -256,19 +256,25 @@ exports.handler = async (event, context) => {
                         const newBalance = Math.round((currentBalance - giftCardAmount) * 100) / 100;
                         const newStatus = newBalance <= 0 ? 'depleted' : 'active';
 
-                        // Update gift card balance
-                        const { error: gcError } = await supabase
+                        // SECURITY: Use optimistic locking to prevent race conditions
+                        // Only update if balance hasn't changed since we read it
+                        const { data: updatedCard, error: gcError } = await supabase
                             .from('gift_cards')
                             .update({
                                 current_balance: Math.max(0, newBalance),
                                 status: newStatus,
                                 updated_at: new Date().toISOString()
                             })
-                            .eq('id', giftCardId);
+                            .eq('id', giftCardId)
+                            .eq('current_balance', giftCard.current_balance) // Optimistic lock
+                            .select('id')
+                            .single();
 
-                        if (gcError) {
-                            console.error('Failed to deduct gift card balance:', gcError);
-                            console.error(`CRITICAL: Order ${createdOrder.order_number} - gift card ${giftCard.code} not deducted!`);
+                        if (gcError || !updatedCard) {
+                            console.error('Gift card balance update failed (possible race condition):', gcError);
+                            console.error(`CRITICAL: Order ${createdOrder.order_number} - gift card ${giftCard.code} deduction may have failed!`);
+                            // Don't retry here - the order is already created and paid
+                            // This should be investigated manually
                         } else {
                             console.log(`Gift card ${giftCard.code} deducted: £${giftCardAmount.toFixed(2)}, new balance: £${Math.max(0, newBalance).toFixed(2)}`);
                         }

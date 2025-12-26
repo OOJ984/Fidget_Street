@@ -184,6 +184,26 @@ exports.handler = async (event, context) => {
         // Generate order number
         const orderNumber = generateOrderNumber();
 
+        // SECURITY: Atomically deduct gift card balance FIRST using optimistic locking
+        // This prevents race conditions where two orders could use the same balance
+        const { data: updatedCard, error: updateError } = await supabase
+            .from('gift_cards')
+            .update({
+                current_balance: newBalance,
+                status: newStatus,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', giftCard.id)
+            .eq('current_balance', giftCard.current_balance) // Optimistic lock - only update if balance unchanged
+            .select('id')
+            .single();
+
+        if (updateError || !updatedCard) {
+            // Balance was modified by another transaction - race condition detected
+            console.error('Gift card race condition detected:', updateError);
+            return errorResponse(409, 'Gift card balance was modified. Please try again.', headers);
+        }
+
         // Create order data
         let orderData = {
             order_number: orderNumber,
@@ -223,24 +243,16 @@ exports.handler = async (event, context) => {
 
         if (orderError) {
             console.error('Order creation error:', orderError);
+            // ROLLBACK: Refund the gift card since order creation failed
+            await supabase
+                .from('gift_cards')
+                .update({
+                    current_balance: giftCardBalance,
+                    status: 'active',
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', giftCard.id);
             return errorResponse(500, 'Failed to create order', headers);
-        }
-
-        // Deduct gift card balance
-        const { error: updateError } = await supabase
-            .from('gift_cards')
-            .update({
-                current_balance: newBalance,
-                status: newStatus,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', giftCard.id);
-
-        if (updateError) {
-            console.error('Gift card update error:', updateError);
-            // Order was created, but gift card wasn't deducted - this is bad
-            // Log for manual intervention
-            console.error(`CRITICAL: Order ${orderNumber} created but gift card ${giftCard.code} balance not deducted!`);
         }
 
         // Record gift card transaction

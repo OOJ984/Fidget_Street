@@ -99,31 +99,17 @@ exports.handler = async (event, context) => {
             }
         }
 
-        // Fetch transaction history
-        const { data: transactions, error: txError } = await supabase
-            .from('gift_card_transactions')
-            .select('id, transaction_type, amount, balance_after, order_number, notes, created_at')
-            .eq('gift_card_id', giftCard.id)
-            .order('created_at', { ascending: false });
-
-        if (txError) {
-            console.error('Error fetching transactions:', txError);
-            // Continue without transactions - not critical
-        }
-
-        // Return gift card details and transactions
+        // SECURITY: Return only essential information publicly
+        // Full transaction history is available in admin panel only
         return successResponse({
             giftCard: {
                 code: giftCard.code,
-                initial_balance: giftCard.initial_balance,
                 current_balance: giftCard.current_balance,
                 currency: giftCard.currency,
                 status: giftCard.status,
-                expires_at: giftCard.expires_at,
-                activated_at: giftCard.activated_at,
-                created_at: giftCard.created_at
-            },
-            transactions: transactions || []
+                expires_at: giftCard.expires_at
+                // Note: initial_balance, transactions, and timestamps are admin-only
+            }
         }, headers);
 
     } catch (error) {

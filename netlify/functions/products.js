@@ -3,9 +3,12 @@
  * GET /api/products - List all products
  * GET /api/products?slug=xxx - Get single product
  * GET /api/products?category=xxx - Filter by category
+ *
+ * Security: CORS restricted to allowed origins
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { getCorsHeaders } = require('./utils/security');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -13,13 +16,8 @@ const supabase = createClient(
 );
 
 exports.handler = async (event, context) => {
-    // CORS headers
-    const headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Content-Type': 'application/json'
-    };
+    const requestOrigin = event.headers.origin || event.headers.Origin;
+    const headers = getCorsHeaders(requestOrigin, ['GET', 'OPTIONS']);
 
     // Handle preflight
     if (event.httpMethod === 'OPTIONS') {

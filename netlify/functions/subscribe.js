@@ -1,9 +1,12 @@
 /**
  * Newsletter Subscription API
  * POST /api/subscribe - Subscribe to newsletter
+ *
+ * Security: CORS restricted to allowed origins
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { getCorsHeaders } = require('./utils/security');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -11,12 +14,8 @@ const supabase = createClient(
 );
 
 exports.handler = async (event, context) => {
-    const headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Content-Type': 'application/json'
-    };
+    const requestOrigin = event.headers.origin || event.headers.Origin;
+    const headers = getCorsHeaders(requestOrigin, ['POST', 'OPTIONS']);
 
     if (event.httpMethod === 'OPTIONS') {
         return { statusCode: 200, headers, body: '' };

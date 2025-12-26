@@ -11,11 +11,9 @@ const fs = require('fs');
 const path = require('path');
 
 exports.handler = async (event) => {
-    const headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Content-Type': 'application/json'
-    };
+    const requestOrigin = event.headers.origin || event.headers.Origin;
+    const { getCorsHeaders } = require('./utils/security');
+    const headers = getCorsHeaders(requestOrigin, ['GET', 'OPTIONS']);
 
     if (event.httpMethod === 'OPTIONS') {
         return { statusCode: 204, headers };

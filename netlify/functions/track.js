@@ -28,12 +28,9 @@ function generateSessionId() {
 }
 
 exports.handler = async (event, context) => {
-    const headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Content-Type': 'application/json'
-    };
+    const requestOrigin = event.headers.origin || event.headers.Origin;
+    const { getCorsHeaders } = require('./utils/security');
+    const headers = getCorsHeaders(requestOrigin, ['POST', 'OPTIONS']);
 
     if (event.httpMethod === 'OPTIONS') {
         return { statusCode: 200, headers, body: '' };

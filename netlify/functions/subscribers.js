@@ -26,12 +26,9 @@ function verifyToken(authHeader) {
 }
 
 exports.handler = async (event, context) => {
-    const headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        'Access-Control-Allow-Methods': 'GET, DELETE, OPTIONS',
-        'Content-Type': 'application/json'
-    };
+    const requestOrigin = event.headers.origin || event.headers.Origin;
+    const { getCorsHeaders } = require('./utils/security');
+    const headers = getCorsHeaders(requestOrigin, ['GET', 'DELETE', 'OPTIONS']);
 
     if (event.httpMethod === 'OPTIONS') {
         return { statusCode: 200, headers, body: '' };

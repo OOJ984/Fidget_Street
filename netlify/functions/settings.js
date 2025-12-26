@@ -40,11 +40,11 @@ const defaultSettings = {
 };
 
 exports.handler = async (event, context) => {
+    const requestOrigin = event.headers.origin || event.headers.Origin;
+    const { getCorsHeaders } = require('./utils/security');
+    const corsHeaders = getCorsHeaders(requestOrigin, ['GET', 'OPTIONS']);
     const headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Content-Type': 'application/json',
+        ...corsHeaders,
         // No caching - settings include logo/favicon that can change anytime
         'Cache-Control': 'no-cache, no-store, must-revalidate'
     };

@@ -7,7 +7,8 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
-const { getCorsHeaders, errorResponse, successResponse } = require('./utils/security');
+const { getCorsHeaders, errorResponse, successResponse, getClientIP } = require('./utils/security');
+const { checkGiftCardAnomaly, logSecurityEvent } = require('./utils/anomalyDetection');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -57,6 +58,13 @@ exports.handler = async (event, context) => {
             .single();
 
         if (gcError || !giftCard) {
+            // SECURITY: Log failed lookup and check for enumeration attacks
+            const clientIP = getClientIP(event);
+            await logSecurityEvent('gift_card_check_failed', {
+                code: cleanCode,
+                reason: 'not_found'
+            }, event);
+            await checkGiftCardAnomaly(clientIP, cleanCode);
             return errorResponse(404, 'Gift card not found. Please check the code and try again.', headers);
         }
 

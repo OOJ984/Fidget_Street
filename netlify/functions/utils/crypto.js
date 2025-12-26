@@ -11,16 +11,30 @@ const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 16;
 const AUTH_TAG_LENGTH = 16;
 
+// Check if running in production
+function isProduction() {
+    return process.env.NODE_ENV === 'production' ||
+           process.env.CONTEXT === 'production' ||  // Netlify production context
+           (process.env.URL && !process.env.URL.includes('localhost'));
+}
+
 // Get encryption key from environment
 function getEncryptionKey() {
     const key = process.env.ENCRYPTION_KEY;
     if (!key) {
-        console.warn('ENCRYPTION_KEY not set - PII encryption disabled');
+        // SECURITY: In production, encryption is mandatory
+        if (isProduction()) {
+            throw new Error('ENCRYPTION_KEY is required in production. PII cannot be stored without encryption.');
+        }
+        console.warn('ENCRYPTION_KEY not set - PII encryption disabled (development only)');
         return null;
     }
     // Key should be 32 bytes (64 hex characters)
     if (key.length !== 64) {
         console.error('ENCRYPTION_KEY must be 64 hex characters (32 bytes)');
+        if (isProduction()) {
+            throw new Error('Invalid ENCRYPTION_KEY length. Must be 64 hex characters.');
+        }
         return null;
     }
     return Buffer.from(key, 'hex');

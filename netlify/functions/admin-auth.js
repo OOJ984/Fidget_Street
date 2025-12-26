@@ -10,8 +10,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
-const { auditLog, AUDIT_ACTIONS, getCorsHeaders } = require('./utils/security');
+const { auditLog, AUDIT_ACTIONS, getCorsHeaders, requireAdminIP } = require('./utils/security');
 const { checkRateLimit, recordFailedAttempt, clearRateLimit } = require('./utils/rateLimit');
+const { checkLoginAnomaly } = require('./utils/anomalyDetection');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -77,6 +78,10 @@ exports.handler = async (event, context) => {
         return { statusCode: 200, headers, body: '' };
     }
 
+    // SECURITY: Check IP allowlist for admin access
+    const ipCheck = requireAdminIP(event, headers);
+    if (ipCheck) return ipCheck;
+
     // Check JWT_SECRET is configured
     if (!JWT_SECRET) {
         console.error('JWT_SECRET not configured');
@@ -134,6 +139,8 @@ exports.handler = async (event, context) => {
                     details: { reason: 'User not found' },
                     event
                 });
+                // SECURITY: Check for brute force patterns
+                await checkLoginAnomaly(email, clientIP);
                 return {
                     statusCode: 401,
                     headers,
@@ -168,6 +175,8 @@ exports.handler = async (event, context) => {
                     details: { reason: 'Invalid password' },
                     event
                 });
+                // SECURITY: Check for brute force patterns
+                await checkLoginAnomaly(email, clientIP);
                 return {
                     statusCode: 401,
                     headers,

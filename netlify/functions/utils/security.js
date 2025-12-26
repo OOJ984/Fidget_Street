@@ -55,6 +55,14 @@ const ALLOWED_ORIGINS = [
     'http://localhost:3000'                  // Alternative local port
 ].filter(Boolean);
 
+// SECURITY: IP allowlist for admin access
+// Set ADMIN_ALLOWED_IPS env var as comma-separated list (e.g., "1.2.3.4,5.6.7.8")
+// If not set, IP allowlisting is disabled (all IPs allowed)
+const ADMIN_ALLOWED_IPS = (process.env.ADMIN_ALLOWED_IPS || '')
+    .split(',')
+    .map(ip => ip.trim())
+    .filter(Boolean);
+
 // ============================================
 // Role Definitions
 // ============================================
@@ -281,17 +289,56 @@ function getCorsHeaders(requestOrigin, methods = ['GET', 'POST', 'PUT', 'DELETE'
 // Token Functions
 // ============================================
 
+// Import cookie utilities for hybrid auth support
+let cookieUtils = null;
+function getCookieUtils() {
+    if (!cookieUtils) {
+        try {
+            cookieUtils = require('./cookies');
+        } catch (e) {
+            // Cookies module not available - header auth only
+        }
+    }
+    return cookieUtils;
+}
+
 /**
- * Verify JWT token from Authorization header
- * @param {string} authHeader - The Authorization header value
+ * Verify JWT token from Authorization header OR cookies
+ * Supports both methods for backwards compatibility
+ * @param {string|object} authHeaderOrEvent - The Authorization header value OR event object
  * @returns {object|null} Decoded token payload or null if invalid
  */
-function verifyToken(authHeader) {
+function verifyToken(authHeaderOrEvent) {
     if (!JWT_SECRET) {
         console.error('Cannot verify token: JWT_SECRET not configured');
         return null;
     }
 
+    // If it's an event object, try cookies first, then fall back to header
+    if (typeof authHeaderOrEvent === 'object' && authHeaderOrEvent.headers) {
+        const cookies = getCookieUtils();
+        if (cookies) {
+            const cookieResult = cookies.verifyTokenFromCookies(authHeaderOrEvent, JWT_SECRET);
+            if (cookieResult.valid) {
+                return cookieResult.user;
+            }
+        }
+        // Fall back to Authorization header
+        const authHeader = authHeaderOrEvent.headers.authorization ||
+                          authHeaderOrEvent.headers.Authorization;
+        return verifyTokenFromHeader(authHeader);
+    }
+
+    // Legacy: direct auth header string
+    return verifyTokenFromHeader(authHeaderOrEvent);
+}
+
+/**
+ * Verify JWT token from Authorization header only
+ * @param {string} authHeader - The Authorization header value
+ * @returns {object|null} Decoded token payload or null if invalid
+ */
+function verifyTokenFromHeader(authHeader) {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return null;
     }
@@ -446,6 +493,56 @@ function getClientIP(event) {
         || 'unknown';
 }
 
+/**
+ * SECURITY: Check if client IP is allowed for admin access
+ * Returns true if allowlist is empty (disabled) or IP is in the list
+ * @param {object} event - Netlify event object
+ * @returns {{ allowed: boolean, ip: string, reason?: string }}
+ */
+function checkAdminIPAllowlist(event) {
+    const clientIP = getClientIP(event);
+
+    // If no allowlist configured, allow all IPs
+    if (ADMIN_ALLOWED_IPS.length === 0) {
+        return { allowed: true, ip: clientIP };
+    }
+
+    // Check if client IP is in the allowlist
+    const isAllowed = ADMIN_ALLOWED_IPS.includes(clientIP);
+
+    if (!isAllowed) {
+        console.warn(`Admin access denied for IP: ${clientIP} (not in allowlist)`);
+    }
+
+    return {
+        allowed: isAllowed,
+        ip: clientIP,
+        reason: isAllowed ? undefined : 'IP not in admin allowlist'
+    };
+}
+
+/**
+ * Middleware to enforce admin IP allowlist
+ * Returns error response if IP is not allowed, null if allowed
+ * @param {object} event - Netlify event object
+ * @param {object} headers - CORS headers
+ * @returns {object|null} Error response or null
+ */
+function requireAdminIP(event, headers) {
+    const check = checkAdminIPAllowlist(event);
+    if (!check.allowed) {
+        return {
+            statusCode: 403,
+            headers,
+            body: JSON.stringify({
+                error: 'Access denied',
+                // Don't reveal that it's IP-based to potential attackers
+            })
+        };
+    }
+    return null;
+}
+
 module.exports = {
     // CORS
     getCorsHeaders,
@@ -453,6 +550,7 @@ module.exports = {
 
     // Token
     verifyToken,
+    verifyTokenFromHeader,
     isSecretConfigured,
 
     // RBAC
@@ -473,5 +571,10 @@ module.exports = {
     // Audit logging
     AUDIT_ACTIONS,
     auditLog,
-    getClientIP
+    getClientIP,
+
+    // IP allowlisting
+    checkAdminIPAllowlist,
+    requireAdminIP,
+    ADMIN_ALLOWED_IPS
 };

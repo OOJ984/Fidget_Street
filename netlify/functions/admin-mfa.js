@@ -24,52 +24,69 @@ const {
     AUDIT_ACTIONS
 } = require('./utils/security');
 
-// SECURITY: In-memory rate limiting for MFA attempts
-// In production, consider using Redis or database for distributed rate limiting
-const mfaAttempts = new Map();
+// SECURITY: Database-backed rate limiting for MFA attempts
+// Survives serverless cold starts and scales across instances
 const MFA_MAX_ATTEMPTS = 5;
 const MFA_LOCKOUT_MINUTES = 15;
 
-function checkMfaRateLimit(userId) {
-    const key = `mfa:${userId}`;
-    const record = mfaAttempts.get(key);
+async function checkMfaRateLimit(supabaseClient, userId) {
+    try {
+        const { data, error } = await supabaseClient.rpc('check_mfa_rate_limit', {
+            p_user_id: userId,
+            p_max_attempts: MFA_MAX_ATTEMPTS,
+            p_lockout_minutes: MFA_LOCKOUT_MINUTES,
+            p_window_minutes: MFA_LOCKOUT_MINUTES
+        });
 
-    if (!record) {
-        return { allowed: true };
+        if (error) {
+            console.error('MFA rate limit check failed:', error);
+            // Fail open - allow attempt if rate limiting unavailable
+            return { allowed: true };
+        }
+
+        if (!data.allowed) {
+            const lockedUntil = new Date(data.locked_until);
+            const retryAfter = Math.ceil((lockedUntil - Date.now()) / 1000);
+            return { allowed: false, retryAfter: Math.max(1, retryAfter) };
+        }
+
+        return { allowed: true, remainingAttempts: data.remaining_attempts };
+    } catch (err) {
+        console.error('MFA rate limit error:', err);
+        return { allowed: true }; // Fail open
     }
-
-    // Check if lockout has expired
-    const lockoutExpiry = record.lockedUntil;
-    if (lockoutExpiry && lockoutExpiry > Date.now()) {
-        const retryAfter = Math.ceil((lockoutExpiry - Date.now()) / 1000);
-        return { allowed: false, retryAfter };
-    }
-
-    // Reset if lockout expired
-    if (lockoutExpiry && lockoutExpiry <= Date.now()) {
-        mfaAttempts.delete(key);
-        return { allowed: true };
-    }
-
-    return { allowed: true };
 }
 
-function recordMfaFailure(userId) {
-    const key = `mfa:${userId}`;
-    const record = mfaAttempts.get(key) || { attempts: 0 };
+async function recordMfaFailure(supabaseClient, userId) {
+    try {
+        const { data, error } = await supabaseClient.rpc('record_mfa_failure', {
+            p_user_id: userId,
+            p_max_attempts: MFA_MAX_ATTEMPTS,
+            p_lockout_minutes: MFA_LOCKOUT_MINUTES
+        });
 
-    record.attempts++;
-    record.lastAttempt = Date.now();
+        if (error) {
+            console.error('Failed to record MFA failure:', error);
+        }
 
-    if (record.attempts >= MFA_MAX_ATTEMPTS) {
-        record.lockedUntil = Date.now() + (MFA_LOCKOUT_MINUTES * 60 * 1000);
+        return data;
+    } catch (err) {
+        console.error('MFA failure recording error:', err);
     }
-
-    mfaAttempts.set(key, record);
 }
 
-function clearMfaRateLimit(userId) {
-    mfaAttempts.delete(`mfa:${userId}`);
+async function clearMfaRateLimit(supabaseClient, userId) {
+    try {
+        const { error } = await supabaseClient.rpc('clear_mfa_rate_limit', {
+            p_user_id: userId
+        });
+
+        if (error) {
+            console.error('Failed to clear MFA rate limit:', error);
+        }
+    } catch (err) {
+        console.error('MFA rate limit clear error:', err);
+    }
 }
 
 const supabase = createClient(
@@ -286,8 +303,8 @@ exports.handler = async (event, context) => {
                 return errorResponse(401, 'Session expired. Please log in again.', headers);
             }
 
-            // SECURITY: Check rate limiting for MFA attempts
-            const rateLimit = checkMfaRateLimit(preMfaData.userId);
+            // SECURITY: Check rate limiting for MFA attempts (database-backed)
+            const rateLimit = await checkMfaRateLimit(supabase, preMfaData.userId);
             if (!rateLimit.allowed) {
                 return {
                     statusCode: 429,
@@ -328,13 +345,13 @@ exports.handler = async (event, context) => {
             });
 
             if (!verified) {
-                // SECURITY: Record failed attempt
-                recordMfaFailure(preMfaData.userId);
+                // SECURITY: Record failed attempt (database-backed)
+                await recordMfaFailure(supabase, preMfaData.userId);
                 return errorResponse(400, 'Invalid verification code', headers);
             }
 
-            // SECURITY: Clear rate limit on success
-            clearMfaRateLimit(preMfaData.userId);
+            // SECURITY: Clear rate limit on success (database-backed)
+            await clearMfaRateLimit(supabase, preMfaData.userId);
 
             // MFA verified! Issue the final JWT
             const finalToken = jwt.sign(
@@ -406,8 +423,8 @@ exports.handler = async (event, context) => {
                 return errorResponse(401, 'Session expired. Please log in again.', headers);
             }
 
-            // SECURITY: Check rate limiting for MFA attempts (shared with TOTP)
-            const rateLimit = checkMfaRateLimit(preMfaData.userId);
+            // SECURITY: Check rate limiting for MFA attempts (shared with TOTP, database-backed)
+            const rateLimit = await checkMfaRateLimit(supabase, preMfaData.userId);
             if (!rateLimit.allowed) {
                 return {
                     statusCode: 429,
@@ -445,13 +462,13 @@ exports.handler = async (event, context) => {
             const codeIndex = verifyBackupCode(code, userData.mfa_backup_codes, salt);
 
             if (codeIndex === -1) {
-                // SECURITY: Record failed attempt
-                recordMfaFailure(preMfaData.userId);
+                // SECURITY: Record failed attempt (database-backed)
+                await recordMfaFailure(supabase, preMfaData.userId);
                 return errorResponse(400, 'Invalid backup code', headers);
             }
 
-            // SECURITY: Clear rate limit on success
-            clearMfaRateLimit(preMfaData.userId);
+            // SECURITY: Clear rate limit on success (database-backed)
+            await clearMfaRateLimit(supabase, preMfaData.userId);
 
             // Remove used backup code
             const remainingCodes = [...userData.mfa_backup_codes];

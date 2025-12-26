@@ -534,34 +534,33 @@ async function handleImageUpload(e) {
 }
 
 async function uploadImage(file) {
-    const fileExt = file.name.split('.').pop().toLowerCase();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-    const filePath = `products/${fileName}`;
-
-    console.log('Uploading file:', filePath, 'Size:', file.size);
+    console.log('Uploading file:', file.name, 'Size:', file.size);
 
     try {
-        const { data, error } = await supabaseClient.storage
-            .from('product-images')
-            .upload(filePath, file, {
-                cacheControl: '3600',
-                upsert: false
-            });
+        // Use secure upload endpoint (authenticates with JWT, uses service_role)
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', 'products');
 
-        if (error) {
-            console.error('Upload error details:', JSON.stringify(error, null, 2));
-            alert(`Upload failed: ${error.message || error.error || 'Unknown error'}`);
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch('/api/admin-upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            console.error('Upload error:', result);
+            alert(`Upload failed: ${result.error || 'Unknown error'}`);
             return null;
         }
 
-        console.log('Upload success:', data);
-
-        const { data: urlData } = supabaseClient.storage
-            .from('product-images')
-            .getPublicUrl(filePath);
-
-        console.log('Public URL:', urlData.publicUrl);
-        return urlData.publicUrl;
+        console.log('Upload success:', result);
+        return result.url;
     } catch (err) {
         console.error('Upload exception:', err);
         alert(`Upload exception: ${err.message}`);

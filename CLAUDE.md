@@ -128,6 +128,49 @@ JWT_SECRET
 # INSTAGRAM_ACCESS_TOKEN  # Not needed - using manual uploads (see docs/instagram-setup.md)
 ```
 
+## Production Deployment Checklist
+
+### Required Environment Variables (Netlify Dashboard)
+Set these in Netlify > Site Settings > Environment Variables before deploying:
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SUPABASE_URL` | ✅ Yes | Production Supabase project URL |
+| `SUPABASE_SERVICE_KEY` | ✅ Yes | Production Supabase service role key |
+| `STRIPE_SECRET_KEY` | ✅ Yes | Live Stripe secret key (sk_live_...) |
+| `STRIPE_PUBLISHABLE_KEY` | ✅ Yes | Live Stripe publishable key (pk_live_...) |
+| `STRIPE_WEBHOOK_SECRET` | ✅ Yes | Live webhook signing secret (whsec_...) |
+| `PAYPAL_CLIENT_ID` | ✅ Yes | PayPal live client ID |
+| `PAYPAL_CLIENT_SECRET` | ✅ Yes | PayPal live client secret |
+| `JWT_SECRET` | ✅ Yes | Strong random string (32+ chars) |
+| `ENCRYPTION_KEY` | ✅ Yes | 64-char hex string for PII encryption |
+| `ADMIN_ALLOWED_IPS` | Optional | Comma-separated IP allowlist for admin |
+| `RESEND_API_KEY` | Optional | For email notifications |
+
+### Security Environment Variables (New)
+```bash
+# Generate ENCRYPTION_KEY (required in production):
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# ADMIN_ALLOWED_IPS (optional - restrict admin access to specific IPs):
+# Leave empty to allow all IPs, or set comma-separated list:
+ADMIN_ALLOWED_IPS=203.0.113.50,198.51.100.25
+```
+
+### Pre-Deployment Steps
+1. [ ] Run `supabase/sync_all.sql` on production database
+2. [ ] Set all required environment variables in Netlify
+3. [ ] Generate and set `ENCRYPTION_KEY` (see above)
+4. [ ] Configure Stripe webhook endpoint: `https://yourdomain.com/.netlify/functions/webhooks`
+5. [ ] Verify CSP headers in `netlify.toml` include your domain
+
+### Post-Deployment Verification
+1. [ ] Test checkout flow with Stripe test card
+2. [ ] Verify admin login works
+3. [ ] Test MFA enrollment and verification
+4. [ ] Check CSP violations in browser console
+5. [ ] Verify orders appear in admin panel
+
 ## Common Tasks
 
 ### Run locally

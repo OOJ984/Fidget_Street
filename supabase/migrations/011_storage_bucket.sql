@@ -4,9 +4,7 @@
 -- This creates the 'product-images' bucket for storing product images.
 -- Run this in Supabase SQL Editor if the bucket doesn't exist.
 
--- Create the storage bucket (requires storage admin privileges)
--- Note: This may need to be done via Supabase Dashboard UI instead
-
+-- Create or update the storage bucket
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
     'product-images',
@@ -15,29 +13,35 @@ VALUES (
     5242880,  -- 5MB max file size
     ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']::text[]
 )
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+    public = true,
+    file_size_limit = 5242880,
+    allowed_mime_types = ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']::text[];
 
--- Set up RLS policies for the bucket
+-- Drop existing policies to recreate them properly
+DROP POLICY IF EXISTS "Public read for product-images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow uploads to product-images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow deletes from product-images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow updates to product-images" ON storage.objects;
+DROP POLICY IF EXISTS "Public read access for product images" ON storage.objects;
+DROP POLICY IF EXISTS "Admin upload access for product images" ON storage.objects;
+DROP POLICY IF EXISTS "Admin delete access for product images" ON storage.objects;
+DROP POLICY IF EXISTS "Admin update access for product images" ON storage.objects;
 
--- Allow public read access to all product images
-CREATE POLICY "Public read access for product images"
+-- Create permissive policies for product-images bucket
+-- Authentication is handled at the Netlify function level
+CREATE POLICY "Public read for product-images"
     ON storage.objects FOR SELECT
     USING (bucket_id = 'product-images');
 
--- Allow authenticated admins to upload images
-CREATE POLICY "Admin upload access for product images"
+CREATE POLICY "Allow uploads to product-images"
     ON storage.objects FOR INSERT
-    WITH CHECK (
-        bucket_id = 'product-images'
-        -- Note: Additional auth checks done at function level
-    );
+    WITH CHECK (bucket_id = 'product-images');
 
--- Allow authenticated admins to delete images
-CREATE POLICY "Admin delete access for product images"
-    ON storage.objects FOR DELETE
+CREATE POLICY "Allow updates to product-images"
+    ON storage.objects FOR UPDATE
     USING (bucket_id = 'product-images');
 
--- Allow authenticated admins to update images
-CREATE POLICY "Admin update access for product images"
-    ON storage.objects FOR UPDATE
+CREATE POLICY "Allow deletes from product-images"
+    ON storage.objects FOR DELETE
     USING (bucket_id = 'product-images');

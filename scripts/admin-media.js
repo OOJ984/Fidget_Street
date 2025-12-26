@@ -140,20 +140,28 @@ async function handleUpload(e) {
     progressContainer.classList.remove('hidden');
     let completed = 0;
 
+    const token = localStorage.getItem('adminToken');
+
     for (const file of files) {
         try {
-            const fileExt = file.name.split('.').pop().toLowerCase();
-            const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
-            const filePath = `products/${fileName}`;
+            // Use secure upload endpoint
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('folder', 'products');
 
-            const { error } = await supabaseClient.storage
-                .from('product-images')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
+            const response = await fetch('/api/admin-upload', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
 
-            if (error) throw error;
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Upload failed');
+            }
 
             completed++;
             const percent = Math.round((completed / files.length) * 100);
@@ -161,7 +169,7 @@ async function handleUpload(e) {
             progressText.textContent = `Uploaded ${completed}/${files.length}`;
         } catch (err) {
             console.error('Upload failed:', err);
-            showToast(`Failed to upload ${file.name}`);
+            showToast(`Failed to upload ${file.name}: ${err.message}`);
         }
     }
 

@@ -568,63 +568,205 @@ ALTER TABLE gift_cards DISABLE ROW LEVEL SECURITY;
 ALTER TABLE gift_card_transactions DISABLE ROW LEVEL SECURITY;
 
 -- ============================================
--- 011: STORAGE BUCKET FOR PRODUCT IMAGES
+-- 011: MFA RATE LIMITS (Database-backed)
+-- ============================================
+-- Create MFA rate limits table
+CREATE TABLE IF NOT EXISTS mfa_rate_limits (
+    user_id INTEGER PRIMARY KEY REFERENCES admin_users(id) ON DELETE CASCADE,
+    attempt_count INTEGER NOT NULL DEFAULT 0,
+    first_attempt_at TIMESTAMPTZ,
+    locked_until TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Index for cleanup queries
+CREATE INDEX IF NOT EXISTS idx_mfa_rate_limits_locked_until
+    ON mfa_rate_limits(locked_until)
+    WHERE locked_until IS NOT NULL;
+
+-- Function to check and update MFA rate limit
+CREATE OR REPLACE FUNCTION check_mfa_rate_limit(
+    p_user_id INTEGER,
+    p_max_attempts INTEGER DEFAULT 5,
+    p_lockout_minutes INTEGER DEFAULT 15,
+    p_window_minutes INTEGER DEFAULT 15
+) RETURNS JSONB AS $$
+DECLARE
+    v_record mfa_rate_limits%ROWTYPE;
+    v_now TIMESTAMPTZ := NOW();
+    v_window_start TIMESTAMPTZ := v_now - (p_window_minutes || ' minutes')::INTERVAL;
+BEGIN
+    INSERT INTO mfa_rate_limits (user_id, attempt_count, first_attempt_at)
+    VALUES (p_user_id, 0, NULL)
+    ON CONFLICT (user_id) DO NOTHING;
+
+    SELECT * INTO v_record FROM mfa_rate_limits WHERE user_id = p_user_id FOR UPDATE;
+
+    IF v_record.locked_until IS NOT NULL AND v_record.locked_until > v_now THEN
+        RETURN jsonb_build_object(
+            'allowed', false,
+            'remaining_attempts', 0,
+            'locked_until', v_record.locked_until,
+            'reason', 'locked'
+        );
+    END IF;
+
+    IF v_record.locked_until IS NOT NULL AND v_record.locked_until <= v_now THEN
+        UPDATE mfa_rate_limits
+        SET attempt_count = 0, first_attempt_at = NULL, locked_until = NULL, updated_at = v_now
+        WHERE user_id = p_user_id;
+        v_record.attempt_count := 0;
+    ELSIF v_record.first_attempt_at IS NOT NULL AND v_record.first_attempt_at < v_window_start THEN
+        UPDATE mfa_rate_limits
+        SET attempt_count = 0, first_attempt_at = NULL, updated_at = v_now
+        WHERE user_id = p_user_id;
+        v_record.attempt_count := 0;
+    END IF;
+
+    RETURN jsonb_build_object(
+        'allowed', true,
+        'remaining_attempts', p_max_attempts - v_record.attempt_count,
+        'locked_until', NULL
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to record a failed MFA attempt
+CREATE OR REPLACE FUNCTION record_mfa_failure(
+    p_user_id INTEGER,
+    p_max_attempts INTEGER DEFAULT 5,
+    p_lockout_minutes INTEGER DEFAULT 15
+) RETURNS JSONB AS $$
+DECLARE
+    v_record mfa_rate_limits%ROWTYPE;
+    v_now TIMESTAMPTZ := NOW();
+    v_new_count INTEGER;
+    v_locked_until TIMESTAMPTZ;
+BEGIN
+    UPDATE mfa_rate_limits
+    SET
+        attempt_count = attempt_count + 1,
+        first_attempt_at = COALESCE(first_attempt_at, v_now),
+        updated_at = v_now
+    WHERE user_id = p_user_id
+    RETURNING * INTO v_record;
+
+    v_new_count := v_record.attempt_count;
+
+    IF v_new_count >= p_max_attempts THEN
+        v_locked_until := v_now + (p_lockout_minutes || ' minutes')::INTERVAL;
+        UPDATE mfa_rate_limits
+        SET locked_until = v_locked_until, updated_at = v_now
+        WHERE user_id = p_user_id;
+
+        RETURN jsonb_build_object(
+            'locked', true,
+            'locked_until', v_locked_until,
+            'remaining_attempts', 0
+        );
+    END IF;
+
+    RETURN jsonb_build_object(
+        'locked', false,
+        'locked_until', NULL,
+        'remaining_attempts', p_max_attempts - v_new_count
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to clear rate limit on successful MFA
+CREATE OR REPLACE FUNCTION clear_mfa_rate_limit(p_user_id INTEGER) RETURNS VOID AS $$
+BEGIN
+    UPDATE mfa_rate_limits
+    SET attempt_count = 0, first_attempt_at = NULL, locked_until = NULL, updated_at = NOW()
+    WHERE user_id = p_user_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Cleanup old records
+CREATE OR REPLACE FUNCTION cleanup_mfa_rate_limits() RETURNS INTEGER AS $$
+DECLARE
+    v_deleted INTEGER;
+BEGIN
+    DELETE FROM mfa_rate_limits
+    WHERE updated_at < NOW() - INTERVAL '24 hours'
+    AND locked_until IS NULL;
+    GET DIAGNOSTICS v_deleted = ROW_COUNT;
+    RETURN v_deleted;
+END;
+$$ LANGUAGE plpgsql;
+
+ALTER TABLE mfa_rate_limits ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Service role can manage mfa_rate_limits" ON mfa_rate_limits;
+CREATE POLICY "Service role can manage mfa_rate_limits" ON mfa_rate_limits
+    FOR ALL USING (auth.role() = 'service_role');
+
+-- ============================================
+-- 012: STORAGE BUCKET FOR PRODUCT IMAGES
 -- ============================================
 -- Create the storage bucket for product images
--- Note: This may need to be done via Supabase Dashboard if storage schema access is restricted
+-- Uploads go through /api/admin-upload which uses service_role key
 
+-- Update bucket to be public (for reading) with correct settings
+UPDATE storage.buckets
+SET public = true,
+    file_size_limit = 10485760,  -- 10MB max file size
+    allowed_mime_types = ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg']::text[]
+WHERE id = 'product-images';
+
+-- If bucket doesn't exist, insert it
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
     'product-images',
     'product-images',
-    true,  -- Public bucket for product images
-    5242880,  -- 5MB max file size
-    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']::text[]
+    true,
+    10485760,
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/jpg']::text[]
 )
 ON CONFLICT (id) DO NOTHING;
 
--- Storage bucket policies (may fail if bucket was created via dashboard - that's OK)
+-- Drop ALL existing policies for product-images bucket
 DO $$
+DECLARE
+    policy_record RECORD;
 BEGIN
-    -- Allow public read access
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_policies
+    FOR policy_record IN
+        SELECT policyname
+        FROM pg_policies
         WHERE schemaname = 'storage'
         AND tablename = 'objects'
-        AND policyname = 'Public read for product-images'
-    ) THEN
-        CREATE POLICY "Public read for product-images"
-            ON storage.objects FOR SELECT
-            USING (bucket_id = 'product-images');
-    END IF;
-
-    -- Allow uploads
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_policies
-        WHERE schemaname = 'storage'
-        AND tablename = 'objects'
-        AND policyname = 'Allow uploads to product-images'
-    ) THEN
-        CREATE POLICY "Allow uploads to product-images"
-            ON storage.objects FOR INSERT
-            WITH CHECK (bucket_id = 'product-images');
-    END IF;
-
-    -- Allow deletes
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_policies
-        WHERE schemaname = 'storage'
-        AND tablename = 'objects'
-        AND policyname = 'Allow deletes from product-images'
-    ) THEN
-        CREATE POLICY "Allow deletes from product-images"
-            ON storage.objects FOR DELETE
-            USING (bucket_id = 'product-images');
-    END IF;
-EXCEPTION
-    WHEN OTHERS THEN
-        RAISE NOTICE 'Storage policies may already exist or require dashboard setup: %', SQLERRM;
+        AND (policyname LIKE '%product%' OR policyname LIKE '%Product%')
+    LOOP
+        EXECUTE format('DROP POLICY IF EXISTS %I ON storage.objects', policy_record.policyname);
+    END LOOP;
 END $$;
+
+-- SECURE policies: Public can read, only service_role can write
+-- Anyone can read (public bucket for displaying product images)
+CREATE POLICY "product-images public read"
+    ON storage.objects FOR SELECT
+    TO public
+    USING (bucket_id = 'product-images');
+
+-- Only service_role can insert (uploads go through /api/admin-upload)
+CREATE POLICY "product-images service insert"
+    ON storage.objects FOR INSERT
+    TO service_role
+    WITH CHECK (bucket_id = 'product-images');
+
+-- Only service_role can update
+CREATE POLICY "product-images service update"
+    ON storage.objects FOR UPDATE
+    TO service_role
+    USING (bucket_id = 'product-images');
+
+-- Only service_role can delete
+CREATE POLICY "product-images service delete"
+    ON storage.objects FOR DELETE
+    TO service_role
+    USING (bucket_id = 'product-images');
 
 -- ============================================
 -- NOTIFY POSTGREST TO RELOAD SCHEMA

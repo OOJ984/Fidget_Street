@@ -167,14 +167,14 @@ describe('validation.js', () => {
 
     describe('validateOrderNumber()', () => {
         it('should accept valid order numbers', () => {
-            expect(validateOrderNumber('PP-20241205-1234').valid).toBe(true);
-            expect(validateOrderNumber('PP-20250101-0001').valid).toBe(true);
+            expect(validateOrderNumber('FS-20241205-1234').valid).toBe(true);
+            expect(validateOrderNumber('FS-20250101-0001').valid).toBe(true);
         });
 
         it('should reject invalid formats', () => {
             expect(validateOrderNumber('ABC-123').valid).toBe(false);
-            expect(validateOrderNumber('PP-2024-1234').valid).toBe(false);
-            expect(validateOrderNumber('PP-20241205-12345').valid).toBe(false);
+            expect(validateOrderNumber('FS-2024-1234').valid).toBe(false);
+            expect(validateOrderNumber('FS-20241205-12345').valid).toBe(false);
             expect(validateOrderNumber('').valid).toBe(false);
             expect(validateOrderNumber(null).valid).toBe(false);
         });

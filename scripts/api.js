@@ -1,5 +1,5 @@
 /**
- * Wicka - API Client
+ * Fidget Street - API Client
  * Handles communication with backend API
  * Falls back to static JSON for local development
  */

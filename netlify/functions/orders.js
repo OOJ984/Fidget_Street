@@ -184,7 +184,7 @@ exports.handler = async (event, context) => {
             const subtotal = body.items.reduce((sum, item) => {
                 return sum + (item.price * item.quantity);
             }, 0);
-            const shipping = subtotal >= 20 ? 0 : 2.99;
+            const shipping = subtotal >= 20 ? 0 : 3.49;
             const total = subtotal + shipping;
 
             // Create order with sanitized inputs

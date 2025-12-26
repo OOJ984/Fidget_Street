@@ -18,16 +18,33 @@
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-8">
                 <a href="../index.html" class="flex items-center space-x-2">
-                    <img src="" alt="Fidget Street Logo" class="h-16 lg:h-20 w-auto">
+                    <img src="../assets/logo.png" alt="Fidget Street Logo" class="h-16 lg:h-20 w-auto">
                     <span class="font-serif text-2xl font-semibold">Admin</span>
                 </a>
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
                     <a href="products.html" class="text-navy-700 hover:text-navy transition-colors">Products</a>
-                    <a href="media.html" class="text-rose-gold font-medium">Media</a>
                     <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
-                    <a href="website.html" class="text-navy-700 hover:text-navy transition-colors">Website</a>
-                    <a href="users.html" class="text-navy-700 hover:text-navy transition-colors admin-only-link">Users</a>
+                    <div class="relative nav-dropdown">
+                        <button class="text-soft-blue font-medium flex items-center gap-1">
+                            More
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu absolute top-full left-0 mt-1 bg-white border border-navy/20 rounded-lg shadow-lg py-2 min-w-[160px] z-50" style="display:none">
+                            <a href="colors.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Colours</a>
+                            <a href="sizes.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Sizes</a>
+                            <a href="media.html" class="block px-4 py-2 text-soft-blue font-medium bg-navy-50">Media</a>
+                            <a href="analytics.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Analytics</a>
+                            <a href="subscribers.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Subscribers</a>
+                            <a href="email-builder.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Emails</a>
+                            <a href="discounts.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Discounts</a>
+                            <a href="gift-cards.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Gift Cards</a>
+                            <a href="website.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Website</a>
+                            <a href="users.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50 admin-only-link">Users</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="flex items-center space-x-4">
@@ -38,12 +55,18 @@
     </nav>
 
     <!-- Mobile Navigation -->
-    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2">
-        <div class="flex items-center space-x-4">
+    <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2 overflow-x-auto">
+        <div class="flex items-center space-x-4 whitespace-nowrap">
             <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="analytics.html" class="text-navy-700 text-sm hover:text-navy">Analytics</a>
             <a href="products.html" class="text-navy-700 text-sm hover:text-navy">Products</a>
-            <a href="media.html" class="text-rose-gold text-sm font-medium">Media</a>
+            <a href="colors.html" class="text-navy-700 text-sm hover:text-navy">Colours</a>
+            <a href="media.html" class="text-soft-blue text-sm font-medium">Media</a>
             <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
+            <a href="subscribers.html" class="text-navy-700 text-sm hover:text-navy">Subscribers</a>
+            <a href="email-builder.html" class="text-navy-700 text-sm hover:text-navy">Emails</a>
+            <a href="discounts.html" class="text-navy-700 text-sm hover:text-navy">Discounts</a>
+            <a href="gift-cards.html" class="text-navy-700 text-sm hover:text-navy">Gift Cards</a>
             <a href="website.html" class="text-navy-700 text-sm hover:text-navy">Website</a>
             <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
         </div>
@@ -63,7 +86,7 @@
         <div class="bg-navy-50 rounded-lg p-4 mb-6">
             <div class="flex flex-col sm:flex-row gap-4">
                 <div class="flex-1">
-                    <input type="text" id="search-input" placeholder="Search by filename..." class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-rose-gold">
+                    <input type="text" id="search-input" placeholder="Search by filename..." class="w-full px-4 py-2 bg-white border border-navy/30 rounded-lg focus:outline-none focus:border-soft-blue">
                 </div>
                 <div class="flex items-center gap-4">
                     <span id="image-count" class="text-sm text-navy-600">0 images</span>
@@ -78,7 +101,7 @@
         <div id="upload-progress" class="hidden bg-navy-50 rounded-lg p-4 mb-6">
             <div class="flex items-center gap-4">
                 <div class="flex-1 bg-navy-100 rounded-full h-2 overflow-hidden">
-                    <div id="progress-bar" class="bg-rose-gold h-full transition-all duration-300" style="width: 0%"></div>
+                    <div id="progress-bar" class="bg-soft-blue h-full transition-all duration-300" style="width: 0%"></div>
                 </div>
                 <span id="progress-text" class="text-sm text-navy-600">Uploading...</span>
             </div>
@@ -109,7 +132,7 @@
                         <div>
                             <label class="block text-xs text-navy-500 mb-1">Filename</label>
                             <div class="flex gap-2">
-                                <input type="text" id="modal-rename" class="flex-1 px-3 py-2 bg-white border border-navy/30 rounded-lg text-sm focus:outline-none focus:border-rose-gold">
+                                <input type="text" id="modal-rename" class="flex-1 px-3 py-2 bg-white border border-navy/30 rounded-lg text-sm focus:outline-none focus:border-soft-blue">
                                 <button id="rename-btn" class="px-4 py-2 bg-navy-100 hover:bg-gray-700 rounded-lg text-sm transition-colors">
                                     Rename
                                 </button>
@@ -117,7 +140,7 @@
                         </div>
                         <div>
                             <label class="block text-xs text-navy-500 mb-1">URL (click to copy)</label>
-                            <input type="text" id="modal-url" readonly class="w-full px-3 py-2 bg-white border border-navy/30 rounded-lg text-sm cursor-pointer hover:border-rose-gold transition-colors">
+                            <input type="text" id="modal-url" readonly class="w-full px-3 py-2 bg-white border border-navy/30 rounded-lg text-sm cursor-pointer hover:border-soft-blue transition-colors">
                         </div>
                         <div class="flex gap-3">
                             <button id="copy-url-btn" class="flex-1 px-4 py-2 bg-navy-100 hover:bg-gray-700 rounded-lg text-sm transition-colors">
@@ -139,6 +162,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="../scripts/admin-nav.js"></script>
     <script defer src="../scripts/admin-auth.js"></script>
     <script defer src="../scripts/admin-media.js"></script>
 </body>

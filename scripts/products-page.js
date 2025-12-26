@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (tagParam) {
         activeFilters.tags.push(tagParam);
         const tagButton = document.querySelector(`.tag-filter[data-tag="${tagParam}"]`);
-        if (tagButton) tagButton.classList.add('active', 'border-rose-gold', 'text-rose-gold');
+        if (tagButton) tagButton.classList.add('active', 'border-soft-blue', 'text-soft-blue');
     }
 
     // Load products
@@ -79,10 +79,10 @@ function setupFilters() {
 
             if (index > -1) {
                 activeFilters.tags.splice(index, 1);
-                e.target.classList.remove('active', 'border-rose-gold', 'text-rose-gold');
+                e.target.classList.remove('active', 'border-soft-blue', 'text-soft-blue');
             } else {
                 activeFilters.tags.push(tag);
-                e.target.classList.add('active', 'border-rose-gold', 'text-rose-gold');
+                e.target.classList.add('active', 'border-soft-blue', 'text-soft-blue');
             }
 
             applyFilters();
@@ -224,28 +224,28 @@ function updateActiveFiltersDisplay() {
     let filtersHtml = '';
 
     if (activeFilters.category !== 'all') {
-        filtersHtml += `<span class="inline-flex items-center px-3 py-1 bg-rose-gold/20 text-rose-gold rounded-full text-xs">
+        filtersHtml += `<span class="inline-flex items-center px-3 py-1 bg-soft-blue/20 text-soft-blue rounded-full text-xs">
             ${activeFilters.category.replace('-', ' ')}
             <button onclick="removeFilter('category')" class="ml-2">&times;</button>
         </span>`;
     }
 
     if (activeFilters.price !== 'all') {
-        filtersHtml += `<span class="inline-flex items-center px-3 py-1 bg-rose-gold/20 text-rose-gold rounded-full text-xs">
+        filtersHtml += `<span class="inline-flex items-center px-3 py-1 bg-soft-blue/20 text-soft-blue rounded-full text-xs">
             £${activeFilters.price}
             <button onclick="removeFilter('price')" class="ml-2">&times;</button>
         </span>`;
     }
 
     activeFilters.tags.forEach(tag => {
-        filtersHtml += `<span class="inline-flex items-center px-3 py-1 bg-rose-gold/20 text-rose-gold rounded-full text-xs">
+        filtersHtml += `<span class="inline-flex items-center px-3 py-1 bg-soft-blue/20 text-soft-blue rounded-full text-xs">
             ${tag}
             <button onclick="removeTagFilter('${tag}')" class="ml-2">&times;</button>
         </span>`;
     });
 
     if (activeFilters.search) {
-        filtersHtml += `<span class="inline-flex items-center px-3 py-1 bg-rose-gold/20 text-rose-gold rounded-full text-xs">
+        filtersHtml += `<span class="inline-flex items-center px-3 py-1 bg-soft-blue/20 text-soft-blue rounded-full text-xs">
             "${activeFilters.search}"
             <button onclick="removeFilter('search')" class="ml-2">&times;</button>
         </span>`;
@@ -273,7 +273,7 @@ function removeTagFilter(tag) {
     const index = activeFilters.tags.indexOf(tag);
     if (index > -1) {
         activeFilters.tags.splice(index, 1);
-        document.querySelector(`.tag-filter[data-tag="${tag}"]`)?.classList.remove('active', 'border-rose-gold', 'text-rose-gold');
+        document.querySelector(`.tag-filter[data-tag="${tag}"]`)?.classList.remove('active', 'border-soft-blue', 'text-soft-blue');
     }
     applyFilters();
 }
@@ -284,7 +284,7 @@ function clearAllFilters() {
     document.querySelector('input[name="price"][value="all"]').checked = true;
     document.getElementById('product-search').value = '';
     document.querySelectorAll('.tag-filter').forEach(btn => {
-        btn.classList.remove('active', 'border-rose-gold', 'text-rose-gold');
+        btn.classList.remove('active', 'border-soft-blue', 'text-soft-blue');
     });
     applyFilters();
 }

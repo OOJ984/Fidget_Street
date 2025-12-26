@@ -1,4 +1,4 @@
-/* Print&Pearl - Tailwind CSS Entry File */
+/* Fidget Street - Tailwind CSS Entry File */
 
 @tailwind base;
 @tailwind components;
@@ -29,17 +29,17 @@
   }
 
   body {
-    @apply bg-black text-white antialiased;
+    @apply bg-white text-navy antialiased;
   }
 
   /* Custom selection color */
   ::selection {
-    @apply bg-rose-gold text-black;
+    @apply bg-soft-blue text-white;
   }
 
   /* Focus styles */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-rose-gold;
+    @apply outline-2 outline-offset-2 outline-soft-blue;
   }
 
   /* Scrollbar styling */
@@ -48,15 +48,15 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-900;
+    @apply bg-gray-100;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-700 rounded-full;
+    @apply bg-soft-blue-300 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-600;
+    @apply bg-soft-blue-400;
   }
 }
 
@@ -64,28 +64,35 @@
    Custom Component Classes
    ============================================ */
 @layer components {
-  /* Primary Button - uses rose-gold-500 for better contrast as a button */
+  /* Primary Button - Soft Blue for Fidget Street */
   .btn-primary {
-    @apply inline-block px-6 py-3 bg-rose-gold-500 text-black font-medium rounded-lg
-           hover:bg-rose-gold-400 transition-all duration-300
-           focus:outline-none focus:ring-2 focus:ring-rose-gold focus:ring-offset-2 focus:ring-offset-black;
+    @apply inline-block px-6 py-3 bg-soft-blue text-white font-medium rounded-lg
+           hover:bg-soft-blue-600 transition-all duration-300
+           focus:outline-none focus:ring-2 focus:ring-soft-blue focus:ring-offset-2 focus:ring-offset-white;
   }
 
   /* Secondary Button */
   .btn-secondary {
-    @apply inline-block px-6 py-3 border border-white/30 text-white font-medium rounded-lg
-           hover:bg-white hover:text-black transition-all duration-300
-           focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black;
+    @apply inline-block px-6 py-3 border border-navy/30 text-navy font-medium rounded-lg
+           hover:bg-navy hover:text-white transition-all duration-300
+           focus:outline-none focus:ring-2 focus:ring-navy focus:ring-offset-2 focus:ring-offset-white;
+  }
+
+  /* Accent Button - Coral for special actions */
+  .btn-accent {
+    @apply inline-block px-6 py-3 bg-coral text-white font-medium rounded-lg
+           hover:bg-coral-600 transition-all duration-300
+           focus:outline-none focus:ring-2 focus:ring-coral focus:ring-offset-2 focus:ring-offset-white;
   }
 
   /* Navigation Link */
   .nav-link {
-    @apply text-gray-300 hover:text-white transition-colors relative;
+    @apply text-navy-600 hover:text-navy transition-colors relative;
   }
 
   .nav-link::after {
     content: '';
-    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-rose-gold transition-all duration-300;
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-soft-blue transition-all duration-300;
   }
 
   .nav-link:hover::after {
@@ -103,14 +110,14 @@
 
   /* Form Input */
   .form-input {
-    @apply w-full px-4 py-3 bg-gray-900 border border-white/20 rounded-lg
-           text-white placeholder-gray-500
-           focus:outline-none focus:border-rose-gold transition-colors;
+    @apply w-full px-4 py-3 bg-white border border-navy/20 rounded-lg
+           text-navy placeholder-gray-400
+           focus:outline-none focus:border-soft-blue transition-colors;
   }
 
   /* Card Container */
   .card {
-    @apply bg-gray-900 rounded-lg border border-white/10 overflow-hidden;
+    @apply bg-white rounded-lg border border-navy/10 overflow-hidden shadow-sm;
   }
 
   /* Section Header */
@@ -119,11 +126,11 @@
   }
 
   .section-header .eyebrow {
-    @apply text-rose-gold text-sm uppercase tracking-widest font-medium;
+    @apply text-soft-blue text-sm uppercase tracking-widest font-medium;
   }
 
   .section-header h2 {
-    @apply mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold;
+    @apply mt-4 font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold text-navy;
   }
 
   /* Badge Styles */
@@ -132,11 +139,11 @@
   }
 
   .badge-new {
-    @apply bg-rose-gold text-black;
+    @apply bg-soft-blue text-white;
   }
 
   .badge-bestseller {
-    @apply bg-pastel-pink text-black;
+    @apply bg-mint text-navy;
   }
 
   .badge-sold-out {
@@ -144,7 +151,7 @@
   }
 
   .badge-low-stock {
-    @apply bg-yellow-500 text-black;
+    @apply bg-lemon text-navy;
   }
 }
 
@@ -152,14 +159,14 @@
    Custom Utility Classes
    ============================================ */
 @layer utilities {
-  /* Text gradient */
+  /* Text gradient - Fidget Street playful gradient */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-rose-gold to-pastel-pink;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-soft-blue to-lavender;
   }
 
   /* Glassmorphism effect */
   .glass {
-    @apply bg-white/5 backdrop-blur-md border border-white/10;
+    @apply bg-white/70 backdrop-blur-md border border-soft-blue/10;
   }
 
   /* Hide scrollbar but keep functionality */
@@ -205,9 +212,9 @@
     aspect-ratio: 16 / 9;
   }
 
-  /* Custom shadow - updated to new rose-gold */
+  /* Custom shadow - Soft Blue glow */
   .shadow-glow {
-    box-shadow: 0 0 30px rgba(212, 135, 143, 0.3);
+    box-shadow: 0 0 30px rgba(113, 199, 225, 0.3);
   }
 }
 
@@ -260,7 +267,7 @@
 @keyframes cart-success {
   0% {
     transform: scale(1);
-    background-color: var(--cart-btn-bg, theme('colors.rose-gold.DEFAULT'));
+    background-color: var(--cart-btn-bg, theme('colors.soft-blue.DEFAULT'));
   }
   30% {
     transform: scale(1.02);

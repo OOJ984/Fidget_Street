@@ -28,12 +28,14 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 - Suitable for kids 6+ AND adults
 - Subtle fidget toy patterns in backgrounds
 
-### Product Categories (TO UPDATE)
-- Fidget Spinners
+### Product Categories
+- Articulated Toys
 - Fidget Cubes
-- Pop-Its / Sensory Toys
-- Stress Balls & Squeeze Toys
-- Desk Gadgets
+- Spinners
+- Push Bubbles
+- Shapeshifters
+- Flexiforms
+- Bundles
 
 ## Progress Status
 
@@ -46,6 +48,7 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 6. Webhook retrieves full session for shipping details
 7. Success page displays actual order number
 8. Admin panel shows full order details with shipping address
+9. Instagram feed on homepage (manual upload system)
 
 ### TODO (REMAINING):
 1. Create logo and brand assets
@@ -53,6 +56,7 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 3. Update meta tags, og:image, etc.
 4. Set up production Stripe keys (currently using test mode)
 5. Configure email notifications for orders
+6. Add Instagram post images to assets/instagram/ folder
 
 ## Key Files to Update
 
@@ -97,6 +101,7 @@ STRIPE_WEBHOOK_SECRET
 PAYPAL_CLIENT_ID
 PAYPAL_CLIENT_SECRET
 JWT_SECRET
+# INSTAGRAM_ACCESS_TOKEN  # Not needed - using manual uploads (see docs/instagram-setup.md)
 ```
 
 ## Common Tasks
@@ -150,3 +155,58 @@ See `stripe-payment-settings.md` for detailed payment method recommendations.
 - Product images stored in Supabase Storage bucket `product-images`
 - Logo/favicon stored as base64 in `website_settings` table
 - Cart uses localStorage, fetches fresh product images from API
+
+## Product Variations System
+
+Products can have color and size variations that customers select before adding to cart.
+
+### Database Tables
+- **colors** - Central color management (name, hex_code, in_stock, display_order)
+- **sizes** - Central size management (name, short_code, display_order)
+- **product_variants** - Links products to color/size combinations with:
+  - Individual stock per variant
+  - Price adjustment (+/- from base price)
+  - Variant-specific images
+  - SKU per variant
+
+### API Endpoints
+**Public:**
+- `GET /api/colors` - List all colors
+- `GET /api/sizes` - List all sizes
+- `GET /api/product-variants?product_id=X` - Get variants for a product
+
+**Admin:**
+- `GET/POST/PUT/DELETE /api/admin-colors` - Manage colors
+- `GET/POST/PUT/DELETE /api/admin-sizes` - Manage sizes
+- `GET/POST/PUT/DELETE /api/admin-product-variants` - Manage product variants
+
+### Migration
+Run `supabase/migrations/010_variations.sql` to create the tables.
+
+### How It Works
+1. Admin creates colors and sizes in the Colors/Sizes admin pages
+2. For each product, admin creates variants (color + size combinations)
+3. On product page, customer selects color and size
+4. Selected variant info stored in cart with product
+5. Order contains the specific variant (color, size, adjusted price)
+
+## Known Issues / Gotchas
+
+### Supabase Variable Name Conflict
+**NEVER** declare a variable named `supabase` in frontend scripts that load alongside the Supabase CDN:
+```html
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+```
+The CDN creates a global `window.supabase` object. Using `let supabase = ...` causes:
+```
+Identifier 'supabase' has already been declared
+```
+This breaks all JavaScript on the page and causes "Loading..." to hang forever.
+
+**Solution:** Use `supabaseClient` instead:
+```javascript
+let supabaseClient = null;
+supabaseClient = window.supabase.createClient(url, key);
+```
+
+Affected files (already fixed): `admin-products.js`, `admin-media.js`

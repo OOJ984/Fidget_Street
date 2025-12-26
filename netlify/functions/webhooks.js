@@ -74,7 +74,45 @@ exports.handler = async (event, context) => {
                 // Retrieve full session to get shipping_details (not always in webhook payload)
                 const session = await stripe.checkout.sessions.retrieve(sessionFromEvent.id);
 
-                // Parse items from metadata
+                // Check if this is a gift card purchase
+                if (session.metadata?.type === 'gift_card_purchase') {
+                    const giftCardId = parseInt(session.metadata.gift_card_id);
+                    const giftCardCode = session.metadata.gift_card_code;
+
+                    // Activate the gift card
+                    const { error: activateError } = await supabase
+                        .from('gift_cards')
+                        .update({
+                            status: 'active',
+                            activated_at: new Date().toISOString(),
+                            updated_at: new Date().toISOString()
+                        })
+                        .eq('id', giftCardId)
+                        .eq('status', 'pending'); // Only activate if still pending
+
+                    if (activateError) {
+                        console.error('Gift card activation error:', activateError);
+                    } else {
+                        console.log('Gift card activated:', giftCardCode);
+
+                        // Record activation transaction
+                        const giftCardAmount = parseFloat(session.metadata.gift_card_amount);
+                        await supabase
+                            .from('gift_card_transactions')
+                            .insert([{
+                                gift_card_id: giftCardId,
+                                transaction_type: 'activation',
+                                amount: giftCardAmount,
+                                balance_after: giftCardAmount,
+                                notes: `Payment confirmed - Stripe Session: ${session.id}`,
+                                performed_by_email: session.customer_details?.email || null
+                            }]);
+                    }
+
+                    break; // Gift card purchase handled, exit case
+                }
+
+                // Parse items from metadata (regular order)
                 let items = [];
                 try {
                     items = JSON.parse(session.metadata?.items || '[]');
@@ -86,10 +124,25 @@ exports.handler = async (event, context) => {
                 const customerDetails = session.customer_details;
                 const shippingDetails = session.shipping_details;
 
+                // Extract discount info from metadata
+                const discountCode = session.metadata?.discount_code || null;
+                const discountAmount = session.metadata?.discount_amount
+                    ? parseFloat(session.metadata.discount_amount)
+                    : null;
+
+                // Extract gift card info from metadata
+                const giftCardId = session.metadata?.gift_card_id
+                    ? parseInt(session.metadata.gift_card_id)
+                    : null;
+                const giftCardCode = session.metadata?.gift_card_code || null;
+                const giftCardAmount = session.metadata?.gift_card_amount
+                    ? parseFloat(session.metadata.gift_card_amount)
+                    : null;
+
                 // Calculate totals
                 const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const total = session.amount_total / 100; // Convert from pence
-                const shipping = total - subtotal;
+                const shipping = total - (subtotal - (discountAmount || 0));
 
                 // Create order in database
                 let orderData = {
@@ -108,6 +161,10 @@ exports.handler = async (event, context) => {
                     subtotal: subtotal,
                     shipping: shipping > 0 ? shipping : 0,
                     total: total,
+                    discount_code: discountCode,
+                    discount_amount: discountAmount,
+                    gift_card_code: giftCardCode,
+                    gift_card_amount: giftCardAmount,
                     status: 'paid',
                     payment_method: 'stripe',
                     payment_id: session.payment_intent,
@@ -129,9 +186,11 @@ exports.handler = async (event, context) => {
                     break; // Already processed, return 200
                 }
 
-                const { error } = await supabase
+                const { data: createdOrder, error } = await supabase
                     .from('orders')
-                    .insert([orderData]);
+                    .insert([orderData])
+                    .select('id, order_number')
+                    .single();
 
                 if (error) {
                     console.error('Order creation error:', error);
@@ -150,7 +209,85 @@ exports.handler = async (event, context) => {
                         body: JSON.stringify({ error: 'Order creation failed temporarily' })
                     };
                 }
-                console.log('Order created:', orderData.order_number);
+                console.log('Order created:', createdOrder.order_number);
+
+                // Increment discount code use count and record usage if discount was applied
+                if (discountCode) {
+                    const { data: discountData } = await supabase
+                        .from('discount_codes')
+                        .select('id, use_count')
+                        .eq('code', discountCode)
+                        .single();
+
+                    if (discountData) {
+                        // Increment total use count
+                        const { error: discountError } = await supabase
+                            .from('discount_codes')
+                            .update({ use_count: (discountData.use_count || 0) + 1 })
+                            .eq('code', discountCode);
+
+                        if (discountError) {
+                            console.error('Failed to increment discount use count:', discountError);
+                        }
+
+                        // Record per-customer usage for tracking
+                        if (customerDetails?.email) {
+                            await supabase
+                                .from('discount_usage')
+                                .insert({
+                                    discount_code_id: discountData.id,
+                                    customer_email: customerDetails.email.toLowerCase()
+                                });
+                        }
+                    }
+                }
+
+                // Deduct gift card balance if gift card was used
+                if (giftCardId && giftCardAmount > 0) {
+                    // Get current gift card
+                    const { data: giftCard } = await supabase
+                        .from('gift_cards')
+                        .select('id, code, current_balance')
+                        .eq('id', giftCardId)
+                        .single();
+
+                    if (giftCard) {
+                        const currentBalance = parseFloat(giftCard.current_balance);
+                        const newBalance = Math.round((currentBalance - giftCardAmount) * 100) / 100;
+                        const newStatus = newBalance <= 0 ? 'depleted' : 'active';
+
+                        // Update gift card balance
+                        const { error: gcError } = await supabase
+                            .from('gift_cards')
+                            .update({
+                                current_balance: Math.max(0, newBalance),
+                                status: newStatus,
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq('id', giftCardId);
+
+                        if (gcError) {
+                            console.error('Failed to deduct gift card balance:', gcError);
+                            console.error(`CRITICAL: Order ${createdOrder.order_number} - gift card ${giftCard.code} not deducted!`);
+                        } else {
+                            console.log(`Gift card ${giftCard.code} deducted: £${giftCardAmount.toFixed(2)}, new balance: £${Math.max(0, newBalance).toFixed(2)}`);
+                        }
+
+                        // Record gift card transaction
+                        await supabase
+                            .from('gift_card_transactions')
+                            .insert([{
+                                gift_card_id: giftCardId,
+                                transaction_type: 'redemption',
+                                amount: -giftCardAmount,
+                                balance_after: Math.max(0, newBalance),
+                                order_id: createdOrder.id,
+                                order_number: createdOrder.order_number,
+                                notes: `Order ${createdOrder.order_number}`,
+                                performed_by_email: customerDetails?.email || null
+                            }]);
+                    }
+                }
                 break;
             }
 

@@ -1,9 +1,9 @@
 /**
- * Wicka Newsletter Subscription
+ * Fidget Street Newsletter Subscription
  * Handles popup and footer subscription forms
  */
 
-const NEWSLETTER_KEY = 'wicka_newsletter';
+const NEWSLETTER_KEY = 'fidgetstreet_newsletter';
 const POPUP_DELAY = 3000; // Show popup after 3 seconds
 const POPUP_SCROLL_THRESHOLD = 0.4; // Or after scrolling 40% of page
 
@@ -259,13 +259,53 @@ function initFooterForm() {
     });
 }
 
+// Initialize mini footer form
+function initMiniFooterForm() {
+    const form = document.getElementById('footer-mini-newsletter');
+    if (!form) return;
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailInput = form.querySelector('input[type="email"]');
+        const btn = form.querySelector('button[type="submit"]');
+        const message = document.getElementById('footer-mini-message');
+        const email = emailInput.value;
+
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>';
+        btn.disabled = true;
+
+        const result = await subscribe(email, 'footer-mini');
+
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+
+        if (message) {
+            message.textContent = result.message;
+            message.className = result.success
+                ? 'text-xs mt-2 text-green-500'
+                : 'text-xs mt-2 text-red-500';
+            message.classList.remove('hidden');
+        }
+
+        if (result.success) {
+            emailInput.value = '';
+            setTimeout(() => {
+                if (message) message.classList.add('hidden');
+            }, 5000);
+        }
+    });
+}
+
 // Initialize on DOM ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         // initPopup(); // DISABLED - will re-enable later
         initFooterForm();
+        initMiniFooterForm();
     });
 } else {
     // initPopup(); // DISABLED - will re-enable later
     initFooterForm();
+    initMiniFooterForm();
 }

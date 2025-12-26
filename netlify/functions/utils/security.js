@@ -60,6 +60,7 @@ const ALLOWED_ORIGINS = [
 // ============================================
 
 const ROLES = {
+    SUPER_ADMIN: 'super_admin',
     BUSINESS_PROCESSING: 'business_processing',
     WEBSITE_ADMIN: 'website_admin',
     CUSTOMER: 'customer'
@@ -92,11 +93,38 @@ const PERMISSIONS = {
     MANAGE_USERS: 'manage_users',
 
     // Audit permissions
-    VIEW_AUDIT_LOGS: 'view_audit_logs'
+    VIEW_AUDIT_LOGS: 'view_audit_logs',
+
+    // Discount code permissions
+    MANAGE_DISCOUNTS: 'manage_discounts',
+
+    // Gift card permissions
+    VIEW_GIFT_CARDS: 'view_gift_cards',
+    MANAGE_GIFT_CARDS: 'manage_gift_cards'
 };
 
 // Role to permissions mapping
 const ROLE_PERMISSIONS = {
+    [ROLES.SUPER_ADMIN]: [
+        // Super admin has ALL permissions
+        PERMISSIONS.VIEW_ALL_ORDERS,
+        PERMISSIONS.UPDATE_ORDER_STATUS,
+        PERMISSIONS.VIEW_PRODUCTS,
+        PERMISSIONS.CREATE_PRODUCTS,
+        PERMISSIONS.EDIT_PRODUCTS,
+        PERMISSIONS.DELETE_PRODUCTS,
+        PERMISSIONS.VIEW_MEDIA,
+        PERMISSIONS.UPLOAD_MEDIA,
+        PERMISSIONS.DELETE_MEDIA,
+        PERMISSIONS.VIEW_SETTINGS,
+        PERMISSIONS.EDIT_SETTINGS,
+        PERMISSIONS.VIEW_USERS,
+        PERMISSIONS.MANAGE_USERS,
+        PERMISSIONS.VIEW_AUDIT_LOGS,
+        PERMISSIONS.MANAGE_DISCOUNTS,
+        PERMISSIONS.VIEW_GIFT_CARDS,
+        PERMISSIONS.MANAGE_GIFT_CARDS
+    ],
     [ROLES.BUSINESS_PROCESSING]: [
         PERMISSIONS.VIEW_ALL_ORDERS,
         PERMISSIONS.UPDATE_ORDER_STATUS,
@@ -106,7 +134,8 @@ const ROLE_PERMISSIONS = {
         PERMISSIONS.DELETE_PRODUCTS,
         PERMISSIONS.VIEW_MEDIA,
         PERMISSIONS.UPLOAD_MEDIA,
-        PERMISSIONS.DELETE_MEDIA
+        PERMISSIONS.DELETE_MEDIA,
+        PERMISSIONS.VIEW_GIFT_CARDS
     ],
     [ROLES.WEBSITE_ADMIN]: [
         // All business_processing permissions
@@ -124,7 +153,10 @@ const ROLE_PERMISSIONS = {
         PERMISSIONS.EDIT_SETTINGS,
         PERMISSIONS.VIEW_USERS,
         PERMISSIONS.MANAGE_USERS,
-        PERMISSIONS.VIEW_AUDIT_LOGS
+        PERMISSIONS.VIEW_AUDIT_LOGS,
+        PERMISSIONS.MANAGE_DISCOUNTS,
+        PERMISSIONS.VIEW_GIFT_CARDS,
+        PERMISSIONS.MANAGE_GIFT_CARDS
     ],
     [ROLES.CUSTOMER]: [
         PERMISSIONS.VIEW_OWN_ORDERS
@@ -349,7 +381,15 @@ const AUDIT_ACTIONS = {
     USER_CREATED: 'user_created',
     USER_UPDATED: 'user_updated',
     USER_DEACTIVATED: 'user_deactivated',
-    USER_ROLE_CHANGED: 'user_role_changed'
+    USER_ROLE_CHANGED: 'user_role_changed',
+
+    // Gift Cards
+    GIFT_CARD_CREATED: 'gift_card_created',
+    GIFT_CARD_ACTIVATED: 'gift_card_activated',
+    GIFT_CARD_REDEEMED: 'gift_card_redeemed',
+    GIFT_CARD_CANCELLED: 'gift_card_cancelled',
+    GIFT_CARD_ADJUSTED: 'gift_card_adjusted',
+    GIFT_CARD_SENT: 'gift_card_sent'
 };
 
 /**

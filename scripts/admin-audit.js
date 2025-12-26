@@ -136,7 +136,7 @@ function renderLogs(logs) {
                             </td>
                             <td class="px-6 py-4 text-gray-500 font-mono text-xs">${log.ip_address || '-'}</td>
                             <td class="px-6 py-4">
-                                <button onclick="showDetails('${log.id}')" class="text-rose-gold hover:text-rose-gold/80">
+                                <button onclick="showDetails('${log.id}')" class="text-soft-blue hover:text-soft-blue/80">
                                     Details
                                 </button>
                             </td>

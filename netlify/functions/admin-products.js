@@ -93,15 +93,20 @@ exports.handler = async (event, context) => {
                 slug: body.slug || generateSlug(body.title),
                 title: body.title,
                 description: body.description || '',
+                dimensions: body.dimensions || null,
                 price_gbp: parseFloat(body.price_gbp),
-                category: body.category || 'uncategorized',
+                category: body.category || 'articulated-toys',
                 tags: body.tags || [],
                 images: body.images || [],
                 variation_images: body.variation_images || {},
                 variations: body.variations || [],
                 stock: body.stock || 0,
-                is_active: body.is_active !== false
+                is_active: body.is_active !== false,
+                trading_station_url: body.trading_station_url || null
             };
+
+            // Skip sale fields entirely to avoid schema cache issues
+            // TODO: Re-enable once Supabase schema cache is refreshed
 
             const { data, error } = await supabase
                 .from('products')
@@ -147,6 +152,7 @@ exports.handler = async (event, context) => {
             if (updates.title) updateData.title = updates.title;
             if (updates.slug) updateData.slug = updates.slug;
             if (updates.description !== undefined) updateData.description = updates.description;
+            if (updates.dimensions !== undefined) updateData.dimensions = updates.dimensions || null;
             if (updates.price_gbp !== undefined) updateData.price_gbp = parseFloat(updates.price_gbp);
             if (updates.category) updateData.category = updates.category;
             if (updates.tags) updateData.tags = updates.tags;
@@ -155,6 +161,10 @@ exports.handler = async (event, context) => {
             if (updates.variations) updateData.variations = updates.variations;
             if (updates.stock !== undefined) updateData.stock = parseInt(updates.stock, 10);
             if (updates.is_active !== undefined) updateData.is_active = updates.is_active;
+            if (updates.trading_station_url !== undefined) updateData.trading_station_url = updates.trading_station_url || null;
+            // Skip sale fields entirely to avoid schema cache issues
+            // Sale fields: is_on_sale, sale_price_gbp, sale_percentage, sale_starts_at, sale_ends_at
+            // TODO: Re-enable once Supabase schema cache is refreshed
             updateData.updated_at = new Date().toISOString();
 
             const { data, error } = await supabase
@@ -216,6 +226,7 @@ exports.handler = async (event, context) => {
 
     } catch (error) {
         console.error('Admin products error:', error);
-        return errorResponse(500, 'Internal server error', headers);
+        // Return actual error message for debugging
+        return errorResponse(500, error.message || 'Internal server error', headers);
     }
 };

@@ -49,10 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Update active tab
             tabs.forEach(t => {
-                t.classList.remove('active', 'border-rose-gold', 'text-rose-gold', 'bg-rose-gold/10');
+                t.classList.remove('active', 'border-soft-blue', 'text-soft-blue', 'bg-soft-blue/10');
                 t.classList.add('border-white/20', 'text-gray-400');
             });
-            tab.classList.add('active', 'border-rose-gold', 'text-rose-gold', 'bg-rose-gold/10');
+            tab.classList.add('active', 'border-soft-blue', 'text-soft-blue', 'bg-soft-blue/10');
             tab.classList.remove('border-white/20', 'text-gray-400');
 
             // Filter items

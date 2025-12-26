@@ -80,7 +80,7 @@ function renderOrders() {
                         </td>
                         <td class="py-4 text-gray-400">${new Date(order.created_at).toLocaleDateString()}</td>
                         <td class="py-4">
-                            <button class="text-rose-gold hover:underline view-btn" data-id="${order.id}">View</button>
+                            <button class="text-soft-blue hover:underline view-btn" data-id="${order.id}">View</button>
                         </td>
                     </tr>
                 `).join('')}
@@ -203,7 +203,7 @@ function showOrderDetail(order) {
                             </div>
                             <div class="text-right">
                                 <p>x${item.quantity}</p>
-                                <p class="text-rose-gold">£${(item.price || 0).toFixed(2)}</p>
+                                <p class="text-soft-blue">£${(item.price || 0).toFixed(2)}</p>
                             </div>
                         </div>
                     `).join('')}
@@ -221,7 +221,7 @@ function showOrderDetail(order) {
                 </div>
                 <div class="flex justify-between font-semibold text-lg">
                     <span>Total</span>
-                    <span class="text-rose-gold">£${(order.total || 0).toFixed(2)}</span>
+                    <span class="text-soft-blue">£${(order.total || 0).toFixed(2)}</span>
                 </div>
             </div>
 

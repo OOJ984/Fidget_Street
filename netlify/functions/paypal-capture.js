@@ -54,7 +54,7 @@ exports.handler = async (event, context) => {
 
     try {
         const body = JSON.parse(event.body);
-        const { orderID, items, customer } = body;
+        const { orderID, items, customer, discountCode } = body;
 
         if (!orderID) {
             return {
@@ -87,10 +87,22 @@ exports.handler = async (event, context) => {
         const payment = purchase.payments.captures[0];
         const shipping = purchase.shipping;
 
+        // Extract discount info from custom_id (set during checkout)
+        let discountInfo = null;
+        if (purchase.custom_id) {
+            try {
+                discountInfo = JSON.parse(purchase.custom_id);
+            } catch (e) {
+                console.warn('Could not parse custom_id:', purchase.custom_id);
+            }
+        }
+
         // Calculate totals from items
         const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const shippingCost = subtotal >= 20 ? 0 : 2.99;
-        const total = subtotal + shippingCost;
+        const discountAmount = discountInfo?.discount_amount || 0;
+        const discountedSubtotal = subtotal - discountAmount;
+        const shippingCost = discountedSubtotal >= 20 ? 0 : 3.49;
+        const total = discountedSubtotal + shippingCost;
 
         // Create order in database
         const orderData = {
@@ -108,6 +120,8 @@ exports.handler = async (event, context) => {
             subtotal: subtotal,
             shipping: shippingCost,
             total: total,
+            discount_code: discountInfo?.discount_code || null,
+            discount_amount: discountAmount || null,
             status: 'paid',
             payment_method: 'paypal',
             payment_id: payment.id,
@@ -123,6 +137,39 @@ exports.handler = async (event, context) => {
         if (error) {
             console.error('Order creation error:', error);
             // Payment was successful, so don't fail - just log
+        }
+
+        // Increment discount code use count and record usage if discount was applied
+        if (discountInfo?.discount_code) {
+            // Get current use_count and increment
+            const { data: discountData } = await supabase
+                .from('discount_codes')
+                .select('id, use_count')
+                .eq('code', discountInfo.discount_code)
+                .single();
+
+            if (discountData) {
+                // Increment total use count
+                const { error: discountError } = await supabase
+                    .from('discount_codes')
+                    .update({ use_count: (discountData.use_count || 0) + 1 })
+                    .eq('code', discountInfo.discount_code);
+
+                if (discountError) {
+                    console.error('Failed to increment discount use count:', discountError);
+                }
+
+                // Record per-customer usage for tracking
+                const customerEmail = orderData.customer_email;
+                if (customerEmail) {
+                    await supabase
+                        .from('discount_usage')
+                        .insert({
+                            discount_code_id: discountData.id,
+                            customer_email: customerEmail.toLowerCase()
+                        });
+                }
+            }
         }
 
         return {

@@ -18,10 +18,10 @@ function generateOrderNumber() {
  * Calculate order totals
  * @param {Array} items - Cart items with price and quantity
  * @param {number} freeShippingThreshold - Minimum for free shipping (default: 20)
- * @param {number} shippingCost - Shipping cost if below threshold (default: 2.99)
+ * @param {number} shippingCost - Shipping cost if below threshold (default: 3.49)
  * @returns {{ subtotal: number, shipping: number, total: number }}
  */
-function calculateOrderTotals(items, freeShippingThreshold = 20, shippingCost = 2.99) {
+function calculateOrderTotals(items, freeShippingThreshold = 20, shippingCost = 3.49) {
     const subtotal = items.reduce((sum, item) => {
         return sum + (item.price * item.quantity);
     }, 0);

@@ -1,6 +1,9 @@
 /**
  * Admin Products Page
  * Product management with image uploads and variations
+ *
+ * IMPORTANT: Do NOT declare a variable named 'supabase' - it conflicts with
+ * the global window.supabase object from the Supabase CDN. Use 'supabaseClient' instead.
  */
 
 let products = [];
@@ -9,17 +12,19 @@ let variationImages = {}; // Images per variation: { "Gold": ["url1"], "Silver":
 let libraryImages = []; // All images from the media library
 let selectedLibraryImages = []; // Currently selected images in the picker
 let pickerTargetVariation = null; // Which variation is the picker for (null = default images)
-let supabase = null;
+let supabaseClient = null;
+let availableColors = []; // All colors from the colors table
+let selectedColors = []; // Currently selected colors for the product being edited
 
 // Initialize Supabase client from API config
 async function initSupabase() {
-    if (supabase) return supabase;
+    if (supabaseClient) return supabaseClient;
 
     try {
         const response = await fetch('/api/supabase-config');
         const config = await response.json();
-        supabase = window.supabase.createClient(config.url, config.anonKey);
-        return supabase;
+        supabaseClient = window.supabase.createClient(config.url, config.anonKey);
+        return supabaseClient;
     } catch (error) {
         console.error('Failed to initialize Supabase:', error);
         return null;
@@ -36,19 +41,167 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('user-name').textContent = user.name || user.email;
     document.getElementById('logout-btn').addEventListener('click', logout);
 
-    await loadProducts();
+    await Promise.all([loadProducts(), loadColors()]);
     setupEventListeners();
+    setupColorsDropdown();
 });
+
+// Load available colors from the API
+async function loadColors() {
+    try {
+        const response = await fetch('/.netlify/functions/colors');
+        if (!response.ok) throw new Error('Failed to load colors');
+        availableColors = await response.json();
+        renderColorsDropdown();
+    } catch (error) {
+        console.error('Error loading colors:', error);
+        availableColors = [];
+    }
+}
+
+// Render the colors dropdown list
+function renderColorsDropdown() {
+    const colorsList = document.getElementById('colors-list');
+    if (!colorsList) return;
+
+    if (availableColors.length === 0) {
+        colorsList.innerHTML = `
+            <p class="px-4 py-2 text-sm text-navy-500">No colours available.</p>
+            <a href="colors.html" class="block px-4 py-2 text-sm text-soft-blue hover:bg-navy-50">+ Add colours</a>
+        `;
+        return;
+    }
+
+    colorsList.innerHTML = availableColors.map(color => {
+        const isSelected = selectedColors.includes(color.name);
+        const swatchStyle = color.hex_code
+            ? `background-color: ${color.hex_code};`
+            : 'background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff);';
+        const stockBadge = !color.in_stock
+            ? '<span class="text-xs text-red-500 ml-auto">Out of Stock</span>'
+            : '';
+
+        return `
+            <label class="flex items-center gap-3 px-4 py-2 hover:bg-navy-50 cursor-pointer ${!color.in_stock ? 'opacity-50' : ''}">
+                <input type="checkbox" value="${escapeHtml(color.name)}"
+                    ${isSelected ? 'checked' : ''}
+                    class="color-checkbox w-4 h-4 rounded border-navy/30 text-soft-blue focus:ring-soft-blue">
+                <span class="w-5 h-5 rounded-full flex-shrink-0 border border-navy/20" style="${swatchStyle}"></span>
+                <span class="text-sm">${escapeHtml(color.name)}</span>
+                ${stockBadge}
+            </label>
+        `;
+    }).join('');
+}
+
+// Setup colors dropdown event listeners
+function setupColorsDropdown() {
+    const toggle = document.getElementById('colors-toggle');
+    const menu = document.getElementById('colors-menu');
+    const colorsList = document.getElementById('colors-list');
+
+    if (!toggle || !menu) return;
+
+    // Toggle dropdown
+    toggle.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+
+    // Handle checkbox changes
+    colorsList.addEventListener('change', (e) => {
+        if (e.target.classList.contains('color-checkbox')) {
+            const colorName = e.target.value;
+            if (e.target.checked) {
+                if (!selectedColors.includes(colorName)) {
+                    selectedColors.push(colorName);
+                }
+            } else {
+                selectedColors = selectedColors.filter(c => c !== colorName);
+            }
+            updateColorsDisplay();
+            updateSelectedColorsTags();
+        }
+    });
+}
+
+// Update the colors display text
+function updateColorsDisplay() {
+    const display = document.getElementById('colors-display');
+    const hiddenInput = document.getElementById('product-colors');
+
+    if (selectedColors.length === 0) {
+        display.textContent = 'Select colours...';
+        display.classList.add('text-navy-500');
+        display.classList.remove('text-navy-900');
+    } else {
+        display.textContent = selectedColors.join(', ');
+        display.classList.remove('text-navy-500');
+        display.classList.add('text-navy-900');
+    }
+
+    hiddenInput.value = JSON.stringify(selectedColors);
+}
+
+// Update selected colors tags below dropdown
+function updateSelectedColorsTags() {
+    const container = document.getElementById('selected-colors');
+    if (!container) return;
+
+    container.innerHTML = selectedColors.map(colorName => {
+        const color = availableColors.find(c => c.name === colorName);
+        const swatchStyle = color?.hex_code
+            ? `background-color: ${color.hex_code};`
+            : 'background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff);';
+
+        return `
+            <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-navy-100 rounded-full text-sm">
+                <span class="w-3 h-3 rounded-full border border-navy/20" style="${swatchStyle}"></span>
+                ${escapeHtml(colorName)}
+                <button type="button" onclick="removeColor('${escapeHtml(colorName)}')" class="text-navy-400 hover:text-red-500">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </span>
+        `;
+    }).join('');
+}
+
+// Remove a color from selection
+function removeColor(colorName) {
+    selectedColors = selectedColors.filter(c => c !== colorName);
+    updateColorsDisplay();
+    updateSelectedColorsTags();
+    renderColorsDropdown(); // Update checkboxes
+}
 
 async function loadProducts() {
     try {
         const response = await adminFetch('/api/admin-products');
-        if (!response) return;
+        if (!response) {
+            document.getElementById('products-list').innerHTML = '<p class="text-red-500 text-center py-8">Authentication failed. Please log in again.</p>';
+            return;
+        }
 
-        products = await response.json();
+        const data = await response.json();
+
+        if (!response.ok) {
+            document.getElementById('products-list').innerHTML = `<p class="text-red-500 text-center py-8">Error: ${data.error || 'Failed to load products'}</p>`;
+            return;
+        }
+
+        products = data;
         renderProducts();
     } catch (error) {
         console.error('Error loading products:', error);
+        document.getElementById('products-list').innerHTML = `<p class="text-red-500 text-center py-8">Error loading products: ${error.message}</p>`;
     }
 }
 
@@ -71,34 +224,225 @@ function renderProducts() {
                 </tr>
             </thead>
             <tbody class="text-sm">
-                ${products.map(product => `
+                ${products.map(product => {
+                    const saleStatus = getSaleStatus(product);
+                    const priceDisplay = renderPriceWithSale(product, saleStatus);
+                    const saleBadge = renderSaleBadge(saleStatus);
+
+                    return `
                     <tr class="border-t border-white/10">
                         <td class="py-4">
                             <div class="font-medium">${escapeHtml(product.title)}</div>
                             <div class="text-xs text-gray-500">${product.slug}</div>
                         </td>
                         <td class="py-4 text-gray-400">${product.category}</td>
-                        <td class="py-4">£${product.price_gbp.toFixed(2)}</td>
+                        <td class="py-4">${priceDisplay}</td>
                         <td class="py-4">${product.stock}</td>
                         <td class="py-4">
-                            <span class="px-2 py-1 rounded-full text-xs ${product.is_active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}">
-                                ${product.is_active ? 'Active' : 'Inactive'}
-                            </span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-1 rounded-full text-xs ${product.is_active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}">
+                                    ${product.is_active ? 'Active' : 'Inactive'}
+                                </span>
+                                ${saleBadge}
+                            </div>
                         </td>
                         <td class="py-4">
-                            <button class="text-rose-gold hover:underline mr-3 edit-btn" data-id="${product.id}">Edit</button>
+                            <button class="text-soft-blue hover:underline mr-3 edit-btn" data-id="${product.id}">Edit</button>
                             <button class="text-red-400 hover:underline delete-btn" data-id="${product.id}">Delete</button>
                         </td>
                     </tr>
-                `).join('')}
+                `}).join('')}
             </tbody>
         </table>
     `;
 }
 
+function renderPriceWithSale(product, saleStatus) {
+    if (saleStatus !== 'active') {
+        return `£${product.price_gbp.toFixed(2)}`;
+    }
+
+    // Calculate sale price
+    let salePrice;
+    if (product.sale_percentage) {
+        salePrice = product.price_gbp * (1 - product.sale_percentage / 100);
+    } else if (product.sale_price_gbp) {
+        salePrice = product.sale_price_gbp;
+    } else {
+        return `£${product.price_gbp.toFixed(2)}`;
+    }
+
+    return `<span class="line-through text-gray-500">£${product.price_gbp.toFixed(2)}</span> <span class="text-coral font-medium">£${salePrice.toFixed(2)}</span>`;
+}
+
+function renderSaleBadge(saleStatus) {
+    if (!saleStatus) return '';
+
+    const badges = {
+        active: '<span class="px-2 py-1 rounded-full text-xs bg-coral/20 text-coral">SALE</span>',
+        scheduled: '<span class="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-400">Scheduled</span>',
+        expired: '<span class="px-2 py-1 rounded-full text-xs bg-gray-500/20 text-gray-400">Sale Expired</span>'
+    };
+
+    return badges[saleStatus] || '';
+}
+
 function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ============ Sale Pricing Functions ============
+
+function toggleSaleOptions() {
+    const isOnSale = document.getElementById('product-on-sale').checked;
+    const saleOptions = document.getElementById('sale-options');
+
+    if (isOnSale) {
+        saleOptions.classList.remove('hidden');
+        updateSalePreview();
+    } else {
+        saleOptions.classList.add('hidden');
+        // Reset schedule checkbox when sale is turned off
+        document.getElementById('schedule-sale').checked = false;
+        document.getElementById('schedule-options').classList.add('hidden');
+    }
+}
+
+function toggleScheduleOptions() {
+    const isScheduled = document.getElementById('schedule-sale').checked;
+    const scheduleOptions = document.getElementById('schedule-options');
+
+    if (isScheduled) {
+        scheduleOptions.classList.remove('hidden');
+    } else {
+        scheduleOptions.classList.add('hidden');
+        // Clear schedule fields
+        document.getElementById('sale-starts').value = '';
+        document.getElementById('sale-ends').value = '';
+    }
+}
+
+function updateSaleTypeLabel() {
+    const saleType = document.getElementById('sale-type').value;
+    const label = document.getElementById('sale-value-label');
+    const input = document.getElementById('sale-value');
+
+    if (saleType === 'percentage') {
+        label.textContent = 'Percentage Off (%)';
+        input.step = '1';
+        input.max = '99';
+        input.placeholder = 'e.g. 20';
+    } else {
+        label.textContent = 'Sale Price (£)';
+        input.step = '0.01';
+        input.removeAttribute('max');
+        input.placeholder = '';
+    }
+
+    updateSalePreview();
+}
+
+function updateSalePreview() {
+    const originalPrice = parseFloat(document.getElementById('product-price').value) || 0;
+    const saleType = document.getElementById('sale-type').value;
+    const saleValue = parseFloat(document.getElementById('sale-value').value) || 0;
+    const preview = document.getElementById('sale-preview');
+
+    if (originalPrice <= 0 || saleValue <= 0) {
+        preview.classList.add('hidden');
+        return;
+    }
+
+    let salePrice;
+    let savings;
+
+    if (saleType === 'percentage') {
+        if (saleValue >= 100) {
+            preview.classList.add('hidden');
+            return;
+        }
+        salePrice = originalPrice * (1 - saleValue / 100);
+        savings = saleValue;
+    } else {
+        if (saleValue >= originalPrice) {
+            preview.classList.add('hidden');
+            return;
+        }
+        salePrice = saleValue;
+        savings = Math.round((1 - salePrice / originalPrice) * 100);
+    }
+
+    document.getElementById('preview-original').textContent = `£${originalPrice.toFixed(2)}`;
+    document.getElementById('preview-sale').textContent = ` → £${salePrice.toFixed(2)}`;
+    document.getElementById('preview-savings').textContent = ` (Save ${savings}%)`;
+    preview.classList.remove('hidden');
+}
+
+function getSaleStatus(product) {
+    const now = new Date();
+    const startsAt = product.sale_starts_at ? new Date(product.sale_starts_at) : null;
+    const endsAt = product.sale_ends_at ? new Date(product.sale_ends_at) : null;
+
+    if (!product.is_on_sale) return null;
+    if (endsAt && endsAt < now) return 'expired';
+    if (startsAt && startsAt > now) return 'scheduled';
+    return 'active';
+}
+
+function resetSaleFields() {
+    document.getElementById('product-on-sale').checked = false;
+    document.getElementById('sale-type').value = 'fixed';
+    document.getElementById('sale-value').value = '';
+    document.getElementById('schedule-sale').checked = false;
+    document.getElementById('sale-starts').value = '';
+    document.getElementById('sale-ends').value = '';
+    document.getElementById('sale-options').classList.add('hidden');
+    document.getElementById('schedule-options').classList.add('hidden');
+    document.getElementById('sale-preview').classList.add('hidden');
+    updateSaleTypeLabel();
+}
+
+function populateSaleFields(product) {
+    if (product.is_on_sale) {
+        document.getElementById('product-on-sale').checked = true;
+        document.getElementById('sale-options').classList.remove('hidden');
+
+        // Determine sale type based on which field is set
+        if (product.sale_percentage) {
+            document.getElementById('sale-type').value = 'percentage';
+            document.getElementById('sale-value').value = product.sale_percentage;
+        } else if (product.sale_price_gbp) {
+            document.getElementById('sale-type').value = 'fixed';
+            document.getElementById('sale-value').value = product.sale_price_gbp;
+        }
+
+        updateSaleTypeLabel();
+        updateSalePreview();
+
+        // Schedule fields
+        if (product.sale_starts_at || product.sale_ends_at) {
+            document.getElementById('schedule-sale').checked = true;
+            document.getElementById('schedule-options').classList.remove('hidden');
+
+            if (product.sale_starts_at) {
+                // Convert to local datetime-local format
+                const startsDate = new Date(product.sale_starts_at);
+                document.getElementById('sale-starts').value = formatDatetimeLocal(startsDate);
+            }
+            if (product.sale_ends_at) {
+                const endsDate = new Date(product.sale_ends_at);
+                document.getElementById('sale-ends').value = formatDatetimeLocal(endsDate);
+            }
+        }
+    } else {
+        resetSaleFields();
+    }
+}
+
+function formatDatetimeLocal(date) {
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
 function setupEventListeners() {
@@ -118,6 +462,13 @@ function setupEventListeners() {
 
     // Variations input - update variation images section when variations change
     document.getElementById('product-variations').addEventListener('input', debounce(updateVariationImagesSection, 300));
+
+    // Sale pricing toggles and listeners
+    document.getElementById('product-on-sale').addEventListener('change', toggleSaleOptions);
+    document.getElementById('schedule-sale').addEventListener('change', toggleScheduleOptions);
+    document.getElementById('sale-type').addEventListener('change', updateSaleTypeLabel);
+    document.getElementById('sale-value').addEventListener('input', updateSalePreview);
+    document.getElementById('product-price').addEventListener('input', updateSalePreview);
 
     // Image picker
     document.getElementById('select-from-library-btn').addEventListener('click', () => openImagePicker(null));
@@ -157,9 +508,9 @@ async function handleImageUpload(e) {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
 
-    const maxImages = 4;
+    const maxImages = 50;
     if (productImages.length + files.length > maxImages) {
-        alert(`Maximum ${maxImages} images allowed`);
+        alert(`Maximum ${maxImages} images/videos allowed`);
         return;
     }
 
@@ -190,7 +541,7 @@ async function uploadImage(file) {
     console.log('Uploading file:', filePath, 'Size:', file.size);
 
     try {
-        const { data, error } = await supabase.storage
+        const { data, error } = await supabaseClient.storage
             .from('product-images')
             .upload(filePath, file, {
                 cacheControl: '3600',
@@ -205,7 +556,7 @@ async function uploadImage(file) {
 
         console.log('Upload success:', data);
 
-        const { data: urlData } = supabase.storage
+        const { data: urlData } = supabaseClient.storage
             .from('product-images')
             .getPublicUrl(filePath);
 
@@ -218,14 +569,34 @@ async function uploadImage(file) {
     }
 }
 
+// Check if URL is a video
+function isVideoUrl(url) {
+    const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv', '.m4v'];
+    const lowerUrl = url.toLowerCase();
+    return videoExtensions.some(ext => lowerUrl.includes(ext));
+}
+
 function renderImagePreviews() {
     const container = document.getElementById('image-preview');
-    container.innerHTML = productImages.map((url, index) => `
-        <div class="relative group">
-            <img src="${url}" alt="Product image ${index + 1}" class="w-full h-20 object-cover rounded-lg">
-            <button type="button" onclick="removeImage(${index})" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
-        </div>
-    `).join('');
+    container.innerHTML = productImages.map((url, index) => {
+        if (isVideoUrl(url)) {
+            return `
+                <div class="relative group">
+                    <video src="${url}" class="w-full h-20 object-cover rounded-lg" muted></video>
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <svg class="w-6 h-6 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                    <button type="button" onclick="removeImage(${index})" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
+                </div>
+            `;
+        }
+        return `
+            <div class="relative group">
+                <img src="${url}" alt="Product image ${index + 1}" class="w-full h-20 object-cover rounded-lg">
+                <button type="button" onclick="removeImage(${index})" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
+            </div>
+        `;
+    }).join('');
 }
 
 function removeImage(index) {
@@ -272,20 +643,33 @@ function renderVariationImagesSection(variations) {
                             From Library
                         </button>
                         <label class="cursor-pointer px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs transition-colors">
-                            <input type="file" accept="image/*" multiple class="hidden variation-image-upload" data-variation="${escapeHtml(variation)}">
+                            <input type="file" accept="image/*,video/*" multiple class="hidden variation-image-upload" data-variation="${escapeHtml(variation)}">
                             Upload
                         </label>
                     </div>
                 </div>
                 <div class="variation-image-preview grid grid-cols-4 gap-2" data-variation="${escapeHtml(variation)}">
-                    ${images.map((url, index) => `
-                        <div class="relative group">
-                            <img src="${url}" alt="${escapeHtml(variation)} image ${index + 1}" class="w-full h-16 object-cover rounded">
-                            <button type="button" onclick="removeVariationImage('${escapeHtml(variation)}', ${index})" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
-                        </div>
-                    `).join('')}
+                    ${images.map((url, index) => {
+                        if (isVideoUrl(url)) {
+                            return `
+                                <div class="relative group">
+                                    <video src="${url}" class="w-full h-16 object-cover rounded" muted></video>
+                                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                        <svg class="w-4 h-4 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                    <button type="button" onclick="removeVariationImage('${escapeHtml(variation)}', ${index})" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
+                                </div>
+                            `;
+                        }
+                        return `
+                            <div class="relative group">
+                                <img src="${url}" alt="${escapeHtml(variation)} image ${index + 1}" class="w-full h-16 object-cover rounded">
+                                <button type="button" onclick="removeVariationImage('${escapeHtml(variation)}', ${index})" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
+                            </div>
+                        `;
+                    }).join('')}
                 </div>
-                ${images.length === 0 ? '<p class="text-xs text-gray-500">No images for this variation</p>' : ''}
+                ${images.length === 0 ? '<p class="text-xs text-gray-500">No images/videos for this variation</p>' : ''}
             </div>
         `;
     }).join('');
@@ -302,14 +686,14 @@ async function handleVariationImageUpload(e) {
     if (files.length === 0) return;
 
     const variation = e.target.dataset.variation;
-    const maxImages = 4;
+    const maxImages = 50;
 
     if (!variationImages[variation]) {
         variationImages[variation] = [];
     }
 
     if (variationImages[variation].length + files.length > maxImages) {
-        alert(`Maximum ${maxImages} images per variation`);
+        alert(`Maximum ${maxImages} images/videos per variation`);
         return;
     }
 
@@ -362,6 +746,7 @@ function openModal(product = null) {
         form['title'].value = product.title;
         form['slug'].value = product.slug;
         form['description'].value = product.description || '';
+        form['dimensions'].value = product.dimensions || '';
         form['price_gbp'].value = product.price_gbp;
         form['stock'].value = product.stock;
         form['category'].value = product.category;
@@ -373,17 +758,28 @@ function openModal(product = null) {
         productImages = product.images || [];
         // Load existing variation images
         variationImages = product.variation_images || {};
+        // Load existing colors
+        selectedColors = product.colors || [];
+        // Populate sale fields
+        populateSaleFields(product);
     } else {
         form.reset();
         form['id'].value = '';
         form['is_active'].checked = true;
         productImages = [];
         variationImages = {};
+        selectedColors = [];
+        // Reset sale fields
+        resetSaleFields();
     }
 
     renderImagePreviews();
     // Update variation images section if there are variations
     updateVariationImagesSection();
+    // Update colors display
+    renderColorsDropdown();
+    updateColorsDisplay();
+    updateSelectedColorsTags();
     modal.classList.remove('hidden');
 }
 
@@ -396,19 +792,35 @@ async function handleSubmit(e) {
     const form = e.target;
     const id = form['id'].value;
 
+    // Collect sale data
+    const isOnSale = document.getElementById('product-on-sale').checked;
+    const saleType = document.getElementById('sale-type').value;
+    const saleValue = parseFloat(document.getElementById('sale-value').value) || null;
+    const isScheduled = document.getElementById('schedule-sale').checked;
+    const saleStarts = document.getElementById('sale-starts').value;
+    const saleEnds = document.getElementById('sale-ends').value;
+
     const productData = {
         title: form['title'].value,
         slug: form['slug'].value || undefined,
         description: form['description'].value,
+        dimensions: form['dimensions'].value || null,
         price_gbp: parseFloat(form['price_gbp'].value),
         stock: parseInt(form['stock'].value, 10),
         category: form['category'].value,
         tags: form['tags'].value ? form['tags'].value.split(',').map(t => t.trim()).filter(t => t) : [],
+        colors: selectedColors,
         variations: form['variations'].value ? form['variations'].value.split(',').map(v => v.trim()).filter(v => v) : [],
         images: productImages,
         variation_images: variationImages,
         is_active: form['is_active'].checked,
-        trading_station_url: form['trading_station_url'].value || null
+        trading_station_url: form['trading_station_url'].value || null,
+        // Sale fields
+        is_on_sale: isOnSale,
+        sale_price_gbp: isOnSale && saleType === 'fixed' ? saleValue : null,
+        sale_percentage: isOnSale && saleType === 'percentage' ? saleValue : null,
+        sale_starts_at: isOnSale && isScheduled && saleStarts ? new Date(saleStarts).toISOString() : null,
+        sale_ends_at: isOnSale && isScheduled && saleEnds ? new Date(saleEnds).toISOString() : null
     };
 
     if (id) productData.id = parseInt(id, 10);
@@ -498,12 +910,12 @@ function renderPickerGrid() {
         const isAlreadyUsed = currentImages.includes(img.url);
 
         return `
-            <div class="relative aspect-square bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-all ${isSelected ? 'ring-2 ring-rose-gold' : ''} ${isAlreadyUsed ? 'opacity-50' : 'hover:ring-2 hover:ring-white/50'}"
+            <div class="relative aspect-square bg-gray-800 rounded-lg overflow-hidden cursor-pointer transition-all ${isSelected ? 'ring-2 ring-soft-blue' : ''} ${isAlreadyUsed ? 'opacity-50' : 'hover:ring-2 hover:ring-white/50'}"
                  data-url="${escapeHtml(img.url)}"
                  data-name="${escapeHtml(img.name)}"
                  ${isAlreadyUsed ? 'data-used="true"' : ''}>
                 <img src="${img.url}" alt="${escapeHtml(img.name)}" class="w-full h-full object-cover">
-                ${isSelected ? '<div class="absolute inset-0 bg-rose-gold/20 flex items-center justify-center"><svg class="w-8 h-8 text-rose-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>' : ''}
+                ${isSelected ? '<div class="absolute inset-0 bg-soft-blue/20 flex items-center justify-center"><svg class="w-8 h-8 text-soft-blue" fill="currentColor" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>' : ''}
                 ${isAlreadyUsed ? '<div class="absolute bottom-0 left-0 right-0 bg-black/80 text-xs text-center py-1">Already added</div>' : ''}
             </div>
         `;
@@ -522,10 +934,10 @@ function renderPickerGrid() {
                 const currentCount = pickerTargetVariation
                     ? (variationImages[pickerTargetVariation] || []).length
                     : productImages.length;
-                const maxImages = 4;
+                const maxImages = 50;
 
                 if (currentCount + selectedLibraryImages.length >= maxImages) {
-                    alert(`Maximum ${maxImages} images allowed`);
+                    alert(`Maximum ${maxImages} images/videos allowed`);
                     return;
                 }
 

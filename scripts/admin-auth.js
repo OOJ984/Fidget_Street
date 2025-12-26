@@ -1,5 +1,5 @@
 /**
- * Wicka - Admin Authentication Helpers
+ * Fidget Street - Admin Authentication Helpers
  */
 
 // Check if user is authenticated

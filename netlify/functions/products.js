@@ -61,10 +61,10 @@ exports.handler = async (event, context) => {
             };
         }
 
-        // Build query for product list - only fields needed for listing/cards
+        // Build query for product list
         let query = supabase
             .from('products')
-            .select('id, title, slug, price_gbp, currency, category, tags, images, stock')
+            .select('id, title, slug, price_gbp, currency, category, tags, images, stock, description, dimensions, variations, variation_images')
             .eq('is_active', true)
             .order('created_at', { ascending: false });
 

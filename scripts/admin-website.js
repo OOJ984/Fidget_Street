@@ -14,14 +14,15 @@ const defaultSettings = {
     contactEmail: 'wicka@protonmail.com',
     contactPhone: '',
     businessAddress: '',
-    instagramUrl: 'https://instagram.com/wicka',
+    instagramUrl: 'https://instagram.com/fidget_street',
+    tiktokUrl: 'https://tiktok.com/@fidget.street.official',
     facebookUrl: '',
     twitterUrl: '',
     defaultTitleSuffix: 'Wicka',
     defaultDescription: 'Style Meets Purpose by Wicka. Modern, aesthetic organisers and 3D-printed holders made by young designers.',
     ogImageUrl: '',
     freeShippingThreshold: 20,
-    shippingCost: 2.99,
+    shippingCost: 3.49,
     currency: 'GBP',
     maxQuantity: 10,
     footerTagline: 'Style Meets Purpose made by young designers. Premium quality, affordable prices.',
@@ -138,6 +139,7 @@ function populateForm(settings) {
     document.getElementById('business-address').value = settings.businessAddress || '';
 
     document.getElementById('instagram-url').value = settings.instagramUrl || '';
+    document.getElementById('tiktok-url').value = settings.tiktokUrl || '';
     document.getElementById('facebook-url').value = settings.facebookUrl || '';
     document.getElementById('twitter-url').value = settings.twitterUrl || '';
 
@@ -182,6 +184,7 @@ function getFormValues() {
         contactPhone: document.getElementById('contact-phone').value,
         businessAddress: document.getElementById('business-address').value,
         instagramUrl: document.getElementById('instagram-url').value,
+        tiktokUrl: document.getElementById('tiktok-url').value,
         facebookUrl: document.getElementById('facebook-url').value,
         twitterUrl: document.getElementById('twitter-url').value,
         defaultTitleSuffix: document.getElementById('default-title-suffix').value,

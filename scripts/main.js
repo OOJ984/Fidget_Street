@@ -1,5 +1,5 @@
 /**
- * Wicka - Main JavaScript
+ * Fidget Street - Main JavaScript
  * Global functionality for navigation, search, and UI interactions
  */
 
@@ -20,6 +20,29 @@ function escapeHtml(unsafe) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
+}
+
+// ============================================
+// Rotating Announcement Banner
+// ============================================
+function initRotatingBanner() {
+    const messages = document.querySelectorAll('.promo-message');
+    if (messages.length <= 1) return;
+
+    let currentIndex = 0;
+
+    function rotateMessages() {
+        messages[currentIndex].classList.remove('opacity-100');
+        messages[currentIndex].classList.add('opacity-0');
+
+        currentIndex = (currentIndex + 1) % messages.length;
+
+        messages[currentIndex].classList.remove('opacity-0');
+        messages[currentIndex].classList.add('opacity-100');
+    }
+
+    // Rotate every 5 seconds
+    setInterval(rotateMessages, 5000);
 }
 
 // ============================================
@@ -135,7 +158,7 @@ function initSearch() {
                         </div>
                         <div>
                             <h4 class="font-medium">${escapeHtml(product.title)}</h4>
-                            <p class="text-rose-gold text-sm">£${product.price_gbp.toFixed(2)}</p>
+                            <p class="text-soft-blue text-sm">£${product.price_gbp.toFixed(2)}</p>
                         </div>
                     </a>
                 `).join('');
@@ -181,6 +204,14 @@ function initScrollEffects() {
 // ============================================
 // Product Card Component
 // ============================================
+// Check if URL is a video
+function isVideoUrl(url) {
+    if (!url) return false;
+    const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv', '.m4v'];
+    const lowerUrl = url.toLowerCase();
+    return videoExtensions.some(ext => lowerUrl.includes(ext));
+}
+
 function createProductCard(product) {
     const stockBadge = getStockBadge(product.stock);
     const tagBadges = getTagBadges(product.tags);
@@ -188,10 +219,22 @@ function createProductCard(product) {
     const safeSlug = encodeURIComponent(product.slug);
     const isWishlisted = typeof isInWishlist === 'function' && isInWishlist(product.id);
 
-    const imageUrl = product.images && product.images.length > 0 ? product.images[0] : null;
-    const imageHtml = imageUrl
-        ? `<img src="${imageUrl}" alt="${safeTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">`
-        : `<div class="w-full h-full bg-gradient-to-br from-navy-100 to-navy-200 group-hover:scale-105 transition-transform duration-500"></div>`;
+    const mediaUrl = product.images && product.images.length > 0 ? product.images[0] : null;
+    const isVideo = isVideoUrl(mediaUrl);
+
+    let imageHtml;
+    if (!mediaUrl) {
+        imageHtml = `<div class="w-full h-full bg-gradient-to-br from-navy-100 to-navy-200 group-hover:scale-105 transition-transform duration-500"></div>`;
+    } else if (isVideo) {
+        imageHtml = `
+            <video src="${mediaUrl}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 product-video-thumb" muted loop playsinline preload="metadata"></video>
+            <div class="video-play-icon absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity">
+                <svg class="w-10 h-10 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+        `;
+    } else {
+        imageHtml = `<img src="${mediaUrl}" alt="${safeTitle}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">`;
+    }
 
     return `
         <article class="product-card group">
@@ -216,7 +259,7 @@ function createProductCard(product) {
                     data-product-title="${safeTitle}"
                     data-product-price="${product.price_gbp}"
                     data-product-slug="${safeSlug}"
-                    data-product-image="${imageUrl || ''}"
+                    data-product-image="${mediaUrl || ''}"
                     aria-label="Add to wishlist"
                 >
                     <svg class="w-5 h-5 heart-icon" viewBox="0 0 24 24" fill="${isWishlisted ? '#ec4899' : 'none'}" stroke="${isWishlisted ? '#ec4899' : '#6b7280'}" stroke-width="2">
@@ -225,8 +268,8 @@ function createProductCard(product) {
                 </button>
             </div>
             <a href="product.html?slug=${safeSlug}" class="block">
-                <h3 class="font-medium text-navy group-hover:text-rose-gold transition-colors mb-1">${safeTitle}</h3>
-                <p class="text-rose-gold font-medium">£${product.price_gbp.toFixed(2)}</p>
+                <h3 class="font-medium text-navy group-hover:text-soft-blue transition-colors mb-1">${safeTitle}</h3>
+                <p class="text-soft-blue font-medium">£${product.price_gbp.toFixed(2)}</p>
             </a>
             <div class="flex flex-col gap-2 mt-3">
                 <a
@@ -266,7 +309,7 @@ function getStockBadge(stock) {
 function getTagBadges(tags) {
     let badges = '';
     if (tags.includes('new')) {
-        badges += '<span class="bg-rose-gold text-white px-2 py-1 rounded-full text-xs font-medium">New</span>';
+        badges += '<span class="bg-soft-blue text-white px-2 py-1 rounded-full text-xs font-medium">New</span>';
     } else if (tags.includes('bestseller')) {
         badges += '<span class="bg-pastel-pink text-black px-2 py-1 rounded-full text-xs font-medium">Bestseller</span>';
     }
@@ -380,9 +423,41 @@ function initServiceWorker() {
 }
 
 // ============================================
+// Product Video Hover
+// ============================================
+function initProductVideoHover() {
+    // Use event delegation for dynamically loaded product cards
+    document.addEventListener('mouseenter', (e) => {
+        const card = e.target.closest('.product-card');
+        if (!card) return;
+
+        const video = card.querySelector('.product-video-thumb');
+        const playIcon = card.querySelector('.video-play-icon');
+        if (video) {
+            video.play().catch(() => {}); // Ignore autoplay errors
+            if (playIcon) playIcon.style.opacity = '0';
+        }
+    }, true);
+
+    document.addEventListener('mouseleave', (e) => {
+        const card = e.target.closest('.product-card');
+        if (!card) return;
+
+        const video = card.querySelector('.product-video-thumb');
+        const playIcon = card.querySelector('.video-play-icon');
+        if (video) {
+            video.pause();
+            video.currentTime = 0;
+            if (playIcon) playIcon.style.opacity = '1';
+        }
+    }, true);
+}
+
+// ============================================
 // Initialize All
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
+    initRotatingBanner();
     initMobileNav();
     initSearch();
     initScrollEffects();
@@ -390,6 +465,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSmoothScroll();
     initAccessibility();
     initServiceWorker();
+    initProductVideoHover();
 });
 
 // Make functions globally available

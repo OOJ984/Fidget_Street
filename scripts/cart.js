@@ -1,9 +1,9 @@
 /**
- * Wicka - Cart JavaScript
+ * Fidget Street - Cart JavaScript
  * Client-side cart functionality using localStorage
  */
 
-const CART_STORAGE_KEY = 'wicka_cart';
+const CART_STORAGE_KEY = 'fidgetstreet_cart';
 
 // ============================================
 // Toast Notification System
@@ -248,7 +248,7 @@ function getCartTotals() {
         : 25;
     const shippingCost = typeof getShippingCost === 'function'
         ? getShippingCost()
-        : 2.99;
+        : 3.49;
 
     const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -261,6 +261,177 @@ function getCartTotals() {
         shipping,
         total,
         freeShippingThreshold
+    };
+}
+
+// ============================================
+// Discount Code Functions
+// ============================================
+
+const DISCOUNT_STORAGE_KEY = 'fidgetstreet_discount';
+const GIFT_CARD_STORAGE_KEY = 'fidgetstreet_giftcard';
+
+/**
+ * Get applied discount from localStorage
+ * @returns {Object|null} Discount object or null
+ */
+function getAppliedDiscount() {
+    try {
+        const discount = localStorage.getItem(DISCOUNT_STORAGE_KEY);
+        return discount ? JSON.parse(discount) : null;
+    } catch (error) {
+        console.error('Error reading discount:', error);
+        return null;
+    }
+}
+
+/**
+ * Save discount to localStorage
+ * @param {Object} discount - Discount object with code, type, value, amount
+ */
+function setAppliedDiscount(discount) {
+    try {
+        if (discount) {
+            localStorage.setItem(DISCOUNT_STORAGE_KEY, JSON.stringify(discount));
+        } else {
+            localStorage.removeItem(DISCOUNT_STORAGE_KEY);
+        }
+        window.dispatchEvent(new CustomEvent('discountUpdated', { detail: { discount } }));
+    } catch (error) {
+        console.error('Error saving discount:', error);
+    }
+}
+
+/**
+ * Clear applied discount
+ */
+function clearDiscount() {
+    localStorage.removeItem(DISCOUNT_STORAGE_KEY);
+    window.dispatchEvent(new CustomEvent('discountUpdated', { detail: { discount: null } }));
+}
+
+/**
+ * Get cart totals including discount
+ * @returns {Object} Object with itemCount, subtotal, discount, shipping, total
+ */
+function getCartTotalsWithDiscount() {
+    const baseTotals = getCartTotals();
+    const discount = getAppliedDiscount();
+
+    let discountAmount = 0;
+    let isFreeDelivery = false;
+
+    if (discount) {
+        if (discount.discount_type === 'percentage') {
+            discountAmount = (baseTotals.subtotal * discount.discount_value) / 100;
+        } else if (discount.discount_type === 'fixed') {
+            discountAmount = discount.discount_value;
+        } else if (discount.discount_type === 'free_delivery') {
+            isFreeDelivery = true;
+            // No price discount for free_delivery, just free shipping
+        }
+
+        // Ensure discount doesn't exceed subtotal (not applicable for free_delivery)
+        if (discount.discount_type !== 'free_delivery') {
+            discountAmount = Math.min(discountAmount, baseTotals.subtotal);
+        }
+        // Round to 2 decimal places
+        discountAmount = Math.round(discountAmount * 100) / 100;
+    }
+
+    const discountedSubtotal = baseTotals.subtotal - discountAmount;
+    // For free_delivery discount, shipping is always 0
+    const shipping = isFreeDelivery ? 0 : (discountedSubtotal >= baseTotals.freeShippingThreshold ? 0 : baseTotals.shipping);
+    const total = discountedSubtotal + shipping;
+
+    return {
+        ...baseTotals,
+        discountCode: discount?.code || null,
+        discountType: discount?.discount_type || null,
+        discountValue: discount?.discount_value || 0,
+        discountAmount,
+        total: Math.max(0, total)
+    };
+}
+
+// ============================================
+// Gift Card Functions
+// ============================================
+
+/**
+ * Get applied gift card from localStorage
+ * @returns {Object|null} Gift card object or null
+ */
+function getAppliedGiftCard() {
+    try {
+        const giftCard = localStorage.getItem(GIFT_CARD_STORAGE_KEY);
+        return giftCard ? JSON.parse(giftCard) : null;
+    } catch (error) {
+        console.error('Error reading gift card:', error);
+        return null;
+    }
+}
+
+/**
+ * Save gift card to localStorage
+ * @param {Object} giftCard - Gift card object with code, balance, applicable_amount, etc.
+ */
+function setAppliedGiftCard(giftCard) {
+    try {
+        if (giftCard) {
+            localStorage.setItem(GIFT_CARD_STORAGE_KEY, JSON.stringify(giftCard));
+        } else {
+            localStorage.removeItem(GIFT_CARD_STORAGE_KEY);
+        }
+        window.dispatchEvent(new CustomEvent('giftCardUpdated', { detail: { giftCard } }));
+    } catch (error) {
+        console.error('Error saving gift card:', error);
+    }
+}
+
+/**
+ * Clear applied gift card
+ */
+function clearGiftCard() {
+    localStorage.removeItem(GIFT_CARD_STORAGE_KEY);
+    window.dispatchEvent(new CustomEvent('giftCardUpdated', { detail: { giftCard: null } }));
+}
+
+/**
+ * Get cart totals including discount AND gift card
+ * @returns {Object} Object with all totals and applied codes
+ */
+function getCartTotalsWithGiftCard() {
+    const totals = getCartTotalsWithDiscount();
+    const giftCard = getAppliedGiftCard();
+
+    if (!giftCard) {
+        return {
+            ...totals,
+            giftCardCode: null,
+            giftCardBalance: 0,
+            giftCardAmount: 0,
+            giftCardRemainingAfterUse: 0,
+            coversFullOrder: false
+        };
+    }
+
+    // Calculate how much of the gift card to use
+    const orderTotal = totals.total;
+    const giftCardBalance = parseFloat(giftCard.balance) || 0;
+    const giftCardAmount = Math.min(giftCardBalance, orderTotal);
+    const remainingAfterUse = Math.round((giftCardBalance - giftCardAmount) * 100) / 100;
+    const finalTotal = Math.max(0, orderTotal - giftCardAmount);
+    const coversFullOrder = giftCardBalance >= orderTotal;
+
+    return {
+        ...totals,
+        giftCardCode: giftCard.code,
+        giftCardBalance: giftCardBalance,
+        giftCardAmount: Math.round(giftCardAmount * 100) / 100,
+        giftCardRemainingAfterUse: remainingAfterUse,
+        coversFullOrder: coversFullOrder,
+        total: Math.round(finalTotal * 100) / 100
     };
 }
 
@@ -482,3 +653,11 @@ window.getCartTotals = getCartTotals;
 window.updateCartCount = updateCartCount;
 window.showToast = showToast;
 window.animateCartButton = animateCartButton;
+window.getAppliedDiscount = getAppliedDiscount;
+window.setAppliedDiscount = setAppliedDiscount;
+window.clearDiscount = clearDiscount;
+window.getCartTotalsWithDiscount = getCartTotalsWithDiscount;
+window.getAppliedGiftCard = getAppliedGiftCard;
+window.setAppliedGiftCard = setAppliedGiftCard;
+window.clearGiftCard = clearGiftCard;
+window.getCartTotalsWithGiftCard = getCartTotalsWithGiftCard;

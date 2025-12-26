@@ -30,28 +30,28 @@ const supabase = createClient(
 
 // Default settings
 const defaultSettings = {
-    companyName: 'Wicka',
-    tagline: 'Style Meets Purpose',
+    companyName: 'Fidget Street',
+    tagline: 'Playful Calm for Busy Hands',
     logoUrl: '',
     faviconUrl: '',
-    primaryColor: '#C4707A',
-    secondaryColor: '#F5D0D5',
-    contactEmail: 'wicka@protonmail.com',
+    primaryColor: '#71c7e1',
+    secondaryColor: '#A8E0A2',
+    contactEmail: 'hello@fidgetstreet.co.uk',
     contactPhone: '',
     businessAddress: '',
-    instagramUrl: 'https://instagram.com/wicka',
+    instagramUrl: 'https://instagram.com/fidgetstreet',
     facebookUrl: '',
     twitterUrl: '',
-    defaultTitleSuffix: 'Wicka',
-    defaultDescription: 'Style Meets Purpose by Wicka. Modern, aesthetic organisers and 3D-printed holders made by young designers.',
+    defaultTitleSuffix: 'Fidget Street',
+    defaultDescription: 'Fidget Street - Playful fidget toys and sensory items for kids 6+ and adults. Stress relief, focus aids, and calming toys for ADHD, autism, and anxiety. UK-based.',
     ogImageUrl: '',
     freeShippingThreshold: 20,
     shippingCost: 2.99,
     currency: 'GBP',
     maxQuantity: 10,
-    footerTagline: 'Style Meets Purpose made by young designers. Premium quality, affordable prices.',
-    copyrightText: 'Wicka. All rights reserved.',
-    footerNote: 'A Young Enterprise company'
+    footerTagline: 'Playful calm for busy hands. Fidget toys for focus, stress relief, and sensory fun.',
+    copyrightText: 'Fidget Street. All rights reserved.',
+    footerNote: 'UK-based sensory toy specialist'
 };
 
 // Map camelCase to snake_case for database

@@ -11,8 +11,8 @@ const { createClient } = require('@supabase/supabase-js');
 const SHIPPING_CONFIG = {
     FREE_THRESHOLD_GBP: 20,
     FREE_THRESHOLD_PENCE: 2000,
-    STANDARD_COST_GBP: 2.99,
-    STANDARD_COST_PENCE: 299
+    STANDARD_COST_GBP: 3.49,
+    STANDARD_COST_PENCE: 349
 };
 
 /**

@@ -92,7 +92,7 @@ function renderUsers() {
                         <tr class="border-b border-white/5 hover:bg-white/5">
                             <td class="px-6 py-4 font-medium">
                                 ${user.name || '-'}
-                                ${isCurrentUser ? '<span class="text-xs text-rose-gold ml-2">(you)</span>' : ''}
+                                ${isCurrentUser ? '<span class="text-xs text-soft-blue ml-2">(you)</span>' : ''}
                             </td>
                             <td class="px-6 py-4">${user.email}</td>
                             <td class="px-6 py-4">
@@ -115,7 +115,7 @@ function renderUsers() {
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex gap-2">
-                                    <button onclick="editUser(${user.id})" class="text-rose-gold hover:text-rose-gold/80">
+                                    <button onclick="editUser(${user.id})" class="text-soft-blue hover:text-soft-blue/80">
                                         Edit
                                     </button>
                                     ${!isCurrentUser && user.is_active !== false ? `

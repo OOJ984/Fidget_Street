@@ -24,14 +24,14 @@ const defaultSettings = {
     contactEmail: 'hello@fidgetstreet.co.uk',
     contactPhone: '',
     businessAddress: '',
-    instagramUrl: 'https://instagram.com/fidgetstreet',
+    instagramUrl: 'https://www.instagram.com/fidget_street/',
     facebookUrl: '',
     twitterUrl: '',
     defaultTitleSuffix: 'Fidget Street',
     defaultDescription: 'Eco-friendly fidget toys for focus, fun, and stress relief. Safe for ages 6+. Made from plant-based PLA plastic.',
     ogImageUrl: '',
     freeShippingThreshold: 30,
-    shippingCost: 2.99,
+    shippingCost: 3.49,
     currency: 'GBP',
     maxQuantity: 10,
     footerTagline: 'Everyday Satisfaction - Eco-friendly fidget toys for all ages.',
@@ -174,7 +174,7 @@ function applyColors(settings) {
     // Only apply if different from default
     if (settings.primaryColor && settings.primaryColor !== '#71c7e1') {
         // Set CSS custom property for primary color
-        root.style.setProperty('--color-rose-gold', settings.primaryColor);
+        root.style.setProperty('--color-soft-blue', settings.primaryColor);
 
         // Create a style element for Tailwind color overrides
         const styleId = 'custom-colors';
@@ -191,14 +191,14 @@ function applyColors(settings) {
 
         styleEl.textContent = `
             /* Custom Primary Color Overrides */
-            .text-rose-gold { color: ${settings.primaryColor} !important; }
-            .bg-rose-gold { background-color: ${settings.primaryColor} !important; }
-            .border-rose-gold { border-color: ${settings.primaryColor} !important; }
-            .hover\\:text-rose-gold:hover { color: ${settings.primaryColor} !important; }
-            .hover\\:bg-rose-gold:hover { background-color: ${settings.primaryColor} !important; }
-            .hover\\:border-rose-gold:hover { border-color: ${settings.primaryColor} !important; }
-            .focus\\:border-rose-gold:focus { border-color: ${settings.primaryColor} !important; }
-            .focus\\:ring-rose-gold:focus { --tw-ring-color: ${settings.primaryColor} !important; }
+            .text-soft-blue { color: ${settings.primaryColor} !important; }
+            .bg-soft-blue { background-color: ${settings.primaryColor} !important; }
+            .border-soft-blue { border-color: ${settings.primaryColor} !important; }
+            .hover\\:text-soft-blue:hover { color: ${settings.primaryColor} !important; }
+            .hover\\:bg-soft-blue:hover { background-color: ${settings.primaryColor} !important; }
+            .hover\\:border-soft-blue:hover { border-color: ${settings.primaryColor} !important; }
+            .focus\\:border-soft-blue:focus { border-color: ${settings.primaryColor} !important; }
+            .focus\\:ring-soft-blue:focus { --tw-ring-color: ${settings.primaryColor} !important; }
             .btn-primary { background-color: ${settings.primaryColor} !important; }
             .btn-primary:hover { background-color: ${variants.light} !important; }
             ::selection { background-color: ${settings.primaryColor} !important; }

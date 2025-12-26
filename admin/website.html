@@ -26,17 +26,33 @@
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center space-x-8">
                 <a href="../index.html" class="flex items-center space-x-2">
-                    <img src="" alt="Fidget Street Logo" class="h-16 lg:h-20 w-auto">
+                    <img src="../assets/logo.png" alt="Fidget Street Logo" class="h-16 lg:h-20 w-auto">
                     <span class="font-serif text-2xl font-semibold">Admin</span>
                 </a>
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="dashboard.html" class="text-navy-700 hover:text-navy transition-colors">Dashboard</a>
                     <a href="products.html" class="text-navy-700 hover:text-navy transition-colors">Products</a>
-                    <a href="media.html" class="text-navy-700 hover:text-navy transition-colors">Media</a>
                     <a href="orders.html" class="text-navy-700 hover:text-navy transition-colors">Orders</a>
-                    <a href="website.html" class="text-rose-gold font-medium">Website</a>
-                    <a href="users.html" class="text-navy-700 hover:text-navy transition-colors admin-only-link">Users</a>
-                    <a href="audit.html" class="text-navy-700 hover:text-navy transition-colors">Audit</a>
+                    <div class="relative nav-dropdown">
+                        <button class="text-soft-blue font-medium flex items-center gap-1">
+                            More
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div class="dropdown-menu absolute top-full left-0 mt-1 bg-white border border-navy/20 rounded-lg shadow-lg py-2 min-w-[160px] z-50" style="display:none">
+                            <a href="colors.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Colours</a>
+                            <a href="sizes.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Sizes</a>
+                            <a href="media.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Media</a>
+                            <a href="analytics.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Analytics</a>
+                            <a href="subscribers.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Subscribers</a>
+                            <a href="email-builder.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Emails</a>
+                            <a href="discounts.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Discounts</a>
+                            <a href="gift-cards.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50">Gift Cards</a>
+                            <a href="website.html" class="block px-4 py-2 text-soft-blue font-medium bg-navy-50">Website</a>
+                            <a href="users.html" class="block px-4 py-2 text-navy-700 hover:bg-navy-50 admin-only-link">Users</a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="flex items-center space-x-4">
@@ -50,12 +66,17 @@
     <div class="md:hidden bg-navy-50 border-b border-navy/20 px-4 py-2 overflow-x-auto">
         <div class="flex items-center space-x-4 whitespace-nowrap">
             <a href="dashboard.html" class="text-navy-700 text-sm hover:text-navy">Dashboard</a>
+            <a href="analytics.html" class="text-navy-700 text-sm hover:text-navy">Analytics</a>
             <a href="products.html" class="text-navy-700 text-sm hover:text-navy">Products</a>
+            <a href="colors.html" class="text-navy-700 text-sm hover:text-navy">Colours</a>
             <a href="media.html" class="text-navy-700 text-sm hover:text-navy">Media</a>
             <a href="orders.html" class="text-navy-700 text-sm hover:text-navy">Orders</a>
-            <a href="website.html" class="text-rose-gold text-sm font-medium">Website</a>
+            <a href="subscribers.html" class="text-navy-700 text-sm hover:text-navy">Subscribers</a>
+            <a href="email-builder.html" class="text-navy-700 text-sm hover:text-navy">Emails</a>
+            <a href="discounts.html" class="text-navy-700 text-sm hover:text-navy">Discounts</a>
+            <a href="gift-cards.html" class="text-navy-700 text-sm hover:text-navy">Gift Cards</a>
+            <a href="website.html" class="text-soft-blue text-sm font-medium">Website</a>
             <a href="users.html" class="text-navy-700 text-sm hover:text-navy admin-only-link">Users</a>
-            <a href="audit.html" class="text-navy-700 text-sm hover:text-navy">Audit</a>
         </div>
     </div>
 
@@ -88,7 +109,7 @@
             <!-- Branding Section -->
             <section class="bg-navy-50 rounded-lg p-6">
                 <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 mr-2 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
                     </svg>
                     Branding
@@ -146,7 +167,7 @@
             <!-- Colors Section -->
             <section class="bg-navy-50 rounded-lg p-6">
                 <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 mr-2 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
                     </svg>
                     Colors
@@ -195,7 +216,7 @@
             <!-- Contact Information Section -->
             <section class="bg-navy-50 rounded-lg p-6">
                 <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 mr-2 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
                     Contact Information
@@ -225,7 +246,7 @@
             <!-- Social Media Section -->
             <section class="bg-navy-50 rounded-lg p-6">
                 <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 mr-2 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                     </svg>
                     Social Media
@@ -235,10 +256,13 @@
                     <div>
                         <label for="instagram-url" class="block text-sm font-medium mb-2">Instagram</label>
                         <input type="url" id="instagram-url" name="instagramUrl"
-                            class="form-input" placeholder="https://instagram.com/fidgetstreet">
+                            class="form-input" placeholder="https://instagram.com/fidget_street">
                     </div>
 
                     <div>
+                        <label for="tiktok-url" class="block text-sm font-medium mb-2">TikTok</label>
+                        <input type="url" id="tiktok-url" name="tiktokUrl"
+                            class="form-input" placeholder="https://tiktok.com/@fidget.street.official">
                     </div>
 
                     <div>
@@ -258,7 +282,7 @@
             <!-- SEO Section -->
             <section class="bg-navy-50 rounded-lg p-6">
                 <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 mr-2 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                     SEO Defaults
@@ -301,7 +325,7 @@
             <!-- Shipping & Checkout Section -->
             <section class="bg-navy-50 rounded-lg p-6">
                 <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 mr-2 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
                     </svg>
                     Shipping & Checkout
@@ -341,7 +365,7 @@
             <!-- Footer Section -->
             <section class="bg-navy-50 rounded-lg p-6">
                 <h2 class="font-serif text-2xl font-semibold mb-6 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-rose-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5 mr-2 text-soft-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                     Footer
@@ -364,7 +388,7 @@
                     <div>
                         <label for="footer-note" class="block text-sm font-medium mb-2">Additional Footer Note</label>
                         <input type="text" id="footer-note" name="footerNote"
-                            class="form-input" placeholder="A Young Enterprise company">
+                            class="form-input" placeholder="Eco-friendly fidget toys">
                     </div>
                 </div>
             </section>
@@ -380,6 +404,7 @@
         <div class="h-20 md:hidden"></div>
     </main>
 
+    <script defer src="../scripts/admin-nav.js"></script>
     <script defer src="../scripts/admin-website.js"></script>
 </body>
 </html>

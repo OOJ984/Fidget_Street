@@ -51,12 +51,20 @@ exports.handler = async (event, context) => {
             };
         }
 
+        const normalizedEmail = email.toLowerCase();
+
         // Check if already subscribed
-        const { data: existing } = await supabase
+        const { data: existing, error: checkError } = await supabase
             .from('newsletter_subscribers')
             .select('id')
-            .eq('email', email.toLowerCase())
+            .eq('email', normalizedEmail)
             .single();
+
+        if (checkError && checkError.code !== 'PGRST116') {
+            // PGRST116 = no rows found, which is fine
+            console.error('Check error:', checkError);
+            throw checkError;
+        }
 
         if (existing) {
             return {
@@ -64,23 +72,23 @@ exports.handler = async (event, context) => {
                 headers,
                 body: JSON.stringify({
                     success: true,
-                    message: 'You\'re already subscribed!'
+                    message: "You're already subscribed!"
                 })
             };
         }
 
         // Insert new subscriber
-        const { error } = await supabase
+        const { error: insertError } = await supabase
             .from('newsletter_subscribers')
             .insert({
-                email: email.toLowerCase(),
+                email: normalizedEmail,
                 subscribed_at: new Date().toISOString(),
                 source: 'website'
             });
 
-        if (error) {
-            console.error('Subscription error:', error);
-            throw error;
+        if (insertError) {
+            console.error('Insert error:', insertError);
+            throw insertError;
         }
 
         return {

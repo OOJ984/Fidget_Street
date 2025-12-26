@@ -79,18 +79,6 @@ module.exports = {
           800: '#a32318',
           900: '#872218',
         },
-        // Keep rose-gold for compatibility (maps to coral)
-        'rose-gold': {
-          DEFAULT: '#FF6F61',
-          50: '#fff5f4',
-          100: '#ffe5e2',
-          200: '#ffccc6',
-          300: '#ffa99f',
-          400: '#FF6F61',
-          500: '#ff4d3d',
-          600: '#ed3324',
-          700: '#c7281c',
-        },
         'pastel-pink': '#ffe5e2',
         'black': '#000000',
         'white': '#FFFFFF',

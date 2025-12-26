@@ -31,7 +31,7 @@ const supabase = createClient(
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRY = '24h';
-const ISSUER = 'Wicka Admin';
+const ISSUER = 'Fidget Street';
 const BACKUP_CODE_COUNT = 10;
 
 // Generate backup codes

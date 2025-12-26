@@ -61,16 +61,16 @@ function renderUpcomingEvents(events) {
                 <div class="sm:w-48 flex-shrink-0">
                     ${event.image
                         ? `<img src="${event.image}" alt="${event.title}" class="w-full h-full object-cover aspect-video sm:aspect-square">`
-                        : `<div class="aspect-video sm:aspect-square bg-gradient-to-br from-rose-gold/20 to-pastel-pink/10 group-hover:from-rose-gold/30 transition-colors"></div>`
+                        : `<div class="aspect-video sm:aspect-square bg-gradient-to-br from-soft-blue/20 to-pastel-pink/10 group-hover:from-soft-blue/30 transition-colors"></div>`
                     }
                 </div>
                 <div class="p-6 flex-1">
                     <div class="flex items-start justify-between gap-4">
                         <div>
-                            <span class="text-rose-gold text-sm">${formatDate(event.date)}</span>
-                            <h3 class="font-serif text-xl font-semibold mt-1 group-hover:text-rose-gold transition-colors">${event.title}</h3>
+                            <span class="text-soft-blue text-sm">${formatDate(event.date)}</span>
+                            <h3 class="font-serif text-xl font-semibold mt-1 group-hover:text-soft-blue transition-colors">${event.title}</h3>
                         </div>
-                        <svg class="w-5 h-5 text-gray-600 group-hover:text-rose-gold transition-colors flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-gray-600 group-hover:text-soft-blue transition-colors flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                     </div>
@@ -152,7 +152,7 @@ function renderCalendar() {
 
         let classes = 'py-2 rounded-full cursor-default';
         if (isToday) classes += ' bg-white text-black font-medium';
-        else if (hasEvent) classes += ' bg-rose-gold text-black font-medium';
+        else if (hasEvent) classes += ' bg-soft-blue text-black font-medium';
         else classes += ' text-gray-400';
 
         calendarHTML += `<div class="${classes}">${day}</div>`;

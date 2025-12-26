@@ -1,21 +1,24 @@
 /**
  * Admin Media Library Page
  * Image management with upload, rename, delete functionality
+ *
+ * IMPORTANT: Do NOT declare a variable named 'supabase' - it conflicts with
+ * the global window.supabase object from the Supabase CDN. Use 'supabaseClient' instead.
  */
 
 let images = [];
 let selectedImage = null;
-let supabase = null;
+let supabaseClient = null;
 
 // Initialize Supabase client from API config
 async function initSupabase() {
-    if (supabase) return supabase;
+    if (supabaseClient) return supabaseClient;
 
     try {
         const response = await fetch('/api/supabase-config');
         const config = await response.json();
-        supabase = window.supabase.createClient(config.url, config.anonKey);
-        return supabase;
+        supabaseClient = window.supabase.createClient(config.url, config.anonKey);
+        return supabaseClient;
     } catch (error) {
         console.error('Failed to initialize Supabase:', error);
         return null;
@@ -42,13 +45,23 @@ async function loadImages(search = '') {
         if (search) params.append('search', search);
 
         const response = await adminFetch(`/api/admin-media?${params}`);
-        if (!response) return;
+        if (!response) {
+            document.getElementById('media-grid').innerHTML = '<p class="text-red-500 text-center py-8 col-span-full">Authentication failed. Please log in again.</p>';
+            return;
+        }
 
         const data = await response.json();
+
+        if (!response.ok) {
+            document.getElementById('media-grid').innerHTML = `<p class="text-red-500 text-center py-8 col-span-full">Error: ${data.error || 'Failed to load images'}</p>`;
+            return;
+        }
+
         images = data.images || [];
         renderImages();
     } catch (error) {
         console.error('Error loading images:', error);
+        document.getElementById('media-grid').innerHTML = `<p class="text-red-500 text-center py-8 col-span-full">Error loading images: ${error.message}</p>`;
     }
 }
 
@@ -62,7 +75,7 @@ function renderImages() {
     }
 
     grid.innerHTML = images.map(img => `
-        <div class="group relative aspect-square bg-gray-900 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-rose-gold transition-all" data-path="${escapeHtml(img.path)}" data-url="${escapeHtml(img.url)}" data-name="${escapeHtml(img.name)}">
+        <div class="group relative aspect-square bg-gray-900 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-soft-blue transition-all" data-path="${escapeHtml(img.path)}" data-url="${escapeHtml(img.url)}" data-name="${escapeHtml(img.name)}">
             <img src="${img.url}" alt="${escapeHtml(img.name)}" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <span class="text-xs text-center px-2 truncate">${escapeHtml(img.name)}</span>
@@ -133,7 +146,7 @@ async function handleUpload(e) {
             const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
             const filePath = `products/${fileName}`;
 
-            const { error } = await supabase.storage
+            const { error } = await supabaseClient.storage
                 .from('product-images')
                 .upload(filePath, file, {
                     cacheControl: '3600',

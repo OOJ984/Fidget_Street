@@ -568,6 +568,65 @@ ALTER TABLE gift_cards DISABLE ROW LEVEL SECURITY;
 ALTER TABLE gift_card_transactions DISABLE ROW LEVEL SECURITY;
 
 -- ============================================
+-- 011: STORAGE BUCKET FOR PRODUCT IMAGES
+-- ============================================
+-- Create the storage bucket for product images
+-- Note: This may need to be done via Supabase Dashboard if storage schema access is restricted
+
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+    'product-images',
+    'product-images',
+    true,  -- Public bucket for product images
+    5242880,  -- 5MB max file size
+    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']::text[]
+)
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage bucket policies (may fail if bucket was created via dashboard - that's OK)
+DO $$
+BEGIN
+    -- Allow public read access
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE schemaname = 'storage'
+        AND tablename = 'objects'
+        AND policyname = 'Public read for product-images'
+    ) THEN
+        CREATE POLICY "Public read for product-images"
+            ON storage.objects FOR SELECT
+            USING (bucket_id = 'product-images');
+    END IF;
+
+    -- Allow uploads
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE schemaname = 'storage'
+        AND tablename = 'objects'
+        AND policyname = 'Allow uploads to product-images'
+    ) THEN
+        CREATE POLICY "Allow uploads to product-images"
+            ON storage.objects FOR INSERT
+            WITH CHECK (bucket_id = 'product-images');
+    END IF;
+
+    -- Allow deletes
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE schemaname = 'storage'
+        AND tablename = 'objects'
+        AND policyname = 'Allow deletes from product-images'
+    ) THEN
+        CREATE POLICY "Allow deletes from product-images"
+            ON storage.objects FOR DELETE
+            USING (bucket_id = 'product-images');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE NOTICE 'Storage policies may already exist or require dashboard setup: %', SQLERRM;
+END $$;
+
+-- ============================================
 -- NOTIFY POSTGREST TO RELOAD SCHEMA
 -- ============================================
 NOTIFY pgrst, 'reload schema';

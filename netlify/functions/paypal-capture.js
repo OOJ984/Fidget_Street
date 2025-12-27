@@ -10,6 +10,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { getCorsHeaders } = require('./utils/security');
+const { sanitizeErrorMessage } = require('./utils/validation');
 const { generateOrderNumber } = require('./utils/orders');
 const { verifyCartPrices, calculateShipping, SHIPPING_CONFIG } = require('./utils/checkout');
 
@@ -254,7 +255,7 @@ exports.handler = async (event, context) => {
         return {
             statusCode: 500,
             headers,
-            body: JSON.stringify({ error: error.message || 'Payment capture failed' })
+            body: JSON.stringify({ error: sanitizeErrorMessage(error) || 'Payment capture failed' })
         };
     }
 };

@@ -181,6 +181,20 @@ exports.handler = async (event, context) => {
                 return errorResponse(400, 'Amount must be between £1 and £500', headers);
             }
 
+            // SECURITY: Input length validation
+            if (recipient_email && recipient_email.length > 254) {
+                return errorResponse(400, 'Recipient email is too long', headers);
+            }
+            if (recipient_name && recipient_name.length > 100) {
+                return errorResponse(400, 'Recipient name must be 100 characters or less', headers);
+            }
+            if (personal_message && personal_message.length > 500) {
+                return errorResponse(400, 'Personal message must be 500 characters or less', headers);
+            }
+            if (notes && notes.length > 500) {
+                return errorResponse(400, 'Notes must be 500 characters or less', headers);
+            }
+
             // Generate code
             const code = await generateGiftCardCode();
 

@@ -9,7 +9,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
 const { getCorsHeaders } = require('./utils/security');
-const { validateEmail } = require('./utils/validation');
+const { validateEmail, sanitizeErrorMessage } = require('./utils/validation');
 const { verifyCartPrices, calculateShipping, SHIPPING_CONFIG } = require('./utils/checkout');
 
 const supabase = createClient(
@@ -302,7 +302,7 @@ exports.handler = async (event, context) => {
         return {
             statusCode: 500,
             headers,
-            body: JSON.stringify({ error: error.message || 'Checkout failed' })
+            body: JSON.stringify({ error: sanitizeErrorMessage(error) || 'Checkout failed' })
         };
     }
 };

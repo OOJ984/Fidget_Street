@@ -11,6 +11,7 @@
 
 const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
+const { sanitizeErrorMessage } = require('./validation');
 
 // Timeout for DB operations (don't let audit logging block auth)
 const AUDIT_TIMEOUT_MS = 5000;
@@ -375,11 +376,17 @@ function isSecretConfigured() {
  * @param {object} headers - CORS headers
  * @returns {object} Response object
  */
+/**
+ * SECURITY: Create error response with sanitized message
+ * Prevents database/internal details from leaking to clients
+ */
 function errorResponse(statusCode, error, headers) {
+    // Sanitize error message to remove sensitive information
+    const safeMessage = sanitizeErrorMessage(error);
     return {
         statusCode,
         headers,
-        body: JSON.stringify({ error })
+        body: JSON.stringify({ error: safeMessage })
     };
 }
 

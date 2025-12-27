@@ -75,9 +75,17 @@ exports.handler = async (event, context) => {
                 return errorResponse(400, 'Code, name, discount type, and value are required', headers);
             }
 
+            // SECURITY: Input length validation
+            if (code.length > 50) {
+                return errorResponse(400, 'Discount code must be 50 characters or less', headers);
+            }
+            if (name.length > 100) {
+                return errorResponse(400, 'Discount name must be 100 characters or less', headers);
+            }
+
             // Validate discount type
-            if (!['percentage', 'fixed'].includes(discount_type)) {
-                return errorResponse(400, 'Discount type must be "percentage" or "fixed"', headers);
+            if (!['percentage', 'fixed', 'free_delivery'].includes(discount_type)) {
+                return errorResponse(400, 'Discount type must be "percentage", "fixed", or "free_delivery"', headers);
             }
 
             // Validate discount value

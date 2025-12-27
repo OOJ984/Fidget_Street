@@ -89,6 +89,23 @@ exports.handler = async (event, context) => {
                 return errorResponse(400, 'Title and price required', headers);
             }
 
+            // SECURITY: Input length validation
+            if (body.title.length > 200) {
+                return errorResponse(400, 'Title must be 200 characters or less', headers);
+            }
+            if (body.slug && body.slug.length > 200) {
+                return errorResponse(400, 'Slug must be 200 characters or less', headers);
+            }
+            if (body.description && body.description.length > 5000) {
+                return errorResponse(400, 'Description must be 5000 characters or less', headers);
+            }
+            if (body.dimensions && body.dimensions.length > 100) {
+                return errorResponse(400, 'Dimensions must be 100 characters or less', headers);
+            }
+            if (body.category && body.category.length > 50) {
+                return errorResponse(400, 'Category must be 50 characters or less', headers);
+            }
+
             const productData = {
                 slug: body.slug || generateSlug(body.title),
                 title: body.title,

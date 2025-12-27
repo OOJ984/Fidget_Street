@@ -8,7 +8,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { getCorsHeaders } = require('./utils/security');
-const { validateEmail } = require('./utils/validation');
+const { validateEmail, sanitizeErrorMessage } = require('./utils/validation');
 const { verifyCartPrices, calculateTotals } = require('./utils/checkout');
 
 const supabase = createClient(
@@ -279,7 +279,7 @@ exports.handler = async (event, context) => {
         return {
             statusCode: 500,
             headers,
-            body: JSON.stringify({ error: error.message || 'Checkout failed' })
+            body: JSON.stringify({ error: sanitizeErrorMessage(error) || 'Checkout failed' })
         };
     }
 };

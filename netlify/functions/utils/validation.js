@@ -275,6 +275,80 @@ function sanitizeString(str, maxLength = MAX_STRING_LENGTH) {
     return str.trim().substring(0, maxLength);
 }
 
+/**
+ * SECURITY: Sanitize error messages to hide database/internal details
+ * Removes sensitive information like table names, column names, SQL errors
+ * @param {string|Error} error - Error message or Error object
+ * @returns {string} - Generic, safe error message
+ */
+function sanitizeErrorMessage(error) {
+    const message = error?.message || String(error);
+
+    // Patterns that indicate internal/database errors
+    const sensitivePatterns = [
+        /duplicate key/i,
+        /violates.*constraint/i,
+        /relation.*does not exist/i,
+        /column.*does not exist/i,
+        /syntax error/i,
+        /invalid input/i,
+        /permission denied/i,
+        /authentication failed/i,
+        /connection refused/i,
+        /timeout expired/i,
+        /supabase/i,
+        /postgres/i,
+        /pg_/i,
+        /SQLSTATE/i,
+        /stack trace/i,
+        /at\s+\w+\s+\(/i,  // Stack trace lines
+        /node_modules/i,
+        /\.js:\d+/i        // File:line references
+    ];
+
+    // Check if error contains sensitive information
+    for (const pattern of sensitivePatterns) {
+        if (pattern.test(message)) {
+            console.error('Sanitized error (original):', message);
+            return 'An error occurred. Please try again.';
+        }
+    }
+
+    // For known safe error messages, return as-is
+    const safeMessages = [
+        'Invalid email format',
+        'Name is required',
+        'Name is too long',
+        'Phone number is too long',
+        'Invalid phone number format',
+        'Order must contain at least one item',
+        'Shipping address',
+        'Invalid order number format',
+        'Email is required',
+        'Method not allowed',
+        'Not found',
+        'Unauthorized',
+        'Forbidden',
+        'Rate limit exceeded',
+        'Invalid request',
+        'Missing required field'
+    ];
+
+    for (const safe of safeMessages) {
+        if (message.includes(safe)) {
+            return message;
+        }
+    }
+
+    // Default: return generic message if not explicitly safe
+    if (message.length > 100) {
+        console.error('Sanitized long error (original):', message);
+        return 'An error occurred. Please try again.';
+    }
+
+    return message;
+}
+
 module.exports = {
     validateEmail,
     validatePhone,
@@ -286,6 +360,8 @@ module.exports = {
     // SECURITY: XSS prevention utilities
     containsXSS,
     encodeHTML,
+    // SECURITY: Error message sanitization
+    sanitizeErrorMessage,
     // Export limits for testing
     MAX_QUANTITY_PER_ITEM,
     MAX_ITEMS_PER_ORDER,

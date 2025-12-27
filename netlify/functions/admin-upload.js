@@ -56,9 +56,15 @@ exports.handler = async (event, context) => {
         return errorResponse(500, 'Server configuration error', headers);
     }
 
+    // Debug: Log key type (first 10 chars only for safety)
+    console.log('Using service key starting with:', process.env.SUPABASE_SERVICE_KEY.substring(0, 10));
+
     // Verify authentication
     const authHeader = event.headers.authorization || event.headers.Authorization;
+    console.log('Auth header present:', !!authHeader);
+    console.log('Auth header prefix:', authHeader?.substring(0, 20));
     const user = verifyToken(authHeader);
+    console.log('User from token:', user ? { userId: user.userId, email: user.email } : null);
     if (!user) {
         return errorResponse(401, 'Unauthorized', headers);
     }
@@ -111,7 +117,32 @@ exports.handler = async (event, context) => {
         const folder = folderPart?.value || 'products';
         const filePath = `${folder}/${uniqueName}`;
 
+        // First check if bucket exists
+        const { data: buckets, error: listError } = await supabase.storage.listBuckets();
+        console.log('Available buckets:', buckets?.map(b => b.name));
+        if (listError) {
+            console.error('Error listing buckets:', listError);
+        }
+
+        // Create bucket if it doesn't exist
+        const bucketExists = buckets?.some(b => b.name === BUCKET_NAME);
+        if (!bucketExists) {
+            console.log('Bucket does not exist, creating:', BUCKET_NAME);
+            const { error: createError } = await supabase.storage.createBucket(BUCKET_NAME, {
+                public: true,
+                fileSizeLimit: MAX_FILE_SIZE,
+                allowedMimeTypes: ALLOWED_TYPES
+            });
+            if (createError) {
+                console.error('Error creating bucket:', createError);
+                // Continue anyway - bucket might exist but not be visible
+            } else {
+                console.log('Bucket created successfully');
+            }
+        }
+
         // Upload to Supabase Storage using service_role (bypasses RLS)
+        console.log('Uploading to bucket:', BUCKET_NAME, 'path:', filePath);
         const { data, error } = await supabase.storage
             .from(BUCKET_NAME)
             .upload(filePath, filePart.data, {
@@ -122,7 +153,10 @@ exports.handler = async (event, context) => {
 
         if (error) {
             console.error('Storage upload error:', error);
-            return errorResponse(500, `Upload failed: ${error.message}`, headers);
+            console.error('Error details:', JSON.stringify(error, null, 2));
+            console.error('Buckets found:', buckets?.map(b => b.name).join(', ') || 'none');
+            // SECURITY: Don't expose internal details to client
+            return errorResponse(500, 'Upload failed. Please try again.', headers);
         }
 
         // Get public URL

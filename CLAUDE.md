@@ -57,12 +57,13 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 15. Newsletter subscribers and email builder
 16. Admin navigation with dropdown menu
 17. Database sync script for prod/non-prod parity
+18. Email notification system (order confirmation, shipping, gift cards, password reset)
 
 ### TODO (REMAINING):
 1. Create playful background patterns
 2. Update meta tags, og:image, etc.
 3. Set up production Stripe keys (currently using test mode)
-4. Configure email notifications for orders
+4. Configure RESEND_API_KEY in Netlify for production email sending
 
 ## Key Files to Update
 
@@ -145,7 +146,8 @@ Set these in Netlify > Site Settings > Environment Variables before deploying:
 | `JWT_SECRET` | ✅ Yes | Strong random string (32+ chars) |
 | `ENCRYPTION_KEY` | ✅ Yes | 64-char hex string for PII encryption |
 | `ADMIN_ALLOWED_IPS` | Optional | Comma-separated IP allowlist for admin |
-| `RESEND_API_KEY` | Optional | For email notifications |
+| `RESEND_API_KEY` | ✅ Yes | For email notifications (order confirmations, etc.) |
+| `EMAIL_FROM` | Optional | Sender address (default: Fidget Street <orders@fidgetstreet.co.uk>) |
 
 ### Security Environment Variables (New)
 ```bash
@@ -325,6 +327,43 @@ Email subscriber management and marketing emails.
 ### Admin Pages
 - `/admin/subscribers.html` - View/manage subscribers
 - `/admin/email-builder.html` - Create marketing emails
+
+## Email Notification System
+
+Centralized email service using Resend API with branded HTML templates.
+
+### Email Utility Module
+`netlify/functions/utils/email.js` provides:
+
+**Transactional Emails:**
+- `sendOrderConfirmation(order)` - Sent when order is paid
+- `sendGiftCardDelivery(giftCard)` - Sent when gift card is activated
+- `sendShippingNotification(order, trackingInfo)` - Sent when order ships
+- `sendAdminPasswordReset(email, resetUrl, expiryMinutes)` - Password reset link
+- `sendMagicLink(email, magicLink)` - Customer order viewing access
+
+**Marketing Emails:**
+- `sendNewsletterWelcome(email)` - Sent on newsletter subscription
+- `sendMarketingEmail(email, { subject, headline, body, ctaText, ctaUrl })` - Promotional emails
+
+### Automatic Triggers
+- **Order confirmation** - webhooks.js after successful Stripe payment
+- **Gift card delivery** - webhooks.js after gift card activation
+- **Shipping notification** - admin-orders.js when status changes to 'shipped'
+- **Newsletter welcome** - subscribe.js on new subscription
+
+### Development Mode
+Without `RESEND_API_KEY`, emails are logged to console instead of sent.
+
+### Email Templates
+- Branded with Fidget Street colors (#71c7e1 primary, #FF6F61 accent)
+- Mobile-responsive HTML templates
+- Automatic unsubscribe link in marketing emails
+
+### Password Reset Flow
+1. User requests reset: `POST /api/reset-admin-password?action=request` with `{ email }`
+2. System sends reset email with token (60-minute expiry)
+3. User completes reset: `POST /api/reset-admin-password?action=reset` with `{ token, newPassword }`
 
 ## Database Sync
 

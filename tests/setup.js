@@ -7,8 +7,9 @@
 import { beforeAll, afterAll, beforeEach, vi } from 'vitest';
 import { config } from 'dotenv';
 
-// Load .env file for real Supabase credentials
-config();
+// Load .env file for local development (CI uses environment variables directly)
+// dotenv won't override existing env vars, so CI secrets take precedence
+config({ override: false });
 
 // Set test environment variables
 beforeAll(() => {

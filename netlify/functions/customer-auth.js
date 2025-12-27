@@ -15,6 +15,7 @@ const {
     errorResponse,
     successResponse
 } = require('./utils/security');
+const { sendMagicLink } = require('./utils/email');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -52,66 +53,6 @@ function checkRateLimit(email) {
 
 function generateToken() {
     return crypto.randomBytes(32).toString('hex');
-}
-
-async function sendMagicLinkEmail(email, magicLink, siteUrl) {
-    // Check if Resend is configured
-    const resendApiKey = process.env.RESEND_API_KEY;
-
-    if (!resendApiKey) {
-        // Log for development - in production, require email service
-        console.log('=== MAGIC LINK (email not configured) ===');
-        console.log(`To: ${email}`);
-        console.log(`Link: ${magicLink}`);
-        console.log('==========================================');
-        return { success: true, method: 'console' };
-    }
-
-    try {
-        const response = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${resendApiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                from: process.env.EMAIL_FROM || 'Wicka <orders@wicka.co.uk>',
-                to: [email],
-                subject: 'View Your Wicka Orders',
-                html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                        <h2 style="color: #C4707A;">Wicka</h2>
-                        <p>Hi there!</p>
-                        <p>Click the button below to view your orders. This link expires in 15 minutes.</p>
-                        <p style="margin: 30px 0;">
-                            <a href="${magicLink}"
-                               style="background-color: #C4707A; color: white; padding: 12px 24px;
-                                      text-decoration: none; border-radius: 6px; display: inline-block;">
-                                View My Orders
-                            </a>
-                        </p>
-                        <p style="color: #666; font-size: 14px;">
-                            If you didn't request this link, you can safely ignore this email.
-                        </p>
-                        <p style="color: #666; font-size: 12px; margin-top: 30px;">
-                            Wicka - Style Meets Purpose
-                        </p>
-                    </div>
-                `
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            console.error('Resend error:', error);
-            return { success: false, error: 'Failed to send email' };
-        }
-
-        return { success: true, method: 'resend' };
-    } catch (error) {
-        console.error('Email send error:', error);
-        return { success: false, error: error.message };
-    }
 }
 
 exports.handler = async (event, context) => {
@@ -205,10 +146,10 @@ exports.handler = async (event, context) => {
 
             // Build magic link URL
             const siteUrl = process.env.URL || process.env.SITE_URL || 'http://localhost:8888';
-            const magicLink = `${siteUrl}/account/verify.html?token=${token}`;
+            const magicLinkUrl = `${siteUrl}/account/verify.html?token=${token}`;
 
-            // Send email
-            const emailResult = await sendMagicLinkEmail(normalizedEmail, magicLink, siteUrl);
+            // Send email using centralized email utility
+            const emailResult = await sendMagicLink(normalizedEmail, magicLinkUrl);
 
             if (!emailResult.success) {
                 console.error('Failed to send magic link email:', emailResult.error);

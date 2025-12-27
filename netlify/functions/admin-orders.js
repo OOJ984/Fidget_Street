@@ -21,6 +21,7 @@ const {
     AUDIT_ACTIONS
 } = require('./utils/security');
 const { decryptOrders } = require('./utils/crypto');
+const { sendShippingNotification } = require('./utils/email');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -89,7 +90,7 @@ exports.handler = async (event, context) => {
             if (permError) return permError;
 
             const body = JSON.parse(event.body);
-            const { id, status, notes } = body;
+            const { id, status, notes, tracking_number, tracking_url, carrier, send_notification } = body;
 
             if (!id) {
                 return errorResponse(400, 'Order ID required', headers);
@@ -98,12 +99,15 @@ exports.handler = async (event, context) => {
             const updateData = {};
             if (status) updateData.status = status;
             if (notes !== undefined) updateData.notes = notes;
+            if (tracking_number !== undefined) updateData.tracking_number = tracking_number || null;
+            if (tracking_url !== undefined) updateData.tracking_url = tracking_url || null;
+            if (carrier !== undefined) updateData.carrier = carrier || null;
             updateData.updated_at = new Date().toISOString();
 
-            // Get the old status first for audit logging
+            // Get the old order first for audit logging and email
             const { data: oldOrder } = await supabase
                 .from('orders')
-                .select('status')
+                .select('*')
                 .eq('id', id)
                 .single();
 
@@ -116,6 +120,25 @@ exports.handler = async (event, context) => {
 
             if (error) throw error;
 
+            // Decrypt the order for email
+            const [decryptedOrder] = decryptOrders([data]);
+
+            // Send shipping notification email when status changes to 'shipped'
+            if (status === 'shipped' && oldOrder?.status !== 'shipped' && send_notification !== false) {
+                if (decryptedOrder.customer_email) {
+                    const emailResult = await sendShippingNotification(decryptedOrder, {
+                        tracking_number: tracking_number || decryptedOrder.tracking_number,
+                        tracking_url: tracking_url || decryptedOrder.tracking_url,
+                        carrier: carrier || decryptedOrder.carrier || 'Royal Mail'
+                    });
+                    if (emailResult.success) {
+                        console.log('Shipping notification sent:', emailResult.id);
+                    } else {
+                        console.error('Shipping notification failed:', emailResult.error);
+                    }
+                }
+            }
+
             // Audit log - order status updated
             await auditLog({
                 action: AUDIT_ACTIONS.ORDER_STATUS_UPDATED,
@@ -125,6 +148,7 @@ exports.handler = async (event, context) => {
                 details: {
                     oldStatus: oldOrder?.status,
                     newStatus: status,
+                    tracking_number: tracking_number || undefined,
                     notes: notes ? 'Notes updated' : undefined
                 },
                 event

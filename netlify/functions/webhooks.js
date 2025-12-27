@@ -12,6 +12,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { createClient } = require('@supabase/supabase-js');
 const { encryptOrderPII, isEncryptionEnabled } = require('./utils/crypto');
 const { generateOrderNumber } = require('./utils/orders');
+const { sendOrderConfirmation, sendGiftCardDelivery } = require('./utils/email');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -118,6 +119,27 @@ exports.handler = async (event, context) => {
                                 notes: `Payment confirmed - Stripe Session: ${session.id}`,
                                 performed_by_email: session.customer_details?.email || null
                             }]);
+
+                        // Send gift card delivery email
+                        const { data: giftCardData } = await supabase
+                            .from('gift_cards')
+                            .select('*')
+                            .eq('id', giftCardId)
+                            .single();
+
+                        if (giftCardData && (giftCardData.recipient_email || giftCardData.purchaser_email)) {
+                            const emailResult = await sendGiftCardDelivery(giftCardData);
+                            if (emailResult.success) {
+                                console.log('Gift card delivery email sent:', emailResult.id);
+                                // Mark as sent
+                                await supabase
+                                    .from('gift_cards')
+                                    .update({ is_sent: true, sent_at: new Date().toISOString() })
+                                    .eq('id', giftCardId);
+                            } else {
+                                console.error('Gift card delivery email failed:', emailResult.error);
+                            }
+                        }
                     }
 
                     break; // Gift card purchase handled, exit case
@@ -369,6 +391,34 @@ exports.handler = async (event, context) => {
                                 notes: `Order ${createdOrder.order_number}`,
                                 performed_by_email: customerDetails?.email || null
                             }]);
+                    }
+                }
+
+                // Send order confirmation email
+                if (customerDetails?.email) {
+                    const emailResult = await sendOrderConfirmation({
+                        order_number: createdOrder.order_number,
+                        customer_email: customerDetails.email,
+                        customer_name: customerDetails.name || shippingDetails?.name,
+                        items: items,
+                        subtotal: subtotal,
+                        shipping: shipping > 0 ? shipping : 0,
+                        total: total,
+                        discount_code: discountCode,
+                        discount_amount: discountAmount,
+                        gift_card_amount: giftCardAmount,
+                        shipping_address: shippingDetails?.address ? {
+                            line1: shippingDetails.address.line1,
+                            line2: shippingDetails.address.line2 || '',
+                            city: shippingDetails.address.city,
+                            postal_code: shippingDetails.address.postal_code,
+                            country: shippingDetails.address.country
+                        } : null
+                    });
+                    if (emailResult.success) {
+                        console.log('Order confirmation email sent:', emailResult.id);
+                    } else {
+                        console.error('Order confirmation email failed:', emailResult.error);
                     }
                 }
                 break;

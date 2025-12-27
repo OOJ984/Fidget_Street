@@ -378,29 +378,225 @@ describe('Email Notifications - Integration with Database', () => {
 describe('Email Configuration', () => {
     it('should work without RESEND_API_KEY (development mode)', async () => {
         const originalResendKey = process.env.RESEND_API_KEY;
-        delete process.env.RESEND_API_KEY;
 
-        vi.resetModules();
-        const { handler } = require('../../netlify/functions/customer-auth.js');
+        try {
+            delete process.env.RESEND_API_KEY;
 
-        const event = createMockEvent({
-            method: 'POST',
-            body: { email: 'dev@example.com' }
-        });
+            vi.resetModules();
+            const { handler } = require('../../netlify/functions/customer-auth.js');
 
-        const response = await handler(event, {});
+            const event = createMockEvent({
+                method: 'POST',
+                body: { email: 'dev@example.com' }
+            });
 
-        // Should still return success
-        expect(response.statusCode).toBe(200);
+            const response = await handler(event, {});
 
-        process.env.RESEND_API_KEY = originalResendKey;
+            // Should still return success
+            expect(response.statusCode).toBe(200);
+        } finally {
+            // Ensure we always restore the env var
+            if (originalResendKey !== undefined) {
+                process.env.RESEND_API_KEY = originalResendKey;
+            }
+            vi.resetModules();
+        }
     });
 });
 
-describe('Future Email Features (TODO)', () => {
-    it.todo('should send order confirmation email on successful payment');
-    it.todo('should send gift card delivery email');
-    it.todo('should send shipping notification email');
-    it.todo('should send admin password reset email');
-    it.todo('should include unsubscribe link in marketing emails');
+describe('Email Utility Module', () => {
+    // Import email utility fresh for each test to avoid caching issues
+    let emailUtils;
+
+    beforeEach(async () => {
+        vi.resetModules();
+        emailUtils = await import('../../netlify/functions/utils/email.js');
+    });
+
+    describe('sendOrderConfirmation', () => {
+        it('should generate correct order confirmation email', async () => {
+            const order = {
+                order_number: 'FS-TEST-001',
+                customer_email: 'test@example.com',
+                customer_name: 'Test Customer',
+                items: [
+                    { title: 'Test Fidget', quantity: 2, price: 10.00 }
+                ],
+                subtotal: 20.00,
+                shipping: 3.99,
+                total: 23.99,
+                shipping_address: {
+                    line1: '123 Test St',
+                    city: 'London',
+                    postal_code: 'SW1A 1AA',
+                    country: 'UK'
+                }
+            };
+
+            const result = await emailUtils.sendOrderConfirmation(order);
+
+            // In dev mode (no RESEND_API_KEY), returns console method
+            expect(result.success).toBe(true);
+        });
+
+        it('should handle order with discount', async () => {
+            const order = {
+                order_number: 'FS-TEST-002',
+                customer_email: 'test@example.com',
+                customer_name: 'Test Customer',
+                items: [{ title: 'Test Item', quantity: 1, price: 25.00 }],
+                subtotal: 25.00,
+                shipping: 0,
+                total: 22.50,
+                discount_code: 'SAVE10',
+                discount_amount: 2.50,
+                shipping_address: null
+            };
+
+            const result = await emailUtils.sendOrderConfirmation(order);
+            expect(result.success).toBe(true);
+        });
+    });
+
+    describe('sendGiftCardDelivery', () => {
+        it('should generate correct gift card delivery email', async () => {
+            const giftCard = {
+                code: 'GC-TEST-1234-ABCD',
+                initial_balance: 50.00,
+                recipient_email: 'recipient@example.com',
+                recipient_name: 'Lucky Person',
+                purchaser_name: 'Generous Giver',
+                personal_message: 'Enjoy your fidgets!',
+                expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+            };
+
+            const result = await emailUtils.sendGiftCardDelivery(giftCard);
+            expect(result.success).toBe(true);
+        });
+
+        it('should send to purchaser if no recipient email', async () => {
+            const giftCard = {
+                code: 'GC-TEST-5678-EFGH',
+                initial_balance: 25.00,
+                purchaser_email: 'purchaser@example.com',
+                recipient_email: null
+            };
+
+            const result = await emailUtils.sendGiftCardDelivery(giftCard);
+            expect(result.success).toBe(true);
+        });
+    });
+
+    describe('sendShippingNotification', () => {
+        it('should generate correct shipping notification email', async () => {
+            const order = {
+                order_number: 'FS-SHIP-001',
+                customer_email: 'customer@example.com',
+                customer_name: 'Test Customer',
+                items: [{ title: 'Fidget Spinner', quantity: 1 }],
+                shipping_address: {
+                    line1: '123 Ship Lane',
+                    city: 'Manchester',
+                    postal_code: 'M1 1AA',
+                    country: 'UK'
+                }
+            };
+
+            const trackingInfo = {
+                tracking_number: 'RM123456789GB',
+                carrier: 'Royal Mail',
+                tracking_url: 'https://royalmail.com/track/RM123456789GB'
+            };
+
+            const result = await emailUtils.sendShippingNotification(order, trackingInfo);
+            expect(result.success).toBe(true);
+        });
+
+        it('should work without tracking info', async () => {
+            const order = {
+                order_number: 'FS-SHIP-002',
+                customer_email: 'customer@example.com',
+                customer_name: 'Test Customer',
+                items: [{ title: 'Fidget Cube', quantity: 2 }],
+                shipping_address: {
+                    line1: '456 No Track Ave',
+                    city: 'Birmingham',
+                    postal_code: 'B1 1BB',
+                    country: 'UK'
+                }
+            };
+
+            const result = await emailUtils.sendShippingNotification(order, {});
+            expect(result.success).toBe(true);
+        });
+    });
+
+    describe('sendAdminPasswordReset', () => {
+        it('should generate correct password reset email', async () => {
+            const result = await emailUtils.sendAdminPasswordReset(
+                'admin@fidgetstreet.co.uk',
+                'https://fidgetstreet.co.uk/admin/reset-password.html?token=abc123',
+                60
+            );
+
+            expect(result.success).toBe(true);
+        });
+    });
+
+    describe('sendMagicLink', () => {
+        it('should generate correct magic link email', async () => {
+            const result = await emailUtils.sendMagicLink(
+                'customer@example.com',
+                'https://fidgetstreet.co.uk/account/verify.html?token=xyz789'
+            );
+
+            expect(result.success).toBe(true);
+        });
+    });
+
+    describe('sendNewsletterWelcome', () => {
+        it('should generate correct newsletter welcome email', async () => {
+            const result = await emailUtils.sendNewsletterWelcome('subscriber@example.com');
+            expect(result.success).toBe(true);
+        });
+    });
+
+    describe('sendMarketingEmail', () => {
+        it('should generate correct marketing email with unsubscribe', async () => {
+            const result = await emailUtils.sendMarketingEmail('subscriber@example.com', {
+                subject: 'New Products!',
+                headline: 'Check out our latest fidgets',
+                body: '<p>We have exciting new products for you!</p>',
+                ctaText: 'Shop Now',
+                ctaUrl: 'https://fidgetstreet.co.uk/products.html'
+            });
+
+            expect(result.success).toBe(true);
+        });
+    });
+
+    describe('Email Templates', () => {
+        it('should include Fidget Street branding', () => {
+            const html = emailUtils.baseTemplate('<p>Test content</p>');
+
+            expect(html).toContain('Fidget Street');
+            expect(html).toContain('#71c7e1'); // Primary color
+        });
+
+        it('should include unsubscribe link when specified', () => {
+            const html = emailUtils.baseTemplate('<p>Test content</p>', {
+                includeUnsubscribe: true,
+                email: 'test@example.com'
+            });
+
+            expect(html).toContain('unsubscribe');
+            expect(html).toContain('test%40example.com');
+        });
+
+        it('should not include unsubscribe link by default', () => {
+            const html = emailUtils.baseTemplate('<p>Test content</p>');
+
+            expect(html).not.toContain('Unsubscribe from marketing');
+        });
+    });
 });

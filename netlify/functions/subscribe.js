@@ -7,6 +7,7 @@
 
 const { createClient } = require('@supabase/supabase-js');
 const { getCorsHeaders } = require('./utils/security');
+const { sendNewsletterWelcome } = require('./utils/email');
 
 const supabase = createClient(
     process.env.SUPABASE_URL,
@@ -89,6 +90,17 @@ exports.handler = async (event, context) => {
             console.error('Insert error:', insertError);
             throw insertError;
         }
+
+        // Send welcome email (non-blocking - don't fail subscription if email fails)
+        sendNewsletterWelcome(normalizedEmail)
+            .then(result => {
+                if (result.success) {
+                    console.log('Newsletter welcome email sent:', result.id);
+                } else {
+                    console.error('Newsletter welcome email failed:', result.error);
+                }
+            })
+            .catch(err => console.error('Newsletter welcome email error:', err));
 
         return {
             statusCode: 200,

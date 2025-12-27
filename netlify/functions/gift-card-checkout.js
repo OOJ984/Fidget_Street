@@ -26,7 +26,7 @@ async function generateGiftCardCode() {
 
     while (attempts < maxAttempts) {
         // Generate code: GC-XXXX-XXXX-XXXX using crypto.randomBytes
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Exclude confusing chars (0,O,1,I)
+        const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // Exclude confusing chars (0,O,1,I,L)
         const randomBytes = crypto.randomBytes(12); // 12 bytes for 12 characters
         let code = 'GC-';
         for (let i = 0; i < 3; i++) {

@@ -69,16 +69,38 @@ function setupEventListeners() {
     deleteModal.addEventListener('click', (e) => {
         if (e.target === deleteModal) closeDeleteModal();
     });
+
+    // Event delegation for dynamically created buttons (CSP-compliant)
+    colorsContainer.addEventListener('click', (e) => {
+        const button = e.target.closest('button[data-action]');
+        if (!button) return;
+
+        const action = button.dataset.action;
+        const id = button.dataset.id;
+
+        switch (action) {
+            case 'edit':
+                editColor(id);
+                break;
+            case 'delete':
+                deleteColor(id);
+                break;
+            case 'toggle-stock':
+                const newStatus = button.dataset.newStatus === 'true';
+                toggleStock(id, newStatus);
+                break;
+            case 'add':
+                openModal();
+                break;
+        }
+    });
 }
 
 async function loadColors() {
     try {
-        const token = localStorage.getItem('admin_token');
-        const response = await fetch('/.netlify/functions/admin-colors', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const response = await adminFetch('/api/admin-colors');
 
-        if (!response.ok) throw new Error('Failed to load colors');
+        if (!response || !response.ok) throw new Error('Failed to load colors');
 
         colors = await response.json();
         renderColors();
@@ -107,7 +129,7 @@ function renderColors() {
         colorsContainer.innerHTML = `
             <div class="text-center py-12 text-navy-600">
                 <p class="mb-4">No colours yet. Add your first colour to get started!</p>
-                <button onclick="openModal()" class="btn-primary px-4 py-2">Add Colour</button>
+                <button data-action="add" class="btn-primary px-4 py-2">Add Colour</button>
             </div>
         `;
         return;
@@ -148,7 +170,7 @@ function renderColorRow(color) {
                 ${color.hex_code || '-'}
             </td>
             <td class="px-6 py-4 text-center">
-                <button onclick="toggleStock('${color.id}', ${!color.in_stock})"
+                <button data-action="toggle-stock" data-id="${color.id}" data-new-status="${!color.in_stock}"
                     class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                         color.in_stock
                             ? 'bg-green-100 text-green-700 hover:bg-green-200'
@@ -172,14 +194,14 @@ function renderColorRow(color) {
             </td>
             <td class="px-6 py-4 text-right">
                 <div class="flex items-center justify-end gap-2">
-                    <button onclick="editColor('${color.id}')"
+                    <button data-action="edit" data-id="${color.id}"
                         class="p-2 text-navy-600 hover:text-soft-blue hover:bg-soft-blue/10 rounded-lg transition-colors"
                         title="Edit">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                     </button>
-                    <button onclick="deleteColor('${color.id}')"
+                    <button data-action="delete" data-id="${color.id}"
                         class="p-2 text-navy-600 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,7 +253,10 @@ function editColor(id) {
 
 function deleteColor(id) {
     const color = colors.find(c => c.id === id);
-    if (!color) return;
+    if (!color) {
+        console.error('Color not found:', id);
+        return;
+    }
 
     editingColorId = id;
     deleteColorName.textContent = color.name;
@@ -244,11 +269,20 @@ function closeDeleteModal() {
 }
 
 async function confirmDelete() {
-    if (!editingColorId) return;
+    if (!editingColorId) {
+        alert('Error: No color selected for deletion');
+        return;
+    }
 
     try {
         const token = localStorage.getItem('admin_token');
-        const response = await fetch('/.netlify/functions/admin-colors', {
+        if (!token) {
+            alert('Session expired. Please log in again.');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        const response = await fetch('/api/admin-colors', {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -266,7 +300,7 @@ async function confirmDelete() {
         await loadColors();
     } catch (error) {
         console.error('Error deleting color:', error);
-        alert(error.message);
+        alert('Delete failed: ' + error.message);
     }
 }
 
@@ -275,13 +309,8 @@ async function toggleStock(id, newStatus) {
     if (!color) return;
 
     try {
-        const token = localStorage.getItem('admin_token');
-        const response = await fetch('/.netlify/functions/admin-colors', {
+        const response = await adminFetch('/api/admin-colors', {
             method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify({
                 id,
                 name: color.name,
@@ -291,8 +320,8 @@ async function toggleStock(id, newStatus) {
             })
         });
 
-        if (!response.ok) {
-            const data = await response.json();
+        if (!response || !response.ok) {
+            const data = response ? await response.json() : {};
             throw new Error(data.error || 'Failed to update stock status');
         }
 
@@ -319,23 +348,18 @@ async function handleSubmit(e) {
     }
 
     try {
-        const token = localStorage.getItem('admin_token');
         const method = id ? 'PUT' : 'POST';
         const body = id
             ? { id, name, hex_code, in_stock, display_order }
             : { name, hex_code, in_stock, display_order };
 
-        const response = await fetch('/.netlify/functions/admin-colors', {
+        const response = await adminFetch('/api/admin-colors', {
             method,
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
             body: JSON.stringify(body)
         });
 
-        if (!response.ok) {
-            const data = await response.json();
+        if (!response || !response.ok) {
+            const data = response ? await response.json() : {};
             throw new Error(data.error || 'Failed to save color');
         }
 
@@ -358,8 +382,4 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Make functions available globally
-window.openModal = openModal;
-window.editColor = editColor;
-window.deleteColor = deleteColor;
-window.toggleStock = toggleStock;
+// No global exports needed - using event delegation for CSP compliance

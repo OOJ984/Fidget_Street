@@ -54,16 +54,28 @@ function setupEventListeners() {
     deleteModal.addEventListener('click', (e) => {
         if (e.target === deleteModal) closeDeleteModal();
     });
+
+    // Event delegation for dynamically created buttons (CSP-compliant)
+    sizesContainer.addEventListener('click', (e) => {
+        const button = e.target.closest('button[data-action]');
+        if (!button) return;
+
+        const action = button.dataset.action;
+        const id = button.dataset.id;
+
+        if (action === 'edit') {
+            editSize(id);
+        } else if (action === 'delete') {
+            deleteSize(id);
+        }
+    });
 }
 
 async function loadSizes() {
     try {
-        const token = localStorage.getItem('adminToken');
-        const response = await fetch('/api/admin-sizes', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const response = await adminFetch('/api/admin-sizes');
 
-        if (!response.ok) {
+        if (!response || !response.ok) {
             throw new Error('Failed to load sizes');
         }
 
@@ -116,8 +128,8 @@ function renderSizes() {
                             ${size.short_code ? `<span class="bg-navy-100 px-2 py-1 rounded text-xs font-mono">${escapeHtml(size.short_code)}</span>` : '-'}
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <button onclick="editSize('${size.id}')" class="text-soft-blue hover:text-soft-blue/80 mr-3">Edit</button>
-                            <button onclick="deleteSize('${size.id}')" class="text-red-500 hover:text-red-600">Delete</button>
+                            <button data-action="edit" data-id="${size.id}" class="text-soft-blue hover:text-soft-blue/80 mr-3">Edit</button>
+                            <button data-action="delete" data-id="${size.id}" class="text-red-500 hover:text-red-600">Delete</button>
                         </td>
                     </tr>
                 `).join('')}
@@ -178,18 +190,13 @@ async function confirmDelete() {
     if (!deletingSizeId) return;
 
     try {
-        const token = localStorage.getItem('adminToken');
-        const response = await fetch('/api/admin-sizes', {
+        const response = await adminFetch('/api/admin-sizes', {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
             body: JSON.stringify({ id: deletingSizeId })
         });
 
-        if (!response.ok) {
-            const data = await response.json();
+        if (!response || !response.ok) {
+            const data = response ? await response.json() : {};
             throw new Error(data.error || 'Failed to delete size');
         }
 
@@ -217,21 +224,15 @@ async function handleSubmit(e) {
     }
 
     try {
-        const token = localStorage.getItem('adminToken');
         const isEditing = !!editingSizeId;
 
-        const response = await fetch('/api/admin-sizes', {
+        const response = await adminFetch('/api/admin-sizes', {
             method: isEditing ? 'PUT' : 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
             body: JSON.stringify(isEditing ? { ...sizeData, id: editingSizeId } : sizeData)
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
+        if (!response || !response.ok) {
+            const data = response ? await response.json() : {};
             throw new Error(data.error || 'Failed to save size');
         }
 

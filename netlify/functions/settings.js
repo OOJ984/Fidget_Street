@@ -28,7 +28,7 @@ const defaultSettings = {
     facebookUrl: '',
     twitterUrl: '',
     defaultTitleSuffix: 'Fidget Street',
-    defaultDescription: 'Eco-friendly fidget toys for focus, fun, and stress relief. Safe for ages 6+. Made from plant-based PLA plastic.',
+    defaultDescription: 'Eco-friendly fidget toys for focus, fun, and stress relief. For everyone. Made from plant-based PLA plastic.',
     ogImageUrl: '',
     freeShippingThreshold: 30,
     shippingCost: 3.49,

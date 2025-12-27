@@ -599,4 +599,102 @@ describe('Email Utility Module', () => {
             expect(html).not.toContain('Unsubscribe from marketing');
         });
     });
+
+    describe('Provider Detection', () => {
+        const originalAWSAccessKey = process.env.AWS_ACCESS_KEY_ID;
+        const originalAWSSecretKey = process.env.AWS_SECRET_ACCESS_KEY;
+        const originalResendKey = process.env.RESEND_API_KEY;
+        const originalProvider = process.env.EMAIL_PROVIDER;
+
+        afterEach(() => {
+            // Restore all env vars
+            if (originalAWSAccessKey !== undefined) {
+                process.env.AWS_ACCESS_KEY_ID = originalAWSAccessKey;
+            } else {
+                delete process.env.AWS_ACCESS_KEY_ID;
+            }
+            if (originalAWSSecretKey !== undefined) {
+                process.env.AWS_SECRET_ACCESS_KEY = originalAWSSecretKey;
+            } else {
+                delete process.env.AWS_SECRET_ACCESS_KEY;
+            }
+            if (originalResendKey !== undefined) {
+                process.env.RESEND_API_KEY = originalResendKey;
+            } else {
+                delete process.env.RESEND_API_KEY;
+            }
+            if (originalProvider !== undefined) {
+                process.env.EMAIL_PROVIDER = originalProvider;
+            } else {
+                delete process.env.EMAIL_PROVIDER;
+            }
+            vi.resetModules();
+        });
+
+        it('should detect console mode when no providers configured', async () => {
+            delete process.env.AWS_ACCESS_KEY_ID;
+            delete process.env.AWS_SECRET_ACCESS_KEY;
+            delete process.env.RESEND_API_KEY;
+            delete process.env.EMAIL_PROVIDER;
+
+            vi.resetModules();
+            const email = await import('../../netlify/functions/utils/email.js');
+            expect(email.detectProvider()).toBe('console');
+        });
+
+        it('should detect resend when only RESEND_API_KEY configured', async () => {
+            delete process.env.AWS_ACCESS_KEY_ID;
+            delete process.env.AWS_SECRET_ACCESS_KEY;
+            process.env.RESEND_API_KEY = 'test-resend-key';
+            delete process.env.EMAIL_PROVIDER;
+
+            vi.resetModules();
+            const email = await import('../../netlify/functions/utils/email.js');
+            expect(email.detectProvider()).toBe('resend');
+        });
+
+        it('should detect SES when AWS credentials configured', async () => {
+            process.env.AWS_ACCESS_KEY_ID = 'test-aws-key';
+            process.env.AWS_SECRET_ACCESS_KEY = 'test-aws-secret';
+            delete process.env.RESEND_API_KEY;
+            delete process.env.EMAIL_PROVIDER;
+
+            vi.resetModules();
+            const email = await import('../../netlify/functions/utils/email.js');
+            expect(email.detectProvider()).toBe('ses');
+        });
+
+        it('should prefer SES over Resend when both configured', async () => {
+            process.env.AWS_ACCESS_KEY_ID = 'test-aws-key';
+            process.env.AWS_SECRET_ACCESS_KEY = 'test-aws-secret';
+            process.env.RESEND_API_KEY = 'test-resend-key';
+            delete process.env.EMAIL_PROVIDER;
+
+            vi.resetModules();
+            const email = await import('../../netlify/functions/utils/email.js');
+            expect(email.detectProvider()).toBe('ses');
+        });
+
+        it('should respect EMAIL_PROVIDER override to resend', async () => {
+            process.env.AWS_ACCESS_KEY_ID = 'test-aws-key';
+            process.env.AWS_SECRET_ACCESS_KEY = 'test-aws-secret';
+            process.env.RESEND_API_KEY = 'test-resend-key';
+            process.env.EMAIL_PROVIDER = 'resend';
+
+            vi.resetModules();
+            const email = await import('../../netlify/functions/utils/email.js');
+            expect(email.detectProvider()).toBe('resend');
+        });
+
+        it('should respect EMAIL_PROVIDER override to ses', async () => {
+            process.env.AWS_ACCESS_KEY_ID = 'test-aws-key';
+            process.env.AWS_SECRET_ACCESS_KEY = 'test-aws-secret';
+            process.env.RESEND_API_KEY = 'test-resend-key';
+            process.env.EMAIL_PROVIDER = 'ses';
+
+            vi.resetModules();
+            const email = await import('../../netlify/functions/utils/email.js');
+            expect(email.detectProvider()).toBe('ses');
+        });
+    });
 });

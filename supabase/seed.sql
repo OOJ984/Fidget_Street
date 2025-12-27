@@ -34,7 +34,7 @@ VALUES
 (5, 'Articulated Caterpillar', 'articulated-caterpillar', 7.99, 'GBP', 'articulated-toys',
  ARRAY['PLA biodegradable plastic'], '20cm length',
  ARRAY['Rainbow', 'Green', 'Pink', 'Yellow'], 30, ARRAY['gift', 'bestseller'],
- 'Cute and wiggly articulated caterpillar! Perfect for younger fidgeters (ages 6+). The smooth segments make a satisfying clicking sound.',
+ 'Cute and wiggly articulated caterpillar! Perfect for all fidgeters. The smooth segments make a satisfying clicking sound.',
  ARRAY[]::TEXT[], true),
 
 -- Fidget Cubes (4)
@@ -148,7 +148,7 @@ INSERT INTO website_settings (
     free_shipping_threshold, footer_tagline, copyright_text
 ) VALUES (
     1, 'Fidget Street', 'Everyday Satisfaction', 'hello@fidgetstreet.co.uk', 'https://instagram.com/fidgetstreet',
-    '#71c7e1', '#A8E0A2', 'Fidget Street', 'Eco-friendly fidget toys for focus, fun, and stress relief. Safe for ages 6+.',
+    '#71c7e1', '#A8E0A2', 'Fidget Street', 'Eco-friendly fidget toys for focus, fun, and stress relief. For everyone.',
     30, 'Everyday Satisfaction - Eco-friendly fidget toys for all ages.', 'Fidget Street. All rights reserved.'
 ) ON CONFLICT (id) DO NOTHING;
 

@@ -116,7 +116,7 @@ exports.handler = async (event, context) => {
         const expiryDate = new Date();
         expiryDate.setFullYear(expiryDate.getFullYear() + 1);
 
-        // Create pending gift card record
+        // Create pending gift card record (will be activated after payment confirmation)
         const { data: giftCard, error: gcError } = await supabase
             .from('gift_cards')
             .insert([{
@@ -130,7 +130,7 @@ exports.handler = async (event, context) => {
                 recipient_name: recipient_name || null,
                 personal_message: personal_message || null,
                 source: 'purchase',
-                status: 'pending', // Will be activated by webhook
+                status: 'pending',
                 is_sent: false,
                 expires_at: expiryDate.toISOString()
             }])
@@ -144,7 +144,8 @@ exports.handler = async (event, context) => {
         }
 
         // Get base URL for redirects
-        const baseUrl = process.env.URL || 'https://fidgetstreet.co.uk';
+        // In Netlify dev, use localhost; in production use the deployed URL
+        const baseUrl = process.env.URL || process.env.DEPLOY_PRIME_URL || 'http://localhost:8888';
 
         // Create Stripe checkout session
         const session = await stripe.checkout.sessions.create({
@@ -163,7 +164,7 @@ exports.handler = async (event, context) => {
                 quantity: 1,
             }],
             mode: 'payment',
-            success_url: `${baseUrl}/gift-card-success.html?code=${code}&amount=${giftCardAmount}`,
+            success_url: `${baseUrl}/gift-card-success.html?session_id={CHECKOUT_SESSION_ID}&code=${code}&amount=${giftCardAmount}`,
             cancel_url: `${baseUrl}/gift-cards.html`,
             customer_email: purchaser_email,
             metadata: {

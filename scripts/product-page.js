@@ -9,6 +9,8 @@ let selectedColor = null;
 let defaultImages = [];
 let variationImages = {};
 let availableColors = []; // Colors from the colors table with stock status
+let currentGalleryImages = []; // Currently displayed images
+let currentGalleryIndex = 0; // Current image index
 
 // Format description with line breaks and bullet points
 function formatDescription(text) {
@@ -309,9 +311,13 @@ function renderThumbnail(url, index, productTitle, isActive) {
     `;
 }
 
-function updateGallery(images) {
+function updateGallery(images, skipAnimation = true) {
     const mainImageContainer = document.getElementById('main-image');
     const thumbnailGallery = document.getElementById('thumbnail-gallery');
+
+    // Store current images for navigation
+    currentGalleryImages = images;
+    currentGalleryIndex = 0;
 
     if (images.length === 0) {
         mainImageContainer.innerHTML = `
@@ -324,27 +330,91 @@ function updateGallery(images) {
         return;
     }
 
+    renderGalleryView(skipAnimation);
+}
+
+function renderGalleryView(skipAnimation = false) {
+    const mainImageContainer = document.getElementById('main-image');
+    const thumbnailGallery = document.getElementById('thumbnail-gallery');
     const productTitle = currentProduct?.title || 'Product';
+    const images = currentGalleryImages;
 
-    mainImageContainer.innerHTML = renderMainMedia(images[0], productTitle);
-    setupVideoHover();
+    // Add transition style
+    mainImageContainer.style.transition = 'opacity 0.25s ease-in-out';
 
-    thumbnailGallery.innerHTML = images.map((img, index) => renderThumbnail(img, index, productTitle, index === 0)).join('');
+    const renderContent = () => {
+        // Main image with navigation arrows
+        mainImageContainer.innerHTML = `
+            ${renderMainMedia(images[currentGalleryIndex], productTitle)}
+            ${images.length > 1 ? `
+                <!-- Previous arrow -->
+                <button id="gallery-prev" class="absolute left-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white text-navy-700 rounded-full flex items-center justify-center transition-all shadow-lg z-20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <!-- Next arrow -->
+                <button id="gallery-next" class="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/90 hover:bg-white text-navy-700 rounded-full flex items-center justify-center transition-all shadow-lg z-20">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </button>
+            ` : ''}
+        `;
+
+        mainImageContainer.style.opacity = '1';
+        setupVideoHover();
+
+        // Add event listeners for gallery navigation
+        const prevBtn = document.getElementById('gallery-prev');
+        const nextBtn = document.getElementById('gallery-next');
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                prevGalleryImage();
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                nextGalleryImage();
+            });
+        }
+    };
+
+    if (skipAnimation) {
+        mainImageContainer.style.opacity = '1';
+        renderContent();
+    } else {
+        // Fade out, then render, then fade in
+        mainImageContainer.style.opacity = '0';
+        setTimeout(renderContent, 200);
+    }
+
+    // Thumbnails
+    thumbnailGallery.innerHTML = images.map((img, index) => renderThumbnail(img, index, productTitle, index === currentGalleryIndex)).join('');
 
     thumbnailGallery.querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', () => {
-            const index = parseInt(btn.dataset.index);
-            mainImageContainer.innerHTML = renderMainMedia(images[index], productTitle);
-            setupVideoHover();
-            thumbnailGallery.querySelectorAll('button').forEach(b => {
-                b.classList.remove('border-soft-blue');
-                b.classList.add('border-transparent');
-            });
-            btn.classList.remove('border-transparent');
-            btn.classList.add('border-soft-blue');
+            currentGalleryIndex = parseInt(btn.dataset.index);
+            renderGalleryView();
         });
     });
 }
+
+function prevGalleryImage() {
+    if (currentGalleryImages.length === 0) return;
+    currentGalleryIndex = (currentGalleryIndex - 1 + currentGalleryImages.length) % currentGalleryImages.length;
+    renderGalleryView(false); // With animation
+}
+
+function nextGalleryImage() {
+    if (currentGalleryImages.length === 0) return;
+    currentGalleryIndex = (currentGalleryIndex + 1) % currentGalleryImages.length;
+    renderGalleryView(false); // With animation
+}
+
+// Make functions globally accessible for onclick handlers
+window.prevGalleryImage = prevGalleryImage;
+window.nextGalleryImage = nextGalleryImage;
 
 // Setup hover-to-play for main video
 function setupVideoHover() {

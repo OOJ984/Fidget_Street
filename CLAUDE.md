@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-E-commerce website for Fidget Street, selling fidget toys and stress relief items for kids 6+ and adults.
+E-commerce website for Fidget Street, selling fidget toys and stress relief items for everyone.
 
 **Stack:**
 - Frontend: HTML, Tailwind CSS, Vanilla JavaScript
@@ -25,7 +25,7 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 - Minimalist, not cluttered
 - Organic/fluid shapes (curves and swirls)
 - Soft gradients between colors
-- Suitable for kids 6+ AND adults
+- Suitable for everyone
 - Subtle fidget toy patterns in backgrounds
 
 ### Product Categories
@@ -63,7 +63,7 @@ E-commerce website for Fidget Street, selling fidget toys and stress relief item
 1. Create playful background patterns
 2. Update meta tags, og:image, etc.
 3. Set up production Stripe keys (currently using test mode)
-4. Configure RESEND_API_KEY in Netlify for production email sending
+4. Configure email provider (AWS SES or Resend) in Netlify for production
 
 ## Key Files to Update
 
@@ -126,7 +126,12 @@ STRIPE_WEBHOOK_SECRET
 PAYPAL_CLIENT_ID
 PAYPAL_CLIENT_SECRET
 JWT_SECRET
-# INSTAGRAM_ACCESS_TOKEN  # Not needed - using manual uploads (see docs/instagram-setup.md)
+
+# Email (choose one):
+# Option 1 - Amazon SES (cheaper at scale):
+# AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
+# Option 2 - Resend (simpler setup):
+# RESEND_API_KEY
 ```
 
 ## Production Deployment Checklist
@@ -146,8 +151,31 @@ Set these in Netlify > Site Settings > Environment Variables before deploying:
 | `JWT_SECRET` | ✅ Yes | Strong random string (32+ chars) |
 | `ENCRYPTION_KEY` | ✅ Yes | 64-char hex string for PII encryption |
 | `ADMIN_ALLOWED_IPS` | Optional | Comma-separated IP allowlist for admin |
-| `RESEND_API_KEY` | ✅ Yes | For email notifications (order confirmations, etc.) |
 | `EMAIL_FROM` | Optional | Sender address (default: Fidget Street <Fidget.Street@protonmail.com>) |
+
+### Email Provider Configuration
+
+The email system supports multiple providers with auto-detection. Configure **one** of these:
+
+**Option 1: Amazon SES (recommended for high volume - $0.10 per 1,000 emails)**
+```
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+AWS_REGION=eu-west-2  # Optional, defaults to eu-west-2
+```
+
+**Option 2: Resend (simpler setup - 100 free emails/day)**
+```
+RESEND_API_KEY=re_xxxxxxxxx
+```
+
+**Optional overrides:**
+```
+EMAIL_PROVIDER=ses|resend    # Force a specific provider (auto-detects if not set)
+EMAIL_FROM=Your Name <email@domain.com>  # Custom sender address
+```
+
+**Priority:** If both are configured, SES is used by default (cheaper at scale). Set `EMAIL_PROVIDER=resend` to override.
 
 ### Security Environment Variables (New)
 ```bash

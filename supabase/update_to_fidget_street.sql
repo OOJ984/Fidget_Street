@@ -42,7 +42,7 @@ VALUES
 (5, 'Articulated Caterpillar', 'articulated-caterpillar', 7.99, 'GBP', 'articulated-toys',
  ARRAY['PLA biodegradable plastic'], '20cm length',
  ARRAY['Rainbow', 'Green', 'Pink', 'Yellow'], 30, ARRAY['gift', 'bestseller'],
- 'Cute and wiggly articulated caterpillar! Perfect for younger fidgeters (ages 6+). The smooth segments make a satisfying clicking sound.',
+ 'Cute and wiggly articulated caterpillar! Perfect for all fidgeters. The smooth segments make a satisfying clicking sound.',
  ARRAY[]::TEXT[], true),
 
 -- Fidget Cubes (4)
@@ -156,7 +156,7 @@ UPDATE website_settings SET
     primary_color = '#71c7e1',
     secondary_color = '#A8E0A2',
     default_title_suffix = 'Fidget Street',
-    default_description = 'Eco-friendly fidget toys for focus, fun, and stress relief. Safe for ages 6+.',
+    default_description = 'Eco-friendly fidget toys for focus, fun, and stress relief. For everyone.',
     free_shipping_threshold = 30,
     footer_tagline = 'Everyday Satisfaction - Eco-friendly fidget toys for all ages.',
     copyright_text = 'Fidget Street. All rights reserved.'

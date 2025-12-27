@@ -17,7 +17,7 @@ petal_distance = 18;
 // Bottom housing
 base_height = 12;
 rim_width = 2.5;
-rim_height = 14;
+rim_height = 18;  // Taller rim so keycap sits level
 
 // MX switch hole
 mx_cutout = 14.0;
@@ -28,7 +28,7 @@ stem_width = 4.0;
 stem_thickness = 1.2;
 stem_depth = 4.0;
 
-keycap_center_radius = 11;
+keycap_center_radius = 9.5;  // Fits inside center_radius - 4 = 10mm with tolerance
 
 // Petal keycap - matching the image
 petal_cap_width = 18;
@@ -44,21 +44,24 @@ floor_thickness = 1.5;      // Floor at bottom of housing
 // =====================================================
 
 module heart_petal(length, width, height) {
-    // Rounded heart petal with bulbous lobes
-    lobe_r = width/2.2;  // Big round lobes
+    // Two lobes joined to bottom - matches keycap shape
+    lobe_r = width/2.2;
 
-    hull() {
-        // Left lobe - big round bulb
-        translate([width/2.8, length - lobe_r, height/2])
-            scale([1, 1.1, 1])
-                cylinder(h = height, r = lobe_r, center = true);
-        // Right lobe - big round bulb
-        translate([-width/2.8, length - lobe_r, height/2])
-            scale([1, 1.1, 1])
-                cylinder(h = height, r = lobe_r, center = true);
-        // Bottom point - small for heart shape
-        translate([0, 0, height/2])
-            cylinder(h = height, r = width/6, center = true);
+    union() {
+        // Left lobe to bottom
+        hull() {
+            translate([width/2.8, length - lobe_r, 0])
+                scale([1, 1.1, 1])
+                    cylinder(h = height, r = lobe_r);
+            cylinder(h = height, r = width/6);
+        }
+        // Right lobe to bottom
+        hull() {
+            translate([-width/2.8, length - lobe_r, 0])
+                scale([1, 1.1, 1])
+                    cylinder(h = height, r = lobe_r);
+            cylinder(h = height, r = width/6);
+        }
     }
 }
 
@@ -138,11 +141,32 @@ module flower_bottom() {
                         heart_petal_rim(petal_length, petal_width, rim_height, rim_width);
                 }
 
+                // Center rim (walls for center keycap) - 3mm thick
                 difference() {
-                    cylinder(h = rim_height, r = center_radius + 1);
+                    cylinder(h = rim_height, r = center_radius - 0.5);
                     translate([0, 0, -0.1])
-                        cylinder(h = rim_height + 1, r = center_radius - 2);
+                        cylinder(h = rim_height + 1, r = center_radius - 3.5);
                 }
+
+                // Connect center rim to petal rims (fill gaps) - thin walls
+                for (i = [0 : petal_count - 1]) {
+                    angle1 = 360 * i / petal_count + 90;
+                    angle2 = 360 * (i + 1) / petal_count + 90;
+                    hull() {
+                        // Edge of center rim
+                        rotate([0, 0, (angle1 + angle2) / 2])
+                        translate([center_radius - 1, 0, 0])
+                            cylinder(h = rim_height, r = 1.5);
+                        // Connect to petal rim areas
+                        rotate([0, 0, angle1])
+                        translate([petal_width/2.5, center_radius - 2, 0])
+                            cylinder(h = rim_height, r = 1.5);
+                        rotate([0, 0, angle2])
+                        translate([-petal_width/2.5, center_radius - 2, 0])
+                            cylinder(h = rim_height, r = 1.5);
+                    }
+                }
+
             }
 
             mx_hole();
@@ -153,6 +177,11 @@ module flower_bottom() {
                 translate([0, petal_distance, 0])
                     mx_hole();
             }
+
+            // Clear center area so circle keycap fits (keep floor for switch)
+            // Must be smaller than center rim inner radius (center_radius - 3.5)
+            translate([0, 0, floor_thickness])
+                cylinder(h = rim_height + 1, r = center_radius - 4);
         }
 
         // Add retention clips to all switch holes
@@ -171,11 +200,13 @@ module flower_bottom() {
 // CENTER KEYCAP (domed circle - dome goes to edge)
 // =====================================================
 module center_keycap() {
+    center_cap_h = 8;  // Same height as petal keycaps
+
     difference() {
         union() {
-            cylinder(h = cap_height, r = keycap_center_radius);
+            cylinder(h = center_cap_h, r = keycap_center_radius);
             // Dome goes all the way to edge
-            translate([0, 0, cap_height])
+            translate([0, 0, center_cap_h])
                 scale([1, 1, 0.35])
                     sphere(r = keycap_center_radius);
         }
@@ -204,37 +235,30 @@ keycap_petal_length = (petal_length - rim_width/2) - print_tolerance;  // 22.75 
 keycap_petal_width = (petal_width - rim_width) - print_tolerance * 2;   // 17.5 - 0.6 = 16.9mm
 
 module petal_keycap() {
-    cap_h = 10;  // Thick keycap
+    cap_h = 8;  // Height to sit level with rim
     round_r = 2; // Rounding radius for smooth edges
     lobe_r = keycap_petal_width/2.2;  // Match bottom housing
 
     difference() {
-        // Rounded heart petal shape - matches bottom housing
+        // Heart petal - two lobes joined to bottom point
         minkowski() {
-            hull() {
-                // Left lobe - big round bulb
-                translate([keycap_petal_width/2.8, keycap_petal_length - lobe_r, 0])
-                    scale([1, 1.1, 1])
-                        cylinder(h = cap_h - round_r*2, r = lobe_r - round_r);
-                // Right lobe - big round bulb
-                translate([-keycap_petal_width/2.8, keycap_petal_length - lobe_r, 0])
-                    scale([1, 1.1, 1])
-                        cylinder(h = cap_h - round_r*2, r = lobe_r - round_r);
-                // Bottom point - small
-                cylinder(h = cap_h - round_r*2, r = keycap_petal_width/6 - round_r);
+            union() {
+                // Left lobe to bottom
+                hull() {
+                    translate([keycap_petal_width/2.8, keycap_petal_length - lobe_r, 0])
+                        scale([1, 1.1, 1])
+                            cylinder(h = cap_h - round_r*2, r = lobe_r - round_r);
+                    cylinder(h = cap_h - round_r*2, r = keycap_petal_width/6 - round_r);
+                }
+                // Right lobe to bottom
+                hull() {
+                    translate([-keycap_petal_width/2.8, keycap_petal_length - lobe_r, 0])
+                        scale([1, 1.1, 1])
+                            cylinder(h = cap_h - round_r*2, r = lobe_r - round_r);
+                    cylinder(h = cap_h - round_r*2, r = keycap_petal_width/6 - round_r);
+                }
             }
             sphere(r = round_r);
-        }
-
-        // Heart dip - smaller, all edges rounded smooth
-        hull() {
-            // Inner point - large sphere for smooth rounded edge
-            translate([0, keycap_petal_length - 2, cap_h + 3])
-                sphere(r = 4);
-            // Top - large sphere for smooth rounded edge
-            translate([0, keycap_petal_length + 3, cap_h + 5])
-                scale([0.5, 1, 1])
-                    sphere(r = 6);
         }
 
         // VERTICAL CENTER CREASE - 27mm long

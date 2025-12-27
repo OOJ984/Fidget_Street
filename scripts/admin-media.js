@@ -140,7 +140,7 @@ async function handleUpload(e) {
     progressContainer.classList.remove('hidden');
     let completed = 0;
 
-    const token = localStorage.getItem('adminToken');
+    const token = localStorage.getItem('admin_token');
 
     for (const file of files) {
         try {

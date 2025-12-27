@@ -248,7 +248,11 @@ function renderProducts() {
                         </td>
                         <td class="py-4">
                             <button class="text-soft-blue hover:underline mr-3 edit-btn" data-id="${product.id}">Edit</button>
-                            <button class="text-red-400 hover:underline delete-btn" data-id="${product.id}">Delete</button>
+                            <button class="text-red-400 hover:underline mr-3 delete-btn" data-id="${product.id}">Delete</button>
+                            <label class="inline-flex items-center gap-1 cursor-pointer">
+                                <input type="checkbox" class="stock-checkbox w-4 h-4" data-id="${product.id}" ${product.stock === 0 ? 'checked' : ''}>
+                                <span class="text-xs text-gray-500">Out of Stock</span>
+                            </label>
                         </td>
                     </tr>
                 `}).join('')}
@@ -484,7 +488,7 @@ function setupEventListeners() {
         pickerSearchTimeout = setTimeout(() => loadLibraryImages(e.target.value), 300);
     });
 
-    // Edit/Delete buttons
+    // Edit/Delete buttons and stock checkbox
     document.getElementById('products-list').addEventListener('click', async (e) => {
         const editBtn = e.target.closest('.edit-btn');
         const deleteBtn = e.target.closest('.delete-btn');
@@ -499,6 +503,15 @@ function setupEventListeners() {
             if (confirm('Are you sure you want to delete this product?')) {
                 await deleteProduct(id);
             }
+        }
+    });
+
+    // Stock checkbox change handler
+    document.getElementById('products-list').addEventListener('change', async (e) => {
+        if (e.target.classList.contains('stock-checkbox')) {
+            const id = parseInt(e.target.dataset.id);
+            const isOutOfStock = e.target.checked;
+            await toggleStock(id, isOutOfStock ? 0 : 10);
         }
     });
 }
@@ -542,7 +555,13 @@ async function uploadImage(file) {
         formData.append('file', file);
         formData.append('folder', 'products');
 
-        const token = localStorage.getItem('adminToken');
+        const token = localStorage.getItem('admin_token');
+        console.log('Token exists:', !!token, 'Length:', token?.length);
+        if (!token) {
+            alert('No admin token found. Please log in again.');
+            window.location.href = '/admin/';
+            return null;
+        }
         const response = await fetch('/api/admin-upload', {
             method: 'POST',
             headers: {
@@ -577,26 +596,50 @@ function isVideoUrl(url) {
 
 function renderImagePreviews() {
     const container = document.getElementById('image-preview');
-    container.innerHTML = productImages.map((url, index) => {
-        if (isVideoUrl(url)) {
-            return `
-                <div class="relative group">
-                    <video src="${url}" class="w-full h-20 object-cover rounded-lg" muted></video>
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <svg class="w-6 h-6 text-white drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+
+    if (productImages.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-sm">No images yet</p>';
+        return;
+    }
+
+    container.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+            ${productImages.map((url, index) => {
+                const isVideo = isVideoUrl(url);
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px;">
+                        ${isVideo ? `
+                            <video src="${url}" style="width: 100%; height: 80px; object-fit: cover; border-radius: 4px; background: #f3f4f6;" muted></video>
+                        ` : `
+                            <img src="${url}" alt="Product image ${index + 1}" style="width: 100%; height: 80px; object-fit: cover; border-radius: 4px; background: #f3f4f6;">
+                        `}
+                        <div style="display: flex; gap: 4px; margin-top: 8px;">
+                            <button type="button" id="edit-btn-${index}" style="flex: 1; padding: 6px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">Edit</button>
+                            <button type="button" id="delete-btn-${index}" style="flex: 1; padding: 6px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer;">Delete</button>
+                        </div>
                     </div>
-                    <button type="button" onclick="removeImage(${index})" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
-                </div>
-            `;
+                `;
+            }).join('')}
+        </div>
+    `;
+
+    // Add event listeners after rendering
+    productImages.forEach((url, index) => {
+        const editBtn = document.getElementById('edit-btn-' + index);
+        const deleteBtn = document.getElementById('delete-btn-' + index);
+
+        if (editBtn) {
+            console.log('Attaching click listener to edit-btn-' + index);
+            editBtn.addEventListener('click', () => openCropModal(index));
         }
-        return `
-            <div class="relative group">
-                <img src="${url}" alt="Product image ${index + 1}" class="w-full h-20 object-cover rounded-lg">
-                <button type="button" onclick="removeImage(${index})" class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>
-            </div>
-        `;
-    }).join('');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', () => removeImage(index));
+        }
+    });
 }
+
+// Make removeImage globally accessible
+window.removeImage = removeImage;
 
 function removeImage(index) {
     productImages.splice(index, 1);
@@ -755,6 +798,7 @@ function openModal(product = null) {
         form['trading_station_url'].value = product.trading_station_url || '';
         // Load existing images
         productImages = product.images || [];
+        currentImageIndex = 0;
         // Load existing variation images
         variationImages = product.variation_images || {};
         // Load existing colors
@@ -766,6 +810,7 @@ function openModal(product = null) {
         form['id'].value = '';
         form['is_active'].checked = true;
         productImages = [];
+        currentImageIndex = 0;
         variationImages = {};
         selectedColors = [];
         // Reset sale fields
@@ -850,6 +895,23 @@ async function deleteProduct(id) {
 
         if (!response || !response.ok) {
             throw new Error('Failed to delete product');
+        }
+
+        await loadProducts();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+async function toggleStock(id, newStock) {
+    try {
+        const response = await adminFetch('/api/admin-products', {
+            method: 'PUT',
+            body: JSON.stringify({ id, stock: newStock })
+        });
+
+        if (!response || !response.ok) {
+            throw new Error('Failed to update stock');
         }
 
         await loadProducts();
@@ -980,4 +1042,299 @@ function confirmImageSelection() {
 // Add "Select from Library" to variation sections
 function openVariationImagePicker(variation) {
     openImagePicker(variation);
+}
+
+// ============================================
+// Image Crop/Edit Functionality
+// ============================================
+
+let cropper = null;
+let cropImageIndex = null;
+
+// Make crop modal globally accessible
+window.openCropModal = openCropModal;
+
+function openCropModal(index) {
+    console.log('openCropModal called with index:', index);
+
+    // Check if Cropper is loaded
+    if (typeof Cropper === 'undefined') {
+        alert('Image editor is loading, please try again in a moment.');
+        console.error('Cropper.js not loaded');
+        return;
+    }
+
+    const imageUrl = productImages[index];
+    if (!imageUrl) {
+        console.error('No image URL found for index:', index);
+        return;
+    }
+    console.log('Opening crop modal for image:', imageUrl);
+
+    cropImageIndex = index;
+    const modal = document.getElementById('crop-modal');
+    const cropImage = document.getElementById('crop-image');
+
+    // Destroy existing cropper if any
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+
+    // Reset buttons to initial state
+    document.getElementById('crop-start').style.display = '';
+    document.getElementById('crop-save').style.display = 'none';
+    document.getElementById('crop-reset').style.display = 'none';
+
+    // Show modal first
+    modal.classList.remove('hidden');
+
+    // Setup event listeners
+    setupCropModalListeners();
+
+    // Set image source (no cropper yet - wait for user to click Crop)
+    cropImage.src = imageUrl;
+}
+
+function startCropping() {
+    console.log('startCropping called');
+    const cropImage = document.getElementById('crop-image');
+    const cropContainer = document.getElementById('crop-container');
+
+    if (!cropImage || !cropImage.src) {
+        console.error('No image to crop');
+        alert('No image to crop');
+        return;
+    }
+
+    // Check if Cropper class exists
+    if (typeof Cropper === 'undefined') {
+        console.error('Cropper.js not loaded');
+        alert('Crop tool not loaded. Please refresh the page.');
+        return;
+    }
+
+    console.log('Image src:', cropImage.src.substring(0, 100) + '...');
+    console.log('Image complete:', cropImage.complete, 'naturalWidth:', cropImage.naturalWidth);
+
+    // Destroy existing cropper first
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+
+    // Function to actually initialize cropper
+    function initCropper() {
+        try {
+            console.log('Initializing Cropper...');
+
+            // Reset image styles - Cropper.js needs to control these
+            cropImage.style.maxWidth = 'none';
+            cropImage.style.maxHeight = 'none';
+            cropImage.style.width = 'auto';
+            cropImage.style.height = 'auto';
+
+            cropper = new Cropper(cropImage, {
+                viewMode: 2,
+                dragMode: 'crop',
+                aspectRatio: NaN,
+                autoCropArea: 0.8,
+                restore: false,
+                guides: true,
+                center: true,
+                highlight: true,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                background: true,
+                responsive: true,
+                checkCrossOrigin: false,
+                ready: function() {
+                    console.log('Cropper is ready! Drag the corners to crop.');
+                }
+            });
+
+            console.log('Cropper object created:', !!cropper);
+
+            // Show Save and Reset, hide Crop button
+            document.getElementById('crop-start').style.display = 'none';
+            document.getElementById('crop-save').style.display = '';
+            document.getElementById('crop-reset').style.display = '';
+        } catch (error) {
+            console.error('Error initializing Cropper:', error);
+            alert('Error initializing crop tool: ' + error.message);
+        }
+    }
+
+    // Wait for image to load if not already loaded
+    if (cropImage.complete && cropImage.naturalWidth > 0) {
+        initCropper();
+    } else {
+        console.log('Waiting for image to load...');
+        cropImage.onload = initCropper;
+    }
+}
+
+function setupCropModalListeners() {
+    const closeBtn = document.getElementById('crop-close');
+    const cancelBtn = document.getElementById('crop-cancel');
+    const overlay = document.getElementById('crop-overlay');
+    const startBtn = document.getElementById('crop-start');
+    const rotateLeftBtn = document.getElementById('crop-rotate-left');
+    const rotateRightBtn = document.getElementById('crop-rotate-right');
+    const flipBtn = document.getElementById('crop-flip-h');
+    const resetBtn = document.getElementById('crop-reset');
+    const saveBtn = document.getElementById('crop-save');
+
+    if (closeBtn) closeBtn.onclick = closeCropModal;
+    if (cancelBtn) cancelBtn.onclick = closeCropModal;
+    if (overlay) overlay.onclick = closeCropModal;
+
+    if (startBtn) {
+        startBtn.onclick = function() {
+            console.log('Crop button clicked - starting cropper');
+            startCropping();
+        };
+    }
+
+    if (rotateLeftBtn) {
+        rotateLeftBtn.onclick = function() {
+            if (!cropper) {
+                startCropping();
+            }
+            setTimeout(() => { if (cropper) cropper.rotate(-90); }, 100);
+        };
+    }
+
+    if (rotateRightBtn) {
+        rotateRightBtn.onclick = function() {
+            if (!cropper) {
+                startCropping();
+            }
+            setTimeout(() => { if (cropper) cropper.rotate(90); }, 100);
+        };
+    }
+
+    if (flipBtn) {
+        flipBtn.onclick = function() {
+            if (!cropper) {
+                startCropping();
+            }
+            setTimeout(() => {
+                if (cropper) {
+                    const imageData = cropper.getImageData();
+                    const currentScaleX = imageData.scaleX || 1;
+                    cropper.scaleX(currentScaleX === -1 ? 1 : -1);
+                }
+            }, 100);
+        };
+    }
+
+    if (resetBtn) {
+        resetBtn.onclick = function() {
+            if (cropper) cropper.reset();
+        };
+    }
+
+    if (saveBtn) {
+        saveBtn.onclick = function() {
+            saveCroppedImage();
+        };
+    }
+}
+
+function closeCropModal() {
+    const modal = document.getElementById('crop-modal');
+    modal.classList.add('hidden');
+
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+
+    // Reset image styles
+    const cropImage = document.getElementById('crop-image');
+    if (cropImage) {
+        cropImage.style.maxWidth = '100%';
+        cropImage.style.maxHeight = '';
+        cropImage.style.width = '';
+        cropImage.style.height = '';
+        cropImage.src = '';
+    }
+
+    // Reset buttons
+    const startBtn = document.getElementById('crop-start');
+    const saveBtn = document.getElementById('crop-save');
+    const resetBtn = document.getElementById('crop-reset');
+    if (startBtn) startBtn.style.display = '';
+    if (saveBtn) saveBtn.style.display = 'none';
+    if (resetBtn) resetBtn.style.display = 'none';
+
+    cropImageIndex = null;
+}
+
+async function saveCroppedImage() {
+    console.log('saveCroppedImage called, cropper:', !!cropper, 'cropImageIndex:', cropImageIndex);
+
+    if (!cropper) {
+        alert('Please click the Crop button first to enable cropping');
+        return;
+    }
+    if (cropImageIndex === null) {
+        alert('No image selected');
+        return;
+    }
+
+    const saveBtn = document.getElementById('crop-save');
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = 'Saving...';
+    saveBtn.disabled = true;
+
+    try {
+        // Get cropped canvas
+        const canvas = cropper.getCroppedCanvas({
+            maxWidth: 1200,
+            maxHeight: 1200,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high',
+        });
+
+        if (!canvas) {
+            throw new Error('Failed to get cropped canvas');
+        }
+
+        console.log('Canvas created:', canvas.width, 'x', canvas.height);
+
+        // Convert to blob
+        const blob = await new Promise((resolve, reject) => {
+            canvas.toBlob((b) => {
+                if (b) resolve(b);
+                else reject(new Error('Failed to create blob'));
+            }, 'image/jpeg', 0.9);
+        });
+
+        console.log('Blob created:', blob.size, 'bytes');
+
+        // Create file from blob
+        const file = new File([blob], `cropped-${Date.now()}.jpg`, { type: 'image/jpeg' });
+
+        // Upload using existing upload function
+        const newUrl = await uploadImage(file);
+
+        if (newUrl) {
+            console.log('Upload success, new URL:', newUrl);
+            // Replace old image URL with new one
+            productImages[cropImageIndex] = newUrl;
+            renderImagePreviews();
+            closeCropModal();
+            alert('Image cropped and saved successfully!');
+        } else {
+            alert('Failed to upload cropped image');
+        }
+    } catch (error) {
+        console.error('Error saving cropped image:', error);
+        alert('Error saving image: ' + error.message);
+    } finally {
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
+    }
 }

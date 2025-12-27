@@ -43,7 +43,7 @@ const defaultSettings = {
     facebookUrl: '',
     twitterUrl: '',
     defaultTitleSuffix: 'Fidget Street',
-    defaultDescription: 'Fidget Street - Playful fidget toys and sensory items for kids 6+ and adults. Stress relief, focus aids, and calming toys for ADHD, autism, and anxiety. UK-based.',
+    defaultDescription: 'Fidget Street - Playful fidget toys and sensory items for everyone. Stress relief, focus aids, and calming toys. UK-based.',
     ogImageUrl: '',
     freeShippingThreshold: 20,
     shippingCost: 2.99,

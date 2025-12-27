@@ -1,14 +1,64 @@
 /**
  * Centralized Email Service
- * Uses Resend API for transactional emails
+ * Supports multiple email providers with automatic detection:
  *
- * Required env vars:
+ * 1. Amazon SES (if AWS credentials configured)
+ * 2. Resend API (if RESEND_API_KEY configured)
+ * 3. Console logging (development fallback)
+ *
+ * Environment variables:
+ *
+ * For Amazon SES:
+ * - AWS_ACCESS_KEY_ID: AWS access key
+ * - AWS_SECRET_ACCESS_KEY: AWS secret key
+ * - AWS_REGION: AWS region (default: eu-west-2)
+ *
+ * For Resend:
  * - RESEND_API_KEY: Resend API key
- * - EMAIL_FROM: Sender address (default: Fidget Street <orders@fidgetstreet.co.uk>)
+ *
+ * Common:
+ * - EMAIL_FROM: Sender address (default: Fidget Street <Fidget.Street@protonmail.com>)
+ * - EMAIL_REPLY_TO: Reply-to address (optional)
  * - URL: Site URL for links in emails
+ * - EMAIL_PROVIDER: Force a specific provider ('ses' or 'resend') - optional
  */
 
 const RESEND_API_URL = 'https://api.resend.com/emails';
+
+// Lazy-load AWS SES client only when needed (avoids cold start penalty if not using SES)
+let sesClient = null;
+function getSESClient() {
+    if (!sesClient) {
+        const { SESClient } = require('@aws-sdk/client-ses');
+        sesClient = new SESClient({
+            region: process.env.AWS_REGION || 'eu-west-2',
+            credentials: {
+                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+            }
+        });
+    }
+    return sesClient;
+}
+
+/**
+ * Detect which email provider to use based on environment variables
+ */
+function detectProvider() {
+    // Allow forcing a specific provider
+    const forced = process.env.EMAIL_PROVIDER?.toLowerCase();
+    if (forced === 'ses' && process.env.AWS_ACCESS_KEY_ID) return 'ses';
+    if (forced === 'resend' && process.env.RESEND_API_KEY) return 'resend';
+
+    // Auto-detect: prefer SES if configured (usually cheaper at scale)
+    if (process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY) {
+        return 'ses';
+    }
+    if (process.env.RESEND_API_KEY) {
+        return 'resend';
+    }
+    return 'console';
+}
 
 // Brand colors
 const COLORS = {
@@ -105,47 +155,92 @@ function button(text, url, color = COLORS.accent) {
 }
 
 /**
+ * Send email via AWS SES
+ */
+async function sendViaSES({ to, subject, html, from }) {
+    const { SendEmailCommand } = require('@aws-sdk/client-ses');
+    const client = getSESClient();
+
+    const toAddresses = Array.isArray(to) ? to : [to];
+
+    const command = new SendEmailCommand({
+        Source: from,
+        Destination: {
+            ToAddresses: toAddresses
+        },
+        Message: {
+            Subject: {
+                Charset: 'UTF-8',
+                Data: subject
+            },
+            Body: {
+                Html: {
+                    Charset: 'UTF-8',
+                    Data: html
+                }
+            }
+        }
+    });
+
+    const result = await client.send(command);
+    return { success: true, method: 'ses', id: result.MessageId };
+}
+
+/**
  * Send email via Resend API
  */
-async function sendEmail({ to, subject, html, from }) {
+async function sendViaResend({ to, subject, html, from }) {
     const apiKey = process.env.RESEND_API_KEY;
-    const defaultFrom = process.env.EMAIL_FROM || 'Fidget Street <Fidget.Street@protonmail.com>';
 
-    if (!apiKey) {
-        // Development mode - log to console
-        console.log('=== EMAIL (RESEND_API_KEY not configured) ===');
+    const response = await fetch(RESEND_API_URL, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            from,
+            to: Array.isArray(to) ? to : [to],
+            subject,
+            html
+        })
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Resend API error');
+    }
+
+    const result = await response.json();
+    return { success: true, method: 'resend', id: result.id };
+}
+
+/**
+ * Send email - auto-detects provider (SES > Resend > Console)
+ */
+async function sendEmail({ to, subject, html, from }) {
+    const defaultFrom = process.env.EMAIL_FROM || 'Fidget Street <Fidget.Street@protonmail.com>';
+    const sender = from || defaultFrom;
+    const provider = detectProvider();
+
+    // Development/fallback mode - log to console
+    if (provider === 'console') {
+        console.log('=== EMAIL (No provider configured) ===');
         console.log(`To: ${to}`);
         console.log(`Subject: ${subject}`);
-        console.log(`From: ${from || defaultFrom}`);
-        console.log('================================================');
+        console.log(`From: ${sender}`);
+        console.log('========================================');
         return { success: true, method: 'console', id: 'dev-mode' };
     }
 
     try {
-        const response = await fetch(RESEND_API_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                from: from || defaultFrom,
-                to: Array.isArray(to) ? to : [to],
-                subject,
-                html
-            })
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            console.error('Resend API error:', error);
-            return { success: false, error: error.message || 'Failed to send email' };
+        if (provider === 'ses') {
+            return await sendViaSES({ to, subject, html, from: sender });
+        } else {
+            return await sendViaResend({ to, subject, html, from: sender });
         }
-
-        const result = await response.json();
-        return { success: true, method: 'resend', id: result.id };
     } catch (error) {
-        console.error('Email send error:', error);
+        console.error(`Email send error (${provider}):`, error);
         return { success: false, error: error.message };
     }
 }
@@ -560,5 +655,7 @@ module.exports = {
     sendMarketingEmail,
     baseTemplate,
     button,
-    COLORS
+    COLORS,
+    // Utility to check which provider is active
+    detectProvider
 };

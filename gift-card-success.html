@@ -44,12 +44,12 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </button>
-                    <a href="https://www.instagram.com/fidget_street/" target="_blank" rel="noopener noreferrer" class="hidden sm:block p-2 text-white hover:text-gray-300 transition-colors" aria-label="Instagram">
+                    <a href="https://www.instagram.com/fidget_street/" target="_blank" rel="noopener noreferrer" class="p-2 text-white hover:text-gray-300 transition-colors" aria-label="Instagram">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                         </svg>
                     </a>
-                    <a href="https://www.tiktok.com/@fidget.street.official" target="_blank" rel="noopener noreferrer" class="hidden sm:block p-2 text-white hover:text-gray-300 transition-colors" aria-label="TikTok">
+                    <a href="https://www.tiktok.com/@fidget.street.official" target="_blank" rel="noopener noreferrer" class="p-2 text-white hover:text-gray-300 transition-colors" aria-label="TikTok">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
                         </svg>
@@ -247,18 +247,38 @@
     <script defer src="scripts/main.js"></script>
     <script defer src="scripts/cart.js"></script>
     <script>
-        // Parse URL parameters
-        document.addEventListener('DOMContentLoaded', function() {
+        // Parse URL parameters and activate gift card
+        document.addEventListener('DOMContentLoaded', async function() {
             const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get('session_id');
             const code = params.get('code');
             const amount = params.get('amount');
 
+            // Display the code and amount immediately
             if (code) {
                 document.getElementById('gift-card-code').textContent = code;
             }
-
             if (amount) {
                 document.getElementById('gift-card-amount').textContent = '£' + parseFloat(amount).toFixed(2);
+            }
+
+            // Activate the gift card if we have session_id
+            if (sessionId && code) {
+                try {
+                    const response = await fetch('/api/activate-gift-card', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ session_id: sessionId, code: code })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        console.log('Gift card activated:', data);
+                    } else {
+                        console.error('Gift card activation failed:', data.error);
+                    }
+                } catch (err) {
+                    console.error('Activation error:', err);
+                }
             }
 
             // Calculate and display expiry date (1 year from now)
@@ -271,28 +291,39 @@
             const copyBtn = document.getElementById('copy-code-btn');
             const copyText = document.getElementById('copy-text');
 
-            copyBtn.addEventListener('click', async () => {
+            copyBtn.addEventListener('click', function() {
                 const codeEl = document.getElementById('gift-card-code');
-                const codeText = codeEl.textContent;
+                const codeText = codeEl.textContent.trim();
 
-                try {
-                    await navigator.clipboard.writeText(codeText);
-                    copyText.textContent = 'Copied!';
-                    setTimeout(() => {
-                        copyText.textContent = 'Copy Code';
-                    }, 2000);
-                } catch (err) {
-                    // Fallback for older browsers
+                // Try modern clipboard API first
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(codeText).then(function() {
+                        copyText.textContent = 'Copied!';
+                        setTimeout(function() { copyText.textContent = 'Copy Code'; }, 2000);
+                    }).catch(function() {
+                        fallbackCopy(codeText);
+                    });
+                } else {
+                    fallbackCopy(codeText);
+                }
+
+                function fallbackCopy(text) {
                     const textArea = document.createElement('textarea');
-                    textArea.value = codeText;
+                    textArea.value = text;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-9999px';
                     document.body.appendChild(textArea);
+                    textArea.focus();
                     textArea.select();
-                    document.execCommand('copy');
+                    try {
+                        document.execCommand('copy');
+                        copyText.textContent = 'Copied!';
+                    } catch (e) {
+                        copyText.textContent = 'Select & copy manually';
+                        codeEl.style.userSelect = 'all';
+                    }
                     document.body.removeChild(textArea);
-                    copyText.textContent = 'Copied!';
-                    setTimeout(() => {
-                        copyText.textContent = 'Copy Code';
-                    }, 2000);
+                    setTimeout(function() { copyText.textContent = 'Copy Code'; }, 2000);
                 }
             });
         });

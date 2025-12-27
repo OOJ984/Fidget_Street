@@ -338,6 +338,65 @@ Run `supabase/sync_all.sql` in Supabase SQL Editor for both databases to ensure 
 
 The script is idempotent (safe to run multiple times).
 
+## Security Features
+
+### Authentication & Sessions
+- **httpOnly Cookies** - Access and refresh tokens stored in httpOnly cookies (XSS-resistant)
+- **CSRF Protection** - Double-submit cookie pattern for state-changing requests
+- **Refresh Token Rotation** - Tokens rotated on refresh to limit exposure window
+- **JWT Tokens** - 15-minute access tokens, 7-day refresh tokens
+- **MFA Support** - TOTP-based two-factor authentication for admin accounts
+
+### Rate Limiting
+- **Login Rate Limiting** - Database-backed (survives serverless cold starts)
+- **MFA Rate Limiting** - 5 attempts per 15-minute window, stored in `mfa_rate_limits` table
+- **Magic Link Rate Limiting** - Prevents email enumeration
+
+### Input Validation
+- **XSS Prevention** - `containsXSS()` detects script tags, event handlers, JS protocol
+- **HTML Encoding** - `encodeHTML()` for safe display of user content
+- **Length Limits** - All text inputs validated:
+  - Email: 254 chars
+  - Name: 100 chars
+  - Description: 5000 chars
+  - Discount code: 50 chars
+  - Personal message: 500 chars
+
+### Error Handling
+- **Error Sanitization** - `sanitizeErrorMessage()` removes database details, stack traces
+- **Generic Errors** - Clients receive safe messages; details logged server-side only
+- **Patterns Filtered**: SQL errors, table names, file paths, Supabase/Postgres references
+
+### Network Security
+- **CORS** - Restricted to `ALLOWED_ORIGINS` (no wildcards)
+- **HSTS** - `max-age=63072000; includeSubDomains; preload`
+- **CSP** - Content Security Policy with violation reporting to `/api/csp-report`
+- **IP Allowlisting** - Optional `ADMIN_ALLOWED_IPS` for admin panel access
+
+### Encryption
+- **PII Encryption** - AES-256-GCM encryption for sensitive data
+- **Production Enforcement** - `ENCRYPTION_KEY` required in production (throws error if missing)
+
+### Anomaly Detection
+- **Login Anomalies** - Detects brute force attempts per IP/email
+- **Gift Card Anomalies** - Detects enumeration attacks
+- **Amount Anomalies** - Detects price manipulation attempts
+
+### Audit Logging
+- All admin actions logged to `audit_logs` table
+- Includes: user, action, resource, IP address, user agent, timestamp
+
+### Security Utilities Location
+```
+netlify/functions/utils/
+├── security.js        # CORS, JWT, RBAC, audit logging, IP allowlist
+├── validation.js      # Input validation, XSS prevention, error sanitization
+├── cookies.js         # httpOnly cookie management, CSRF tokens
+├── crypto.js          # AES-256-GCM encryption/decryption
+├── anomalyDetection.js # Threat detection and alerting
+└── rateLimit.js       # Rate limiting configuration
+```
+
 ## Known Issues / Gotchas
 
 ### Supabase Variable Name Conflict

@@ -109,7 +109,7 @@ function button(text, url, color = COLORS.accent) {
  */
 async function sendEmail({ to, subject, html, from }) {
     const apiKey = process.env.RESEND_API_KEY;
-    const defaultFrom = process.env.EMAIL_FROM || 'Fidget Street <orders@fidgetstreet.co.uk>';
+    const defaultFrom = process.env.EMAIL_FROM || 'Fidget Street <Fidget.Street@protonmail.com>';
 
     if (!apiKey) {
         // Development mode - log to console

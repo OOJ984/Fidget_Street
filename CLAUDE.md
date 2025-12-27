@@ -147,7 +147,7 @@ Set these in Netlify > Site Settings > Environment Variables before deploying:
 | `ENCRYPTION_KEY` | ✅ Yes | 64-char hex string for PII encryption |
 | `ADMIN_ALLOWED_IPS` | Optional | Comma-separated IP allowlist for admin |
 | `RESEND_API_KEY` | ✅ Yes | For email notifications (order confirmations, etc.) |
-| `EMAIL_FROM` | Optional | Sender address (default: Fidget Street <orders@fidgetstreet.co.uk>) |
+| `EMAIL_FROM` | Optional | Sender address (default: Fidget Street <Fidget.Street@protonmail.com>) |
 
 ### Security Environment Variables (New)
 ```bash
